@@ -21,14 +21,13 @@ app {
     display: block;
     height: calc(100% - 25px);
     position: relative;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
+    overflow: hidden;
 }
 
+@import './pages//page';
 @import './pages/home';
 @import './pages/post';
 @import './div/detail';
 @import './div/notify';
 @import './div/footer';
+@import './div/scrollbar';

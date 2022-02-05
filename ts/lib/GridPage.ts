@@ -4,6 +4,7 @@ import { Grid } from "./Grid.js";
 import { Page, _Page } from "./Page.js";
 import { Post } from "./Post.js";
 import { BooruPost, Posts } from "./Posts.js";
+import { Scrollbar } from "./Scrollbar.js";
 
 export class GridPage extends Page {
     grid: Grid;
@@ -18,6 +19,7 @@ export class GridPage extends Page {
     posts: Posts;
     search?: BooruPost;
     scrollFn: () => Promise<void>;
+    scrollbar: Scrollbar;
     constructor(_gridPage: _GridPage, client: Client) {
         super(_gridPage, document.createElement('booru-page'), client)
         this.search = _gridPage.search
@@ -25,6 +27,8 @@ export class GridPage extends Page {
         this.elements = this.posts.array
         this.grid = new Grid(this.elements, document.createElement('booru-grid'), this, this.client)
         this.detail = new Detail(this, client)
+        this.scrollbar = new Scrollbar(this.node, this.client.app)
+        // Parameter
         this.update_interval = 10000
         this.update_count = 0 // auto update images count
         this.page_count = 1
@@ -41,13 +45,19 @@ export class GridPage extends Page {
         // Generate grid
         this.setAutoUpdate()
 
-        window.addEventListener('scroll', this.scrollFn)
+        this.node.addEventListener('scroll', this.scrollFn)
     }
 
     close() {
         this.unsetAutoUpdate()
-        window.removeEventListener('scroll', this.scrollFn)
+        this.node.removeEventListener('scroll', this.scrollFn)
         this.node.remove()
+    }
+
+    unachived(): void {
+        this.client.app.append(this.node)
+        if (this.node.scrollTop === 0) this.setAutoUpdate()
+        this.node.addEventListener('scroll', this.scrollFn)
     }
 
     async update(times: number = 1) {
@@ -96,7 +106,7 @@ export class GridPage extends Page {
     }
 
     private async scroll() {
-        const y = window.scrollY
+        const y = this.node.scrollTop
 
         // Auto load images when scoll to btm
         if (y > this.grid.node.clientHeight - window.innerHeight * 2) {

@@ -51,7 +51,6 @@ export class Footer {
                 this.dlPosts = []
                 this.dlButton.innerText = 'Download Full Image'
                 this.dlPosts.push(page.grid.selected[0].post)
-                console.debug(page.grid.selected[0].post.file_url)
             }
         }
     }

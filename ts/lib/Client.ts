@@ -1,6 +1,7 @@
 import { Booru } from "./Booru.js"
 import { Footer } from "./Footer.js"
 import { KeyHandle } from "./KeyHandle.js"
+import { Mouse } from "./Mouse.js"
 import { Notifier } from "./Notifier.js"
 import { Pages } from "./Pages.js"
 
@@ -13,6 +14,7 @@ export default class Client {
     mouseY: number
     notifier: Notifier
     footer: Footer
+    mouse: Mouse
     constructor() {
         window.history.pushState(null, '', '/')
         this.app = document.querySelector('app') as HTMLElement
@@ -21,6 +23,7 @@ export default class Client {
         this.key = new KeyHandle(this)
         this.notifier = new Notifier(this)
         this.footer = new Footer(this)
+        this.mouse = new Mouse()
         this.mouseX = 0
         this.mouseY = 0
         this.init()

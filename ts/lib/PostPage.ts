@@ -59,7 +59,6 @@ export class PostPage extends Page {
     private scroll() {
         if (!this.post) return
         if (this.lastLoad === this.post) return
-        console.debug(true)
         if (this.img) this.img.removeEventListener('load', this.loadFn)
         this.lastLoad = this.post
         this.img = new Image()

@@ -47,8 +47,12 @@ export class KeyHandle {
                 break
     
                 case 'Escape':
-                    if (grid.selected[0]) for (const ele of grid.selectedHistory[grid.selectedHistory.length - 1]) {
-                        ele.unselect(false)
+                    if (grid.selected[0]) {
+                        for (const ele of grid.selectedHistory[grid.selectedHistory.length - 1]) {
+                            ele.unselect(false)
+                        }
+                    } else {
+                        if (this.client.pages.history[1]) window.history.back()
                     }
                     if (grid.page instanceof GridPage) grid.page.detail.close()
                 break

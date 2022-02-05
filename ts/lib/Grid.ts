@@ -27,7 +27,7 @@ export class Grid {
         this.selectedHistory = []
         this.elementMaxWidth = 400
         this.columns = []
-        this.scrollTop = window.scrollY
+        this.scrollTop = this.page.node.scrollTop
         this.columnCount = 0
     }
 
@@ -35,7 +35,7 @@ export class Grid {
         if (this.columnCount === columnCount) return // improve performence
         this.columnCount = columnCount
         if (!this.node.isConnected) return
-        this.scrollTop = window.scrollY
+        this.scrollTop = this.page.node.scrollTop
         Array.from(this.node.children).forEach(child => child.remove())
         this.columns = []
         // create column
@@ -76,7 +76,7 @@ export class Grid {
                 elements.push(element)
             }
         }
-        if (force) window.scrollTo(0, this.scrollTop)
+        if (force) this.page.node.scrollTo(0, this.scrollTop)
         return elements
     }
 
