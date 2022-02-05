@@ -1,0 +1,266 @@
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #232323;
+    --detail-background-color: #131313;
+    --detail-preview-background-color: #101010;
+    --detail-title-color: #dedede;
+    --footer-log-color: #dedede;
+    --footer-border-top: 2px solid black;
+    --footer-background-color: #131313;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background-color: #dedede;
+    --detail-background-color: #cecece;
+    --detail-preview-background-color: #dedede;
+    --detail-title-color: #131313;
+  }
+}
+
+body {
+  margin: 0;
+  background-color: var(--background-color);
+  font-family: monospace;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -webkit-transition: background-color 1s ease-in, color 1s ease-in, border-color 1s ease-in;
+  transition: background-color 1s ease-in, color 1s ease-in, border-color 1s ease-in;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+app {
+  display: block;
+  height: calc(100% - 25px);
+  position: relative;
+}
+
+app::-webkit-scrollbar {
+  display: none;
+}
+
+booru-grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  padding: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+booru-grid grid-column {
+  display: -ms-grid;
+  display: grid;
+  gap: 20px;
+  width: 100%;
+}
+
+booru-grid grid-column grid-element {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 5px;
+  border-width: 0;
+  border-style: solid;
+  border-color: #44e3f8;
+  background-color: #505050;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-transition: none;
+  transition: none;
+}
+
+booru-grid grid-column grid-element img {
+  width: 100%;
+  height: auto;
+}
+
+booru-post {
+  width: 100%;
+  height: calc(100% - 25px);
+  background-color: #000000cc;
+  position: fixed;
+  top: 0;
+  cursor: move;
+}
+
+booru-post booru-image {
+  background-color: white;
+  height: 100%;
+}
+
+booru-detail {
+  height: 0;
+  width: 100%;
+  background-color: var(--detail-background-color);
+  position: fixed;
+  bottom: 25px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
+          box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
+  overscroll-behavior: none;
+  overflow: hidden;
+}
+
+booru-detail detail-panel {
+  position: relative;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 20px;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+          flex-grow: 2;
+  gap: 30px;
+  width: calc(100% - 200px);
+}
+
+booru-detail detail-panel main-tags-panel {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+}
+
+booru-detail detail-panel main-tags-panel tags-panel {
+  min-height: 100px;
+}
+
+booru-detail detail-panel tags-panel panel-title {
+  color: var(--detail-title-color);
+  font-size: 20px;
+  display: block;
+}
+
+booru-detail detail-panel tags-panel panel-tags {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 10px 5px;
+  font-size: 12px;
+  margin: 10px 0 0;
+}
+
+booru-detail detail-panel tags-panel panel-tags booru-tag {
+  background-color: #232323;
+  color: #ededed;
+  border-radius: 10px;
+  padding: 5px 10px;
+  -webkit-box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
+          box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
+  cursor: pointer;
+}
+
+booru-detail detail-panel tags-panel panel-tags::-webkit-scrollbar {
+  display: block;
+}
+
+booru-detail detail-preview {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  float: right;
+  height: 100%;
+  width: 200px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  background-color: var(--detail-preview-background-color);
+}
+
+booru-detail detail-preview img {
+  height: 100px;
+}
+
+@media only screen and (max-width: 600px) {
+  detail-preview {
+    display: none !important;
+  }
+}
+
+booru-notify {
+  position: fixed;
+  padding: 20px;
+  top: 0;
+  margin-top: 20px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+booru-notify notify-element {
+  position: relative;
+  padding: 10px;
+  background-color: black;
+  -webkit-box-shadow: 0 0 5px black;
+          box-shadow: 0 0 5px black;
+  color: white;
+  border-radius: 25px;
+  display: inline-block;
+}
+
+booru-footer {
+  height: 25px;
+  width: 100%;
+  display: block;
+  background-color: var(--footer-background-color);
+  border-top: var(--footer-border-top);
+  z-index: 1;
+  position: fixed;
+  bottom: 0px;
+  font-size: 12px;
+}
+
+booru-footer footer-log {
+  display: inline-block;
+  color: white;
+  padding: 5px;
+}
+
+booru-footer footer-counter {
+  display: inline-block;
+  color: white;
+  padding: 5px;
+}
+
+booru-footer footer-download {
+  display: block;
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+  float: right;
+}
+
+booru-footer footer-dimension {
+  color: white;
+  padding: 5px;
+  float: right;
+}
+/*# sourceMappingURL=index.css.map */

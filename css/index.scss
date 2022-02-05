@@ -1,0 +1,34 @@
+@import './variables/darkmode';
+@import './variables/lightmode';
+
+body {
+    margin: 0;
+    background-color: var(--background-color);
+    font-family: monospace;
+    
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+* {
+    transition: background-color 1s ease-in, color 1s ease-in, border-color 1s ease-in;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+app {
+    display: block;
+    height: calc(100% - 25px);
+    position: relative;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@import './pages/home';
+@import './pages/post';
+@import './div/detail';
+@import './div/notify';
+@import './div/footer';

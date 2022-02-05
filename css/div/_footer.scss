@@ -1,0 +1,37 @@
+booru-footer {
+    height: 25px;
+    width: 100%;
+    display: block;
+    background-color: var(--footer-background-color);
+    border-top: var(--footer-border-top);
+    z-index: 1;
+    position: fixed;
+    bottom: 0px;
+    font-size: 12px;
+
+    footer-log {
+        display: inline-block;
+        color: white;
+        padding: 5px;
+    }
+
+    footer-counter {
+        display: inline-block;
+        color: white;
+        padding: 5px;
+    }
+
+    footer-download {
+        display: block;
+        color: white;
+        padding: 5px;
+        cursor: pointer;
+        float: right;
+    }
+
+    footer-dimension {
+        color: white;
+        padding: 5px;
+        float: right;
+    }
+}

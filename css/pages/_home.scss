@@ -1,0 +1,32 @@
+// Home
+booru-grid {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+    padding: 20px;
+    box-sizing: border-box;
+
+    grid-column {
+        display: grid;
+        gap: 20px;
+        width: 100%;
+
+        grid-element {
+            box-sizing: border-box;
+            border-radius: 5px;
+            border-width: 0;
+            border-style: solid;
+            border-color: #44e3f8;
+            background-color: #505050;
+            overflow: hidden;
+            cursor: pointer;
+            transition: none;
+
+            img {
+                width: 100%;
+                height: auto
+            }
+        }
+    }
+}

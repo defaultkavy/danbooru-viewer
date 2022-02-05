@@ -1,0 +1,29 @@
+import { AnimeInstance } from "../plugin/anime.js";
+import Client from "./Client.js";
+
+export class Page {
+    client: Client;
+    node: HTMLElement;
+    scrollAn?: AnimeInstance
+    url: string;
+    title: string;
+    constructor(_page: _Page, node: HTMLElement, client: Client) {
+        this.client = client
+        this.node = node
+        this.url = _page.url
+        this.title = _page.title
+    }
+
+    close() {
+        this.node.remove()
+    }
+
+    unachived() {
+        this.client.app.append(this.node)
+    }
+}
+
+export interface _Page {
+    title: string
+    url: string
+}

@@ -1,0 +1,13 @@
+booru-post {
+    width: 100%;
+    height: calc(100% - 25px);
+    background-color: #000000cc;
+    position: fixed;
+    top: 0;
+    cursor: move;
+
+    booru-image {
+        background-color: white;
+        height: 100%;
+    }
+}

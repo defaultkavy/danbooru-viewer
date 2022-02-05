@@ -1,0 +1,18 @@
+booru-notify {
+    position: fixed;
+    padding: 20px;
+    top: 0;
+    margin-top: 20px;
+    z-index: 3;
+    pointer-events: none;
+
+    notify-element {
+        position: relative;
+        padding: 10px;
+        background-color: black;
+        box-shadow: 0 0 5px black;
+        color: white;
+        border-radius: 25px;
+        display: inline-block;
+    }
+}
