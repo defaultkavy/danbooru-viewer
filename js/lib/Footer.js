@@ -58,20 +58,26 @@ export class Footer {
     }
     updateLocation() {
         removeAllChild(this.address);
-        this.client.pages.history.forEach(page => {
+        const history = this.client.pages.history;
+        for (let i = history.length - 3; i < history.length; i++) {
+            if (i < 0)
+                continue;
             const location = document.createElement('location');
             const direnct = document.createElement('direct');
-            location.innerText = page.title;
+            if (i === history.length - 3)
+                location.innerText = '...';
+            else
+                location.innerText = history[i].title;
             direnct.innerText = ' > ';
             this.address.append(location);
             this.address.append(direnct);
             location.addEventListener('click', () => {
-                const h = (this.client.pages.history.length - 1) - this.client.pages.history.indexOf(page);
+                const h = (this.client.pages.history.length - 1) - this.client.pages.history.indexOf(history[i]);
                 for (let i = 0; i < h; i++) {
                     window.history.back();
                 }
             });
-        });
+        }
     }
     updateDlButton(page) {
         if (page instanceof GridPage) {

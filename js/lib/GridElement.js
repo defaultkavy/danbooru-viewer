@@ -53,6 +53,7 @@ export class GridElement {
                 else
                     this.grid.page.detail.close();
             }
+            this.play();
         }
         if (__classPrivateFieldGet(this, _GridElement_onselect, "f"))
             __classPrivateFieldGet(this, _GridElement_onselect, "f").call(this);
@@ -74,6 +75,9 @@ export class GridElement {
         });
         if (__classPrivateFieldGet(this, _GridElement_onunselect, "f"))
             __classPrivateFieldGet(this, _GridElement_onunselect, "f").call(this);
+        if (this instanceof PostGridElement) {
+            this.pause();
+        }
     }
     postOnly(elements) {
         return elements.filter(ele => ele instanceof PostGridElement);

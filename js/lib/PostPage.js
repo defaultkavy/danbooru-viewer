@@ -1,10 +1,12 @@
 import { ImageViewer } from "./ImageViewer.js";
 import { Page } from "./Page.js";
+import { VideoPlayer } from "./VideoPlayer.js";
 export class PostPage extends Page {
     constructor(_page, client) {
         super(_page, document.createElement('booru-post'), client);
         this.opened = false;
         this.viewer = new ImageViewer();
+        this.player = new VideoPlayer();
         this.node.addEventListener('click', this.click.bind(this));
         this.node.addEventListener('wheel', this.scroll.bind(this), { passive: false });
         this.loadFn = this.load.bind(this);
@@ -18,8 +20,16 @@ export class PostPage extends Page {
         this.opened = true;
         this.post = post;
         this.client.app.append(this.node);
-        this.node.append(this.viewer.canvas);
-        this.viewer.load(post.large_file_url);
+        if (post.ext === 'jpg' || post.ext === 'png') {
+            this.player.node.remove();
+            this.node.append(this.viewer.canvas);
+            this.viewer.load(post.large_file_url);
+        }
+        else {
+            this.viewer.canvas.remove();
+            this.node.append(this.player.node);
+            this.player.load(post.file_url);
+        }
     }
     close() {
         this.node.remove();

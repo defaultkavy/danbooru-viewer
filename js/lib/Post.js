@@ -13,12 +13,14 @@ export class Post {
         this.booru = booru;
         this.id = post.id;
         this.data = post;
-        this.height = post.image_height;
-        this.width = post.image_width;
-        this.file_url = post.file_url;
-        this.large_file_url = post.large_file_url;
-        this.preview_file_url = post.preview_file_url;
+        this.height = post[booru._post.height];
+        this.width = post[booru._post.width];
+        this.file_url = post[booru._post.file_url];
+        this.large_file_url = post[booru._post.large_file_url];
+        this.preview_file_url = post[booru._post.preview_file_url];
         this.tags = new Map();
+        this.source = post[booru._post.source];
+        this.ext = post[booru._post.ext];
     }
     fetch() {
         this.booru.posts.get(this.id);
@@ -34,7 +36,7 @@ export class Post {
         });
     }
     get tagsArray() {
-        return this.data.tag_string.split(' ');
+        return this.data[this.booru._post.tags].split(' ');
     }
     get ratio() {
         return this.width / this.height;

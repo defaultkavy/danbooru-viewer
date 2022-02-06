@@ -19,7 +19,7 @@ export class Tags {
             let nameString = '';
             names.forEach(name => nameString += `${name} `);
             const tags = () => __awaiter(this, void 0, void 0, function* () {
-                const path = `/tags.json?search[name_space]=${nameString}&limit=999`;
+                const path = `/${this.booru._tag.path}.json?search[name_space]=${nameString}&limit=999`;
                 const _tags = yield this.booru.get(path);
                 if (!_tags) {
                     this.client.notifier.push('Post tag load failed', 5000);
@@ -42,7 +42,7 @@ export class Tags {
             if (page < 1)
                 throw new Error('page number must greater than 0');
             page = Math.floor(page);
-            const path = `/tags.json?page=${page}`;
+            const path = `/${this.booru._tag.path}.json?page=${page}`;
             const index = yield this.booru.get(path);
             const tags = [];
             for (const _tag of index) {

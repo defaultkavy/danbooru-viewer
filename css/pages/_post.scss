@@ -4,10 +4,20 @@ booru-post {
     background-color: #000000cc;
     position: fixed;
     top: 0;
-    cursor: move;
+    z-index: 4;
 
     booru-image {
         background-color: white;
         height: 100%;
+        cursor: move;
+    }
+
+    video {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        max-height: 100%;
+        max-width: 100%;
     }
 }

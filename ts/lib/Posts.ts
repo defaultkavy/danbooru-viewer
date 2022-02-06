@@ -15,7 +15,7 @@ export class Posts {
 
     async get(id: number): Promise<Post> {
         const newPost = async () => {
-            const path = `/posts/${id}.json`
+            const path = `/${this.booru._post.path}/${id}.json`
             const _post = await this.booru.get(path)
             const cache = this.caches.get(id)
             const post = cache ? cache : new Post(_post, this.booru, this.client)
@@ -29,7 +29,7 @@ export class Posts {
     async index(page: number = 1, post?: BooruPost) {
         if (page < 1) throw new Error('page number must greater than 0')
         page = Math.floor(page)
-        const path = `/posts.json?${post ? `post[${post.param}]=${post.value}&` : ''}page=${page}&limit=40`
+        const path = `/${this.booru._post.path}.json?${post ? `post[${post.param}]=${post.value}&` : ''}page=${page}&limit=40`
 
         if (page === 1) this.client.footer.push(`Getting newest information...`)
         else this.client.footer.push(`Getting page ${page} information...`)

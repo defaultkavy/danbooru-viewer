@@ -122,7 +122,7 @@ export class Grid {
         }
     }
     focus(element, force = false) {
-        const btmLimit = document.body.offsetHeight - window.innerHeight;
+        const btmLimit = this.node.offsetHeight - window.innerHeight;
         const checkTop = () => element.node.offsetTop - 200 < 0;
         const checkBtm = () => element.node.offsetTop - 200 > btmLimit;
         const top = checkTop() ? 0 : checkBtm() ? btmLimit : element.node.offsetTop - 200;
@@ -131,13 +131,13 @@ export class Grid {
             scroll.call(this);
         }
         else {
-            if (window.scrollY > top || window.scrollY + window.innerHeight < btm) {
+            if (this.page.node.scrollTop > top || this.page.node.scrollTop + window.innerHeight < btm) {
                 scroll.call(this);
             }
         }
         function scroll() {
             const scroll = {
-                y: this.node.scrollTop
+                y: this.page.node.scrollTop
             };
             this.page.scrollAn = anime({
                 targets: scroll,
@@ -145,7 +145,7 @@ export class Grid {
                 duration: 1000,
                 y: top,
                 update: () => {
-                    this.node.scrollTo(0, scroll.y);
+                    this.page.node.scrollTo(0, scroll.y);
                 }
             });
         }

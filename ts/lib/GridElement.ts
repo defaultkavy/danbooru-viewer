@@ -52,6 +52,8 @@ export class GridElement {
                 if (this.grid.selected.length === 1) this.grid.page.detail.open(this.postOnly(this.grid.selectedHistory[this.grid.selectedHistory.length - 1]))
                 else this.grid.page.detail.close()
             }
+
+            this.play()
         }
 
         if (this.#onselect) this.#onselect()
@@ -72,6 +74,10 @@ export class GridElement {
         })
 
         if (this.#onunselect) this.#onunselect()
+        
+        if (this instanceof PostGridElement) {
+            this.pause()
+        }
     }
 
     postOnly(elements: GridElement[]): PostGridElement[] {

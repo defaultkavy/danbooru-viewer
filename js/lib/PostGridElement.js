@@ -6,6 +6,8 @@ export class PostGridElement extends GridElement {
         this.id = post.id;
         this.post = post;
         this.img = document.createElement('img');
+        this.video = document.createElement('video');
+        this.durationCounter = document.createElement('video-duration');
         this.p = document.createElement('p');
         this.mouseleaveFn = this.mouseleave.bind(this);
         this.mouseupFn = this.mouseup.bind(this);
@@ -20,8 +22,51 @@ export class PostGridElement extends GridElement {
         this.p.innerText = `${this.order} - ${this.id}`;
         this.node.append(this.p);
     }
+    play() {
+        if (this.post.ext !== 'mp4' && this.post.ext !== 'zip')
+            return;
+        if (this.video.readyState >= 3)
+            return this.video.play();
+        this.video.ontimeupdate = () => {
+            this.durationCounter.innerText = this.duration();
+        };
+        this.video.onplaying = () => {
+            if (this.video.readyState < 2)
+                return;
+            this.img.remove();
+        };
+        this.node.style.height = `${this.img.clientHeight}px`;
+        this.video.autoplay = true;
+        this.video.muted = true;
+        this.video.loop = true;
+        this.video.src = this.post.large_file_url;
+        this.node.append(this.video);
+    }
+    pause() {
+        if (this.video.played)
+            this.video.pause();
+    }
+    unmute() {
+        if (this.video.played)
+            this.video.muted = false;
+    }
+    duration() {
+        const remain = this.video.duration - this.video.currentTime;
+        const h = Math.floor(remain / 3600);
+        const m = Math.floor(remain % 3600 / 60);
+        const s = Math.floor(remain % 3600 % 60);
+        const dh = h === 0 ? undefined : h < 10 ? `0${h}` : `${h}`;
+        const dm = m < 10 ? `0${m}` : `${m}`;
+        const ds = s < 10 ? `0${s}` : `${s}`;
+        return `${dh ? dh + ':' : ''}` + dm + ':' + ds;
+    }
     loadImage() {
-        this.img.src = this.post.large_file_url;
+        if (this.post.ext === 'mp4' || this.post.ext === 'zip') {
+            this.durationCounter.innerText = this.post.ext;
+            this.node.append(this.durationCounter);
+        }
+        const checkExt = this.post.large_file_url.endsWith('mp4') || this.post.large_file_url.endsWith('webm');
+        this.img.src = checkExt ? this.post.preview_file_url : this.post.large_file_url;
         this.img.width = this.post.width;
         this.img.height = this.post.height;
         this.img.loading = 'lazy';
@@ -41,6 +86,7 @@ export class PostGridElement extends GridElement {
             if (!this.selected) {
                 this.grid.unselectAll();
                 this.select();
+                this.play();
             }
             else
                 this.client.pages.openPost(this.post);
@@ -70,7 +116,7 @@ export class PostGridElement extends GridElement {
             scale: 1.05
         });
         if (e.button === 1) {
-            window.open(`https://${this.client.booru.host}/posts/${this.post.id}`, '_blank');
+            window.open(`https://${this.post.booru.host}/${this.post.booru._post.origin}/${this.post.id}`, '_blank');
             return false;
         }
         this.node.removeEventListener('mouseup', this.mouseupFn);
@@ -86,6 +132,7 @@ export class PostGridElement extends GridElement {
         });
         this.node.addEventListener('mouseleave', this.mouseleaveFn);
         this.node.addEventListener('touchend', this.mouseleaveFn);
+        this.play();
     }
     mouseleave() {
         if (this.scaleAn)
@@ -98,6 +145,7 @@ export class PostGridElement extends GridElement {
         });
         this.node.removeEventListener('mouseleave', this.mouseleaveFn);
         this.node.removeEventListener('touchend', this.mouseleaveFn);
+        this.pause();
     }
 }
 //# sourceMappingURL=PostGridElement.js.map

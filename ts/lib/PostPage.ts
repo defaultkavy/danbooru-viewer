@@ -3,6 +3,7 @@ import Client from "./Client.js";
 import { ImageViewer } from "./ImageViewer.js";
 import { Page, _Page } from "./Page.js";
 import { Post } from "./Post.js";
+import { VideoPlayer } from "./VideoPlayer.js";
 
 export class PostPage extends Page {
     opacityAn?: AnimeInstance
@@ -13,10 +14,12 @@ export class PostPage extends Page {
     img?: HTMLImageElement
     lastLoad?: Post
     loadFn: () => void;
+    player: VideoPlayer;
     constructor(_page: _Page, client: Client) {
         super(_page, document.createElement('booru-post'), client)
         this.opened = false
         this.viewer = new ImageViewer()
+        this.player = new VideoPlayer()
         
         this.node.addEventListener('click', this.click.bind(this))
         this.node.addEventListener('wheel', this.scroll.bind(this), {passive: false})
@@ -32,8 +35,15 @@ export class PostPage extends Page {
         this.opened = true
         this.post = post
         this.client.app.append(this.node)
-        this.node.append(this.viewer.canvas)
-        this.viewer.load(post.large_file_url)
+        if (post.ext === 'jpg' || post.ext === 'png') {
+            this.player.node.remove()
+            this.node.append(this.viewer.canvas)
+            this.viewer.load(post.large_file_url)
+        } else {
+            this.viewer.canvas.remove()
+            this.node.append(this.player.node)
+            this.player.load(post.file_url)
+        }
     }
 
     close() {

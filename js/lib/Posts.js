@@ -17,7 +17,7 @@ export class Posts {
     get(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const newPost = () => __awaiter(this, void 0, void 0, function* () {
-                const path = `/posts/${id}.json`;
+                const path = `/${this.booru._post.path}/${id}.json`;
                 const _post = yield this.booru.get(path);
                 const cache = this.caches.get(id);
                 const post = cache ? cache : new Post(_post, this.booru, this.client);
@@ -33,7 +33,7 @@ export class Posts {
             if (page < 1)
                 throw new Error('page number must greater than 0');
             page = Math.floor(page);
-            const path = `/posts.json?${post ? `post[${post.param}]=${post.value}&` : ''}page=${page}&limit=40`;
+            const path = `/${this.booru._post.path}.json?${post ? `post[${post.param}]=${post.value}&` : ''}page=${page}&limit=40`;
             if (page === 1)
                 this.client.footer.push(`Getting newest information...`);
             else

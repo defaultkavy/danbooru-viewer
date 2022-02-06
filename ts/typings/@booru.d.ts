@@ -1,6 +1,7 @@
 declare module '@booru' {
     
     interface _Post {
+        [key: string];
         id: number;
         created_at: Date;
         uploader_id: number;
@@ -13,7 +14,7 @@ declare module '@booru' {
         image_height: number;
         tag_string: string;
         fav_count: number;
-        file_ext: string;
+        file_ext: 'jpg' | 'png' | 'mp4' | 'gif';
         last_noted_at?: any;
         parent_id?: any;
         has_children: boolean;
@@ -47,4 +48,15 @@ declare module '@booru' {
         large_file_url: string;
         preview_file_url: string;
     }
+
+    interface _Tag {
+        [key: string];
+        id: number;
+        name: string;
+        post_count: number;
+        category: number;
+        created_at: string;
+        updated_at: string;
+        is_locked: boolean;
+      }
 }

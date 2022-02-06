@@ -6,9 +6,13 @@ export class Booru {
     host: string
     posts: Posts;
     tags: Tags;
+    _post: _post;
+    _tag: _tag;
     constructor(booru: _Booru, client: Client) {
         this.client = client
         this.host = booru.host
+        this._post = booru.post
+        this._tag = booru.tag
         this.posts = new Posts(this, client)
         this.tags = new Tags(this, client)
     }
@@ -56,5 +60,26 @@ export class Booru {
 }
 
 export interface _Booru {
-    host: string
+    host: string,
+    post: _post,
+    tag: _tag
+}
+
+type _post = {
+    path: string,
+    height: string,
+    width: string,
+    file_url: string,
+    preview_file_url: string,
+    large_file_url: string,
+    source: string,
+    ext: string
+    tags: string,
+    origin: string
+}
+
+type _tag = {
+    path: string,
+    name: string,
+    category: string
 }

@@ -13,6 +13,8 @@ export class Booru {
     constructor(booru, client) {
         this.client = client;
         this.host = booru.host;
+        this._post = booru.post;
+        this._tag = booru.tag;
         this.posts = new Posts(this, client);
         this.tags = new Tags(this, client);
     }

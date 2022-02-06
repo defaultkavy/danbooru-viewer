@@ -8,6 +8,7 @@ booru-detail {
     box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
     overscroll-behavior: none;
     overflow: hidden;
+    z-index: 3;
 
     detail-panel {
         position: relative;

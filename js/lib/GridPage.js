@@ -61,7 +61,7 @@ export class GridPage extends Page {
             if (!this.latestPost || !newestPost)
                 throw new Error("update posts failed");
             posts.forEach(post => {
-                this.update_count + 1;
+                this.update_count += 1;
                 if (this.update_count >= 40) {
                     this.update_count = 0;
                     this.page_count + 1;
@@ -84,7 +84,7 @@ export class GridPage extends Page {
             this.buffering = true;
             // Get newest booru images
             yield this.posts.index(this.page_count, this.search);
-            this.page_count += 2;
+            this.page_count += 1;
             this.latestPost = this.posts.latest;
             this.grid.update(this.posts.array).forEach(ele => {
                 ele.onselect = this.eleOnselect.bind(this);
