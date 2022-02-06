@@ -21,10 +21,10 @@ export class PostGridElement extends GridElement {
         this.node.append(this.p);
     }
     loadImage() {
-        //Array.from(this.node.children).forEach(child => this.node.removeChild(child))
         this.img.src = this.post.large_file_url;
         this.img.width = this.post.width;
         this.img.height = this.post.height;
+        this.img.loading = 'lazy';
         this.node.append(this.img);
     }
     click(e) {
