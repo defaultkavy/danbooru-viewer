@@ -36,7 +36,6 @@ export class GridElement {
         if (record)
             this.grid.selectedHistory.push([...this.grid.selected]);
         this.selected = true;
-        console.debug(this.grid.selectedHistory[this.grid.selectedHistory.length - 1]);
         if (this.borderAn)
             this.borderAn.pause();
         this.borderAn = anime({

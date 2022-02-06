@@ -160,8 +160,9 @@ export class Grid {
     }
 
     unselectAll() {
-        this.selectedHistory.push(this.selected)
-        if (this.selectedHistory[0]) for (const ele of this.selectedHistory[this.selectedHistory.length - 1]) {
+        const selected = [...this.selected]
+        this.selectedHistory.push(selected)
+        if (selected) for (const ele of selected) {
             ele.unselect(false)
         }
     }

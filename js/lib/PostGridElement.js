@@ -36,12 +36,14 @@ export class PostGridElement extends GridElement {
             this.grid.elements.get(this.id);
         }
         else {
-            this.grid.unselectAll();
             const history = this.grid.selectedHistory;
-            if (this.selected && history[history.length - 1] && history[history.length - 1].length === 1)
-                this.client.pages.openPost(this.post);
-            if (!this.selected)
+            //if (this.selected && history[history.length - 1] && history[history.length - 1].length === 1) 
+            if (!this.selected) {
+                this.grid.unselectAll();
                 this.select();
+            }
+            else
+                this.client.pages.openPost(this.post);
         }
     }
     mousedown(e) {

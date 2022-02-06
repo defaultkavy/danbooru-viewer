@@ -52,10 +52,13 @@ export class PostGridElement extends GridElement {
             const lastSelected = this.grid.selected[this.grid.selected.length - 1]
             this.grid.elements.get(this.id)
         } else {
-            this.grid.unselectAll()
             const history = this.grid.selectedHistory
-            if (this.selected && history[history.length - 1] && history[history.length - 1].length === 1) this.client.pages.openPost(this.post)
-            if (!this.selected) this.select()
+            //if (this.selected && history[history.length - 1] && history[history.length - 1].length === 1) 
+            if (!this.selected) {
+                this.grid.unselectAll()
+                this.select()
+            }
+            else this.client.pages.openPost(this.post)
         }
     }
 
