@@ -48,7 +48,8 @@ export class KeyHandle {
     
                 case 'Escape':
                     if (grid.selected[0]) {
-                        for (const ele of grid.selectedHistory[grid.selectedHistory.length - 1]) {
+                        const selected = [...grid.selected]
+                        for (const ele of selected) {
                             ele.unselect(false)
                         }
                     } else {

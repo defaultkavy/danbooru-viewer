@@ -34,4 +34,22 @@ booru-footer {
         padding: 5px;
         float: right;
     }
+
+    footer-address {
+        display: inline-block;
+        padding: 5px;
+
+        location {
+            color: white;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration-line: underline;
+            }
+        }
+
+        direct {
+            color: white;
+        }
+    }
 }

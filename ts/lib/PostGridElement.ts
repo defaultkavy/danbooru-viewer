@@ -47,18 +47,15 @@ export class PostGridElement extends GridElement {
 
     private click(e: MouseEvent) {
         if (e.ctrlKey) {
-            this.select()
+            this.select(false)
         } else if (e.shiftKey) {
             const lastSelected = this.grid.selected[this.grid.selected.length - 1]
             this.grid.elements.get(this.id)
         } else {
-            if (this.grid.selectedHistory[0]) for (const ele of this.grid.selectedHistory[this.grid.selectedHistory.length - 1]) {
-                if (ele !== this) ele.unselect(false)
-            }
+            this.grid.unselectAll()
+            const history = this.grid.selectedHistory
+            if (this.selected && history[history.length - 1] && history[history.length - 1].length === 1) this.client.pages.openPost(this.post)
             if (!this.selected) this.select()
-            else {
-                this.client.pages.openPost(this.post)
-            }
         }
     }
 

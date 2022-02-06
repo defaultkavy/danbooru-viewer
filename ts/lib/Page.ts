@@ -7,11 +7,16 @@ export class Page {
     scrollAn?: AnimeInstance
     url: string;
     title: string;
+    scrollTop: number
     constructor(_page: _Page, node: HTMLElement, client: Client) {
         this.client = client
         this.node = node
         this.url = _page.url
         this.title = _page.title
+        this.scrollTop = 0
+        this.node.addEventListener('scroll', () => {
+            this.scrollTop = this.node.scrollTop
+        })
     }
 
     close() {

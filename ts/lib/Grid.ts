@@ -89,7 +89,7 @@ export class Grid {
         if (this.selected[0]) {
             const lastSelected = this.selected[this.selected.length - 1]
             // Check if user selected first element
-
+            this.unselectAll()
             if (control === 'NEXT' || control === 'PREV') {
                 if (this.sort[0] === lastSelected && control === 'PREV') return
                 if (this.sort[this.sort.length - 1] === lastSelected && control === 'NEXT') return
@@ -156,6 +156,13 @@ export class Grid {
                     this.node.scrollTo(0, scroll.y)
                 }
             })
+        }
+    }
+
+    unselectAll() {
+        this.selectedHistory.push(this.selected)
+        if (this.selectedHistory[0]) for (const ele of this.selectedHistory[this.selectedHistory.length - 1]) {
+            ele.unselect(false)
         }
     }
 

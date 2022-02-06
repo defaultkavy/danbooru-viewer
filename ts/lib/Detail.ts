@@ -41,6 +41,7 @@ export class Detail {
     }
 
     open(elements: PostGridElement[]) {
+        if (this.page.grid.selected.length > 1) return this.close()
         this.page.node.append(this.node)
         this.loadPanel(elements)
         this.loadPreview(elements)

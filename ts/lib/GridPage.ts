@@ -55,7 +55,7 @@ export class GridPage extends Page {
     }
 
     unachived(): void {
-        this.client.app.append(this.node)
+        if (!this.node.isConnected) this.client.app.append(this.node)
         if (this.node.scrollTop === 0) this.setAutoUpdate()
         this.node.addEventListener('scroll', this.scrollFn)
     }
@@ -78,7 +78,10 @@ export class GridPage extends Page {
             return
         }
         this.latestPost = this.posts.latest
-        this.grid.update(this.posts.array, true)
+        this.grid.update(this.posts.array, true).forEach(ele => {
+            ele.onselect = this.eleOnselect.bind(this)
+            ele.onunselect = this.eleOnunselect.bind(this)
+        }) // add listener to update footer
         this.client.footer.updateCounter(this)
     }
 
@@ -88,7 +91,10 @@ export class GridPage extends Page {
         await this.posts.index(this.page_count, this.search)
         this.page_count += 2
         this.latestPost = this.posts.latest
-        this.grid.update(this.posts.array).forEach(ele => ele.onselect = this.eleOnselect.bind(this))
+        this.grid.update(this.posts.array).forEach(ele => {
+            ele.onselect = this.eleOnselect.bind(this)
+            ele.onunselect = this.eleOnunselect.bind(this)
+        }) // add listener to update footer
         this.buffering = false
         this.client.footer.updateCounter(this)
     }
@@ -130,6 +136,12 @@ export class GridPage extends Page {
     }
 
     private eleOnselect() {
+        this.client.footer.updateCounter(this)
+        this.client.footer.updateDlButton(this)
+        this.client.footer.updateDimension(this)
+    }
+    
+    private eleOnunselect() {
         this.client.footer.updateCounter(this)
         this.client.footer.updateDlButton(this)
         this.client.footer.updateDimension(this)

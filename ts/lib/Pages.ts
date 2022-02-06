@@ -12,8 +12,8 @@ export class Pages {
     forwardHistory: Page[];
     constructor(client: Client) {
         this.client = client
-        this.homePage = new GridPage({title: '', url: ''}, this.client)
-        this.postPage = new PostPage({title: '', url: '#post'}, this.client)
+        this.homePage = new GridPage({title: 'Home', url: ''}, this.client)
+        this.postPage = new PostPage({title: 'Post', url: '#post'}, this.client)
         this.history = []
         this.history.push(this.homePage)
         this.forwardHistory = []
@@ -50,6 +50,7 @@ export class Pages {
         this.history.push(page)
         this.forwardHistory = []
         window.history.pushState(page.title, document.title, url)
+        this.client.footer.updateLocation()
     }
 
     forward() {
@@ -58,6 +59,7 @@ export class Pages {
         page.unachived()
         if (!(page instanceof PostPage)) this.achived()
         this.history.push(page)
+        this.client.footer.updateLocation()
     }
 
     back() {
@@ -69,5 +71,8 @@ export class Pages {
         if (backPage) {
             backPage.unachived()
         }
+        this.client.footer.updateLocation()
+
+        // backPage.node.scrollTo({top: backPage.scrollTop}) // Scroll to history top
     }
 }

@@ -271,6 +271,25 @@ booru-footer footer-dimension {
   float: right;
 }
 
+booru-footer footer-address {
+  display: inline-block;
+  padding: 5px;
+}
+
+booru-footer footer-address location {
+  color: white;
+  cursor: pointer;
+}
+
+booru-footer footer-address location:hover {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+}
+
+booru-footer footer-address direct {
+  color: white;
+}
+
 scrollbar {
   height: 30px;
   width: 10px;

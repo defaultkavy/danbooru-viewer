@@ -16,6 +16,7 @@ export class GridElement {
     borderAn?: anime.AnimeInstance;
     selected: boolean;
     #onselect?: () => any
+    #onunselect?: () => any
     constructor(_ele: _GridElement, grid: Grid, element: HTMLElement, client: Client) {
         this.client = client
         this.node = element
@@ -32,10 +33,11 @@ export class GridElement {
         this.node.dataset.order = `${order}`
     }
 
-    select() {
+    select(record: boolean = true) {
         this.grid.selected.push(this)
-        this.grid.selectedHistory.push([...this.grid.selected])
+        if (record) this.grid.selectedHistory.push([...this.grid.selected])
         this.selected = true
+        console.debug(this.grid.selectedHistory[this.grid.selectedHistory.length - 1])
         if (this.borderAn) this.borderAn.pause()
         this.borderAn = anime({
             targets: this.node,
@@ -48,7 +50,8 @@ export class GridElement {
 
         if (this instanceof PostGridElement) {
             if (this.grid.page instanceof GridPage) {
-                this.grid.page.detail.open(this.postOnly(this.grid.selectedHistory[this.grid.selectedHistory.length - 1]))
+                if (this.grid.selected.length === 1) this.grid.page.detail.open(this.postOnly(this.grid.selectedHistory[this.grid.selectedHistory.length - 1]))
+                else this.grid.page.detail.close()
             }
         }
 
@@ -56,9 +59,9 @@ export class GridElement {
     }
 
     unselect(record: boolean = true) {
-        removeArrayItem(this.grid.selected, this)
         this.selected = false
         if (record) this.grid.selectedHistory.push([...this.grid.selected])
+        removeArrayItem(this.grid.selected, this)
         if (this.borderAn) this.borderAn.pause()
         this.borderAn = anime({
             targets: this.node,
@@ -68,6 +71,8 @@ export class GridElement {
             borderColor: '#505050',
             borderWidth: 0
         })
+
+        if (this.#onunselect) this.#onunselect()
     }
 
     postOnly(elements: GridElement[]): PostGridElement[] {
@@ -76,6 +81,10 @@ export class GridElement {
 
     set onselect(fn: () => any) {
         this.#onselect = fn
+    }
+
+    set onunselect(fn: () => any) {
+        this.#onunselect = fn
     }
 }
 

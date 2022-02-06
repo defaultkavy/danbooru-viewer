@@ -18,11 +18,11 @@ export default class Client {
     constructor() {
         window.history.pushState(null, '', '/')
         this.app = document.querySelector('app') as HTMLElement
+        this.footer = new Footer(this)
         this.booru = new Booru({host: 'danbooru.donmai.us'}, this)
         this.pages = new Pages(this)
         this.key = new KeyHandle(this)
         this.notifier = new Notifier(this)
-        this.footer = new Footer(this)
         this.mouse = new Mouse()
         this.mouseX = 0
         this.mouseY = 0
@@ -37,6 +37,7 @@ export default class Client {
     init() {
         this.app.append(this.pages.homePage.node)
         this.pages.homePage.load()
+        this.footer.updateLocation()
         this.key.init()
     }
 }

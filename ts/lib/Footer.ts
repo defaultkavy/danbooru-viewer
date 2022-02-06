@@ -1,4 +1,5 @@
 import anime from "../plugin/anime.js";
+import { removeAllChild } from "../plugin/extension.js";
 import Client from "./Client.js";
 import { GridPage } from "./GridPage.js";
 import { Page } from "./Page.js";
@@ -15,20 +16,23 @@ export class Footer {
     dlPosts: Post[];
     #colorAn?: anime.AnimeInstance
     dimension: HTMLElement;
+    address: HTMLElement;
     constructor(client: Client) {
         this.client = client
         this.node = document.createElement('booru-footer')
         this.log = document.createElement('footer-log')
         this.counter = document.createElement('footer-counter')
+        this.address = document.createElement('footer-address')
         this.dlButton = document.createElement('footer-download')
         this.dlPosts = []
         this.dimension = document.createElement('footer-dimension')
         document.body.append(this.node)
-        this.node.append(this.log)
         this.node.append(this.counter)
-        this.node.append(this.dlButton)
+        this.node.append(this.address)
+        this.node.append(this.log)
 
         this.dlButton.onclick = this.dlButtonClick.bind(this)
+        this.dlButton.onauxclick = this.dlButtonAuxclick.bind(this)
         this.dlButton.onmouseenter = this.dlButtonMouseenter.bind(this)
         this.dlButton.onmouseleave = this.dlButtonMouseleave.bind(this)
 
@@ -38,19 +42,43 @@ export class Footer {
         this.log.innerText = content
     }
 
-    updateCounter(gridPage: GridPage) {
-        if (gridPage.grid.selected[0]) {
-            this.counter.innerText = `${gridPage.grid.selected.length}/${gridPage.posts.array.length} posts seleted`
-        } else 
-        this.counter.innerText = `${gridPage.posts.array.length} posts`
+    updateCounter(page: Page) {
+        const subfix = '|'
+        if (page instanceof GridPage) {
+            if (page.grid.selected[0]) {
+                this.counter.innerText = `${page.grid.selected.length}/${page.posts.array.length} posts ${subfix}`
+            } else 
+            this.counter.innerText = `${page.posts.array.length} posts ${subfix}`
+        }
+    }
+
+    updateLocation() {
+        removeAllChild(this.address)
+        this.client.pages.history.forEach(page => {
+            const location = document.createElement('location')
+            const direnct = document.createElement('direct')
+            location.innerText = page.title
+            direnct.innerText = ' > '
+            this.address.append(location)
+            this.address.append(direnct)
+            location.addEventListener('click', () => {
+                const h = (this.client.pages.history.length - 1) - this.client.pages.history.indexOf(page)
+                for (let i = 0; i < h; i++) {
+                    window.history.back()
+                }
+            })
+        })
     }
 
     updateDlButton(page: Page) {
         if (page instanceof GridPage) {
             if (page.grid.selected[0] instanceof PostGridElement) {
+                this.node.append(this.dlButton)
                 this.dlPosts = []
                 this.dlButton.innerText = 'Download Full Image'
                 this.dlPosts.push(page.grid.selected[0].post)
+            } else {
+                this.dlButton.remove()
             }
         }
     }
@@ -69,10 +97,16 @@ export class Footer {
 
         const link = document.createElement('a')
         link.href = imageURL
-        link.download = ''
+        link.download = `${this.dlPosts[0].id}`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+    }
+
+    private dlButtonAuxclick(e: MouseEvent) {
+        if (e.button === 1) {
+            open(this.dlPosts[0].file_url, '_blank')
+        }
     }
 
     private dlButtonMouseenter() {
