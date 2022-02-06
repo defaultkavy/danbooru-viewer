@@ -16,7 +16,7 @@ export default class Client {
     footer: Footer
     mouse: Mouse
     constructor() {
-        window.history.pushState(null, '', '/')
+        //window.history.pushState(null, '', `/`)
         this.app = document.querySelector('app') as HTMLElement
         this.footer = new Footer(this)
         this.booru = new Booru({host: 'danbooru.donmai.us'}, this)

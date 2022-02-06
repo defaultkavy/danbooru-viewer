@@ -6,7 +6,7 @@ import { Notifier } from "./Notifier.js";
 import { Pages } from "./Pages.js";
 export default class Client {
     constructor() {
-        window.history.pushState(null, '', '/');
+        //window.history.pushState(null, '', `/`)
         this.app = document.querySelector('app');
         this.footer = new Footer(this);
         this.booru = new Booru({ host: 'danbooru.donmai.us' }, this);
