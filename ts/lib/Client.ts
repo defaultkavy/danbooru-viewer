@@ -26,6 +26,27 @@ const dan: _Booru = {
     }
 
 }
+const sfwdan: _Booru = {
+    host: 'safebooru.donmai.us',
+    post: {
+        ext: 'file_ext',
+        file_url: 'file_url',
+        preview_file_url: 'preview_file_url',
+        height: 'image_height',
+        width: 'image_width',
+        large_file_url: 'large_file_url',
+        path: 'posts',
+        source: 'source',
+        tags: 'tag_string',
+        origin: 'posts'
+    },
+    tag: {
+        category: 'category',
+        name: 'name',
+        path: 'tags'
+    }
+
+}
 const sakuga: _Booru = {
     host: 'www.sakugabooru.com',
     post: {
@@ -62,7 +83,7 @@ export default class Client {
         //window.history.pushState(null, '', `/`)
         this.app = document.querySelector('app') as HTMLElement
         this.footer = new Footer(this)
-        this.booru = new Booru(dan, this)
+        this.booru = new Booru(sakuga, this)
         this.pages = new Pages(this)
         this.key = new KeyHandle(this)
         this.notifier = new Notifier(this)
