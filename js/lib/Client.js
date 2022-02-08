@@ -74,13 +74,7 @@ export default class Client {
         this.key = new KeyHandle(this);
         this.notifier = new Notifier(this);
         this.mouse = new Mouse();
-        this.mouseX = 0;
-        this.mouseY = 0;
         this.init();
-        document.addEventListener('mousemove', (e) => {
-            this.mouseX = e.x;
-            this.mouseY = e.y;
-        });
         document.oncontextmenu = (e) => e.preventDefault();
     }
     init() {
