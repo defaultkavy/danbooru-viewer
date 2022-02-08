@@ -10,6 +10,8 @@ export class KeyHandle {
     }
     keyup(e) {
         const page = this.client.pages.history[this.client.pages.history.length - 1];
+        if (e.key === 'Tab')
+            e.preventDefault();
         if (page instanceof GridPage) {
             const grid = this.grid;
             if (!grid)
@@ -53,7 +55,15 @@ export class KeyHandle {
                             window.history.back();
                     }
                     if (grid.page instanceof GridPage)
-                        grid.page.detail.close();
+                        grid.page.detail.close(true);
+                    break;
+                case 'Tab':
+                    if (grid.selected[0] && grid.selected.length === 1 && grid.page instanceof GridPage) {
+                        if (grid.page.detail.slided === window.innerHeight / 2)
+                            grid.page.detail.slide(120);
+                        else
+                            grid.page.detail.slide(window.innerHeight / 2);
+                    }
                     break;
             }
         }

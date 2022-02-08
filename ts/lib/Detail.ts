@@ -20,6 +20,7 @@ export class Detail {
     #touch_top: { x: number; y: number; };
     #touchstart: { x: number; y: number; };
     #touchmove: { x: number; y: number; };
+    slided: number;
     constructor(page: GridPage, client: Client) {
         this.client = client
         this.node = document.createElement('booru-detail')
@@ -30,7 +31,8 @@ export class Detail {
         this.#touch_top =  {x: 0,y: 0}
         this.#touchstart = {x: 0,y: 0}
         this.#touchmove =  {x: 0,y: 0}
-            
+        this.slided = 0
+
         this.mouseenterFn = this.mouseenter.bind(this)
         this.mouseleaveFn = this.mouseleave.bind(this)
         this.touchmoveFn = this.touchmove.bind(this)
@@ -51,8 +53,8 @@ export class Detail {
         }
     }
 
-    close() {
-        if (!this.hovered) {
+    close(force = false) {
+        if (force === true || !this.hovered) {
             if (this.heightAn) this.heightAn.pause()
             this.heightAn = anime({
                 targets: this.node,
@@ -86,6 +88,14 @@ export class Detail {
             characterPanel.load()
             if (characterPanel.tags.size !== 0) main.append(characterPanel.node)
             
+            const copyrightPanel = new TagsPanel({
+                category: 3,
+                id: 'character-tag-panel',
+                title: 'Copyright'
+            }, elements[0].post, this.client)
+            copyrightPanel.load()
+            if (characterPanel.tags.size !== 0) main.append(copyrightPanel.node)
+            
             if (main.children[0]) this.panel.append(main)
 
             const generalPanel = new TagsPanel({
@@ -102,6 +112,7 @@ export class Detail {
     }
 
     slide(height: number, shadow?: string) {
+        this.slided = height
         if (this.heightAn) this.heightAn.pause()
         this.heightAn = anime({
             targets: this.node,

@@ -1,0 +1,53 @@
+{
+    "background_color": "#232323",
+    "description": "A danbooru image browser.",
+    "dir": "ltr",
+    "display": "standalone",
+    "name": "Danbooru Viewer",
+    "orientation": "any",
+    "scope": "",
+    "short_name": "Danbooru Viewer",
+    "start_url": "",
+    "theme_color": "#000000",
+    "categories": [],
+    "screenshots": [
+      {
+        "src": "images/screenshots/001.jpg",
+        "type": "image/jpg",
+        "sizes": "1280x800"
+      },
+      {
+        "src": "images/screenshots/002.jpg",
+        "type": "image/jpg",
+        "sizes": "1280x800"
+      },
+      {
+        "src": "images/screenshots/003.jpg",
+        "type": "image/jpg",
+        "sizes": "1280x800"
+      }
+    ],
+    "icons": [
+      {
+        "src": "images/icon_128.png",
+        "type": "image/png",
+        "sizes": "128x128"
+      },
+      {
+        "src": "images/icon_32.png",
+        "type": "image/png",
+        "sizes": "32x32"
+      },
+      {
+        "src": "images/icon_48.png",
+        "type": "image/png",
+        "sizes": "48x48"
+      },
+      {
+        "src": "images/icon_16.png",
+        "type": "image/png",
+        "sizes": "16x16"
+      }
+    ],
+    "shortcuts": []
+  }

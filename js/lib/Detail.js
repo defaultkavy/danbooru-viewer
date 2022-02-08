@@ -27,6 +27,7 @@ export class Detail {
         __classPrivateFieldSet(this, _Detail_touch_top, { x: 0, y: 0 }, "f");
         __classPrivateFieldSet(this, _Detail_touchstart, { x: 0, y: 0 }, "f");
         __classPrivateFieldSet(this, _Detail_touchmove, { x: 0, y: 0 }, "f");
+        this.slided = 0;
         this.mouseenterFn = this.mouseenter.bind(this);
         this.mouseleaveFn = this.mouseleave.bind(this);
         this.touchmoveFn = this.touchmove.bind(this);
@@ -44,8 +45,8 @@ export class Detail {
             this.slide(120);
         }
     }
-    close() {
-        if (!this.hovered) {
+    close(force = false) {
+        if (force === true || !this.hovered) {
             if (this.heightAn)
                 this.heightAn.pause();
             this.heightAn = anime({
@@ -78,6 +79,14 @@ export class Detail {
             characterPanel.load();
             if (characterPanel.tags.size !== 0)
                 main.append(characterPanel.node);
+            const copyrightPanel = new TagsPanel({
+                category: 3,
+                id: 'character-tag-panel',
+                title: 'Copyright'
+            }, elements[0].post, this.client);
+            copyrightPanel.load();
+            if (characterPanel.tags.size !== 0)
+                main.append(copyrightPanel.node);
             if (main.children[0])
                 this.panel.append(main);
             const generalPanel = new TagsPanel({
@@ -94,6 +103,7 @@ export class Detail {
         this.node.append(this.panel);
     }
     slide(height, shadow) {
+        this.slided = height;
         if (this.heightAn)
             this.heightAn.pause();
         this.heightAn = anime({

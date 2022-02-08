@@ -89,11 +89,10 @@ export class Grid {
         if (this.selected[0]) {
             const lastSelected = this.selected[this.selected.length - 1]
             // Check if user selected first element
-            this.unselectAll()
             if (control === 'NEXT' || control === 'PREV') {
                 if (this.sort[0] === lastSelected && control === 'PREV') return
                 if (this.sort[this.sort.length - 1] === lastSelected && control === 'NEXT') return
-                lastSelected.unselect(false)
+                this.unselectAll()
                 const newSelect = this.sort.filter(ele => {
                     const next = ele.order === lastSelected.order + 1
                     const prev = ele.order === lastSelected.order - 1
@@ -109,7 +108,7 @@ export class Grid {
                 const index = columnChildren.indexOf(lastSelected.node)
                 if (control === 'UP' && index === 0) return
                 if (control === 'DOWN' && index === columnChildren.length - 1) return
-                lastSelected.unselect(false)
+                this.unselectAll()
                 const newSelect = this.sort.filter(ele => {
                     const up = columnChildren[index - 1] as HTMLElement
                     const down = columnChildren[index + 1] as HTMLElement
