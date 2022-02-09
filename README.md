@@ -2,6 +2,8 @@
 A danbooru image browser.
 [You can get this tool on GitHub Page](https://defaultkavy.github.io/danbooru-viewer/)
 
+![](https://raw.githubusercontent.com/defaultkavy/danbooru-viewer/master/images/screenshots/001.jpg)
+
 ## Available Browser
 Prefer Chrome or Edge 79.
 Touch screen device is not fully support. (Will be support in future)
