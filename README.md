@@ -41,3 +41,6 @@ Touch screen device is not fully support. (Will be support in future)
 - Double Click: Reset image position and scale.
 - Middle Click: Open image in new tab.
 - Right Click: Download full image.
+
+## Used Code Sources
+- [Anime.js](animejs.com) - Use for animation.
