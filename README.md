@@ -13,6 +13,7 @@ Touch screen device is not fully support. (Will be support in future)
 
 ## Shortcut Keys
 Grid Page:
+
 [Keyborad]
 - WASD/Arrow keys: Move the selection cursor.
 - Spacebar: Open the selected object in Viewer/Player.
@@ -27,6 +28,7 @@ Grid Page:
 - Ctrl + Left Click: Multi select.
 
 Image Viewer：
+
 [Keyboard]
 - AD/LR Arrow Key: Move the selection and switch object in Image Viewer.
 - Esc: Close Image Viewer.
