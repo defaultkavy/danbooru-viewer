@@ -6,7 +6,7 @@ A danbooru image browser.
 
 ## Available Browser
 Prefer Chrome or Edge 79.
-Touch screen device is not fully support. (Will be support in future)
+Touch screen device is not fully supported. (Will be supported in future)
 
 ## Supported Booru
 - Danbooru.donmai.us
