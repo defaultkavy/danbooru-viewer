@@ -12,7 +12,7 @@ Touch screen device is not fully support. (Will be support in future)
 - Sakugabooru.com
 
 ## Shortcut Keys
-Grid Page:
+**Grid Page:**
 
 [Keyborad]
 - WASD/Arrow keys: Move the selection cursor.
@@ -27,7 +27,7 @@ Grid Page:
 - Middle Click on object: Open Booru website source.
 - Ctrl + Left Click: Multi select.
 
-Image Viewer：
+**Image Viewer：**
 
 [Keyboard]
 - AD/LR Arrow Key: Move the selection and switch object in Image Viewer.
