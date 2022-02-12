@@ -69,7 +69,7 @@ export default class Client {
         //window.history.pushState(null, '', `/`)
         this.app = document.querySelector('app');
         this.footer = new Footer(this);
-        this.booru = new Booru(dan, this);
+        this.booru = new Booru(sfwdan, this);
         this.pages = new Pages(this);
         this.key = new KeyHandle(this);
         this.notifier = new Notifier(this);
