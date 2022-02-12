@@ -42,7 +42,7 @@ export class PostGridElement extends GridElement {
     }
 
     play() {
-        if (this.post.ext !== 'mp4' && this.post.ext !== 'zip') return
+        if (this.post.ext !== 'mp4' && this.post.ext !== 'zip' && this.post.ext !== 'webm') return
         if (this.video.readyState >= 3) return this.video.play()
         this.video.ontimeupdate = () => {
             this.durationCounter.innerText = this.duration()
@@ -79,7 +79,7 @@ export class PostGridElement extends GridElement {
     }
 
     private loadImage() {
-        if (this.post.ext === 'mp4' || this.post.ext === 'zip') {
+        if (this.post.ext === 'mp4' || this.post.ext === 'zip' || this.post.ext === 'webm' || this.post.ext === 'gif') {
             this.durationCounter.innerText = this.post.ext
             this.node.append(this.durationCounter)
         }

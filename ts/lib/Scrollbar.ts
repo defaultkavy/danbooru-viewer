@@ -23,8 +23,8 @@ export class Scrollbar {
         })
         this.#mousemoveFn = this.onmousemove.bind(this)
         this.target.append(this.node)
-        this.target.onscroll = this.onscroll.bind(this)
-        this.node.onmousedown = this.onmousedown.bind(this)
+        this.target.addEventListener('scroll', this.onscroll.bind(this), {passive: true})
+        this.node.addEventListener('mousedown', this.onmousedown.bind(this))
         window.addEventListener('mousemove', this.#mousemoveFn)
         window.addEventListener('mouseup', () => {
             this.mouse_up = true

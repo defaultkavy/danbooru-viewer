@@ -4,6 +4,7 @@ export class VideoPlayer {
         this.node = document.createElement('video') as HTMLVideoElement
 
         this.node.autoplay = true
+        this.node.loop = true
     }
 
     load(url: string) {

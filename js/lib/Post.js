@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import { Tags } from "./Tags.js";
 export class Post {
     constructor(post, booru, client) {
         this.client = client;
@@ -18,7 +19,7 @@ export class Post {
         this.file_url = post[booru._post.file_url];
         this.large_file_url = post[booru._post.large_file_url];
         this.preview_file_url = post[booru._post.preview_file_url];
-        this.tags = new Map();
+        this.tags = new Tags(booru, client);
         this.source = post[booru._post.source];
         this.ext = post[booru._post.ext];
     }
@@ -27,12 +28,7 @@ export class Post {
     }
     fetchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = yield this.booru.tags.get(this.tagsArray);
-            if (!tags)
-                return;
-            for (const tag of tags) {
-                this.tags.set(tag.name, tag);
-            }
+            yield this.tags.get(this.tagsArray);
         });
     }
     get tagsArray() {

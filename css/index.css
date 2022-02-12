@@ -19,6 +19,27 @@
   }
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #00000000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 body {
   margin: 0;
   background-color: var(--background-color);
@@ -49,11 +70,7 @@ app {
 booru-page {
   height: 100%;
   display: block;
-  overflow: scroll;
-}
-
-booru-page::-webkit-scrollbar {
-  display: none;
+  overflow: overlay;
 }
 
 booru-grid {
@@ -117,6 +134,16 @@ booru-grid grid-column grid-element video-duration {
   z-index: 1;
 }
 
+scrollbar {
+  height: 30px;
+  width: 10px;
+  right: 0;
+  position: fixed;
+  background-color: white;
+  border-radius: 10px 0 0 10px;
+  z-index: 10;
+}
+
 booru-post {
   width: 100%;
   height: calc(100% - 25px);
@@ -126,9 +153,7 @@ booru-post {
   z-index: 4;
 }
 
-booru-post booru-image {
-  background-color: white;
-  height: 100%;
+booru-post canvas {
   cursor: move;
 }
 
@@ -140,6 +165,90 @@ booru-post video {
           transform: translate(-50%, -50%);
   max-height: 100%;
   max-width: 100%;
+}
+
+booru-post img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  max-height: 100%;
+  max-width: 100%;
+}
+
+booru-options {
+  width: 100%;
+  height: calc(100% - 25px);
+  background-color: #000000dd;
+  position: fixed;
+  top: 0;
+  z-index: 5;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+booru-options options-block {
+  max-width: 50%;
+  margin: auto;
+  display: block;
+}
+
+booru-options options-block search-title {
+  font-size: 18px;
+  color: white;
+  margin-top: 150px;
+  display: block;
+}
+
+booru-options options-block booru-search {
+  height: 15px;
+  border: 1px solid white;
+  border-radius: 10px;
+  display: block;
+  margin-top: 10px;
+  padding: 10px;
+  color: white;
+}
+
+booru-options options-block booru-search:focus {
+  outline: none;
+}
+
+booru-options options-block search-result {
+  display: block;
+  padding: 20px;
+  max-height: calc(100% - 300px);
+  overflow-y: scroll;
+}
+
+booru-options options-block search-result tags-panel panel-title {
+  color: var(--detail-title-color);
+  font-size: 20px;
+  display: block;
+}
+
+booru-options options-block search-result tags-panel panel-tags {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 10px 5px;
+  font-size: 12px;
+  margin: 10px 0 0;
+  padding-bottom: 20px;
+}
+
+booru-options options-block search-result tags-panel panel-tags booru-tag {
+  background-color: #232323;
+  color: #ededed;
+  border-radius: 10px;
+  padding: 5px 10px;
+  -webkit-box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
+          box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
+  cursor: pointer;
 }
 
 booru-detail {
@@ -158,42 +267,48 @@ booru-detail {
 }
 
 booru-detail detail-panel {
+  overflow-y: overlay;
+  width: calc(100% - 200px);
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+          flex-grow: 2;
+  height: 100%;
+}
+
+booru-detail detail-panel detail-block {
   position: relative;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   padding: 20px;
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-flex: 2;
-      -ms-flex-positive: 2;
-          flex-grow: 2;
   gap: 30px;
-  width: calc(100% - 200px);
 }
 
-booru-detail detail-panel main-tags-panel {
+booru-detail detail-panel detail-block main-tags-panel {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   gap: 20px;
+  padding-bottom: 20px;
 }
 
-booru-detail detail-panel main-tags-panel tags-panel {
+booru-detail detail-panel detail-block main-tags-panel tags-panel {
   min-height: 100px;
 }
 
-booru-detail detail-panel tags-panel panel-title {
+booru-detail detail-panel detail-block tags-panel panel-title {
   color: var(--detail-title-color);
   font-size: 20px;
   display: block;
 }
 
-booru-detail detail-panel tags-panel panel-tags {
+booru-detail detail-panel detail-block tags-panel panel-tags {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -202,9 +317,10 @@ booru-detail detail-panel tags-panel panel-tags {
   gap: 10px 5px;
   font-size: 12px;
   margin: 10px 0 0;
+  padding-bottom: 20px;
 }
 
-booru-detail detail-panel tags-panel panel-tags booru-tag {
+booru-detail detail-panel detail-block tags-panel panel-tags booru-tag {
   background-color: #232323;
   color: #ededed;
   border-radius: 10px;
@@ -212,10 +328,6 @@ booru-detail detail-panel tags-panel panel-tags booru-tag {
   -webkit-box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
           box-shadow: 0px 0px 0px rgba(147, 255, 255, 0);
   cursor: pointer;
-}
-
-booru-detail detail-panel tags-panel panel-tags::-webkit-scrollbar {
-  display: block;
 }
 
 booru-detail detail-preview {
@@ -237,6 +349,10 @@ booru-detail detail-preview {
 }
 
 booru-detail detail-preview img {
+  height: 100px;
+}
+
+booru-detail detail-preview video {
   height: 100px;
 }
 
@@ -272,7 +388,7 @@ booru-footer {
   display: block;
   background-color: var(--footer-background-color);
   border-top: var(--footer-border-top);
-  z-index: 1;
+  z-index: 10;
   position: fixed;
   bottom: 0px;
   font-size: 12px;
@@ -323,13 +439,24 @@ booru-footer footer-address direct {
   color: white;
 }
 
-scrollbar {
-  height: 30px;
-  width: 10px;
-  right: 0;
-  position: fixed;
-  background-color: white;
-  border-radius: 10px 0 0 10px;
-  z-index: 10;
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #00000000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 /*# sourceMappingURL=index.css.map */

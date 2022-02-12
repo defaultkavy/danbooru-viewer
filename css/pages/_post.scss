@@ -6,13 +6,20 @@ booru-post {
     top: 0;
     z-index: 4;
 
-    booru-image {
-        background-color: white;
-        height: 100%;
+    canvas {
         cursor: move;
     }
 
     video {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    img {
         position: absolute;
         left: 50%;
         top: 50%;

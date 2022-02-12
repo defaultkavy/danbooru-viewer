@@ -1,4 +1,5 @@
 import { GridPage } from "./GridPage.js";
+import { OptionsPage } from "./OptionsPage.js";
 import { PostGridElement } from "./PostGridElement.js";
 import { PostPage } from "./PostPage.js";
 export class KeyHandle {
@@ -10,7 +11,7 @@ export class KeyHandle {
     }
     keyup(e) {
         const page = this.client.pages.history[this.client.pages.history.length - 1];
-        if (e.key === 'Tab')
+        if (e.key === 'Tab' || e.key === '`')
             e.preventDefault();
         if (page instanceof GridPage) {
             const grid = this.grid;
@@ -37,6 +38,7 @@ export class KeyHandle {
                         return;
                     grid.move('DOWN');
                     break;
+                case 'Enter':
                 case ' ':
                     if (grid.selected[0])
                         e.preventDefault();
@@ -65,6 +67,9 @@ export class KeyHandle {
                             grid.page.detail.slide(window.innerHeight / 2);
                     }
                     break;
+                case '`':
+                    this.client.pages.openOptions();
+                    break;
             }
         }
         else if (page instanceof PostPage) {
@@ -87,10 +92,31 @@ export class KeyHandle {
                 case 'Escape':
                     window.history.back();
                     break;
+                case 'Enter':
                 case ' ':
                     if (grid.selected[0])
                         e.preventDefault();
                     window.history.back();
+                    break;
+                case '`':
+                    window.history.back();
+                    break;
+            }
+        }
+        if (page instanceof OptionsPage) {
+            switch (e.key) {
+                case ' ':
+                    e.preventDefault();
+                    break;
+                case '`':
+                case 'Escape':
+                    e.preventDefault();
+                    window.history.back();
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (page.search.tagPanel.tags[0])
+                        this.client.pages.openTag(page.search.tagPanel.tags[0].name);
                     break;
             }
         }

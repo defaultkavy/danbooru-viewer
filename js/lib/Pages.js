@@ -1,4 +1,5 @@
 import { GridPage } from "./GridPage.js";
+import { OptionsPage } from "./OptionsPage.js";
 import { PostPage } from "./PostPage.js";
 export class Pages {
     constructor(client) {
@@ -15,27 +16,34 @@ export class Pages {
     openTag(value) {
         const page = new GridPage({ title: value, url: `#${value}`, search: { param: 'tags', value: value } }, this.client);
         this.client.app.append(page.node);
-        this.homePage.node.remove();
-        this.homePage.unsetAutoUpdate();
         this.achived();
         page.load();
-        this.go(page, '#' + value);
+        this.go(page);
     }
     openPost(post) {
-        this.client.pages.go(this.client.pages.postPage, '#post');
+        this.client.pages.go(this.client.pages.postPage);
         this.postPage.open(post);
+    }
+    openOptions() {
+        const page = new OptionsPage({ title: 'Options', url: '#options' }, this.client);
+        this.client.pages.go(page);
+        page.open();
     }
     achived() {
         document.body.style.overflow = 'auto';
         const lastPage = this.history[this.history.length - 1];
         if (lastPage instanceof GridPage) {
-            lastPage.close();
+            lastPage.achived();
+        }
+        if (lastPage instanceof OptionsPage) {
+            lastPage.achived();
+            this.history[this.history.length - 2].achived();
         }
     }
-    go(page, url) {
+    go(page) {
         this.history.push(page);
         this.forwardHistory = [];
-        window.history.pushState(page.title, document.title, url);
+        window.history.pushState(page.title, document.title, page.url);
         this.client.footer.updateLocation();
     }
     forward() {
@@ -56,7 +64,12 @@ export class Pages {
         this.forwardHistory.unshift(this.history.pop()); // lastPage === this.history.pop()
         const backPage = this.history[this.history.length - 1];
         if (backPage) {
-            backPage.unachived();
+            if (backPage instanceof OptionsPage) {
+                this.history[this.history.length - 2].unachived();
+                backPage.unachived();
+            }
+            else
+                backPage.unachived();
         }
         this.client.footer.updateLocation();
         // backPage.node.scrollTo({top: backPage.scrollTop}) // Scroll to history top

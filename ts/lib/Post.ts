@@ -1,7 +1,7 @@
 import { _Post } from "@booru";
 import { Booru } from "./Booru.js";
 import Client from "./Client.js";
-import { Tag } from "./Tag.js";
+import { Tags } from "./Tags.js";
 
 export class Post {
     client: Client;
@@ -13,7 +13,7 @@ export class Post {
     file_url: string;
     large_file_url: string;
     preview_file_url: string;
-    tags: Map<string, Tag | undefined>;
+    tags: Tags;
     source: string;
     ext: string;
     constructor(post: _Post, booru: Booru, client: Client) {
@@ -26,7 +26,7 @@ export class Post {
         this.file_url = post[booru._post.file_url]
         this.large_file_url = post[booru._post.large_file_url]
         this.preview_file_url = post[booru._post.preview_file_url]
-        this.tags = new Map()
+        this.tags = new Tags(booru, client)
         this.source = post[booru._post.source]
         this.ext = post[booru._post.ext]
     }
@@ -36,11 +36,7 @@ export class Post {
     }
 
     async fetchTags() {
-        const tags = await this.booru.tags.get(this.tagsArray)
-        if (!tags) return
-        for (const tag of tags) {
-            this.tags.set(tag.name, tag)
-        }
+        await this.tags.get(this.tagsArray)
     }
 
     get tagsArray() {

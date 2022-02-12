@@ -1,9 +1,5 @@
 booru-page {
     height: 100%;
     display: block;
-    overflow: scroll;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
+    overflow: overlay;
 }

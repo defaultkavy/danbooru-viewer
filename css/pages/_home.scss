@@ -51,3 +51,13 @@ booru-grid {
         }
     }
 }
+
+scrollbar {
+    height: 30px;
+    width: 10px;
+    right: 0;
+    position: fixed;
+    background-color: white;
+    border-radius: 10px 0 0 10px;
+    z-index: 10;
+}

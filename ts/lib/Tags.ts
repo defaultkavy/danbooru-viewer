@@ -24,7 +24,13 @@ export class Tags {
             }
             const tags: Tag[] = []
             for (const _tag of _tags) {
-                const cache = this.caches.get(_tag.id)
+                const get = this.booru.tags.caches.get(_tag.name)
+                if (get) {
+                    this.caches.set(_tag.name, get)
+                    tags.push(get)
+                    continue
+                }
+                const cache = this.caches.get(_tag.name)
                 const tag = cache ? cache.refresh(_tag) : new Tag(_tag, this.booru, this.client)
                 this.caches.set(_tag.name, tag)
                 tags.push(tag)
@@ -34,18 +40,33 @@ export class Tags {
         return tags()
     }
 
-    async index(page: number = 1) {
-        if (page < 1) throw new Error('page number must greater than 0')
-        page = Math.floor(page)
-        const path = `/${this.booru._tag.path}.json?page=${page}`
-        const index = await this.booru.get(path)
-        const tags: Tag[] = []
-        for (const _tag of index) {
-            const post = new Tag(_tag, this.booru, this.client)
-            //if (!post.id) continue
-            this.caches.set(_tag.id, post)
-            tags.push(post)
+    async search(name: string) {
+        const path = `/${this.booru._tag.path}.json?search[fuzzy_name_matches]=${name}&search[hide_empty]=true&search[order]=similarity&limit=999`
+        this.client.footer.push(`Searching ${name}...`)
+        const _tags = await this.booru.get(path)
+        if (!_tags) {
+            this.client.notifier.push('Search tag load failed', 5000)
+            return null
         }
+        const tags: Tag[] = []
+        for (const _tag of _tags) {
+            const get = this.booru.tags.caches.get(_tag.name)
+            if (get) {
+                this.caches.set(_tag.name, get)
+                tags.push(get)
+                continue
+            }
+            const cache = this.caches.get(_tag.name)
+            const tag = cache ? cache.refresh(_tag) : new Tag(_tag, this.booru, this.client)
+            this.caches.set(_tag.name, tag)
+            if (!get) this.booru.tags.caches.set(_tag.name, tag)
+            tags.push(tag)
+        }
+        this.client.footer.push(`Searched ${name}`)
         return tags
+    }
+
+    get array() {
+        return Array.from(this.caches.values())
     }
 }

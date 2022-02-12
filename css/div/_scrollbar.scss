@@ -1,9 +1,21 @@
-scrollbar {
-    height: 30px;
-    width: 10px;
-    right: 0;
-    position: fixed;
-    background-color: white;
-    border-radius: 10px 0 0 10px;
-    z-index: 10;
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+  
+  /* Track */
+::-webkit-scrollbar-track {
+    background: #00000000; 
+}
+   
+  /* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 5px;
+}
+  
+  /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }

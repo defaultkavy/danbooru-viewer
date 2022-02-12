@@ -41,8 +41,15 @@ export class ImageViewer {
         this.touch.onmove(this.touchmove.bind(this));
         this.touch.onend(this.touchend.bind(this));
         this.touch.ondbtouch(this.dbtouch.bind(this));
-        this.canvas.onmousedown = () => this.mouse.z = true;
-        this.canvas.onmouseup = () => this.mouse.z = false;
+        this.canvas.onmousedown = (e) => {
+            e.preventDefault();
+            if (e.button === 1)
+                this.mouse.z = true;
+        };
+        this.canvas.onmouseup = (e) => {
+            if (e.button === 1)
+                this.mouse.z = false;
+        };
     }
     load(src) {
         if (this.img)

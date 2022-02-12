@@ -1,0 +1,46 @@
+booru-options {
+    width: 100%;
+    height: calc(100% - 25px);
+    background-color: #000000dd;
+    position: fixed;
+    top: 0;
+    z-index: 5;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    options-block {
+        max-width: 50%;
+        margin: auto;
+        display: block;
+
+        search-title {
+            font-size: 18px;
+            color: white;
+            margin-top: 150px;
+            display: block;
+        }
+    
+        booru-search {
+            height: 15px;
+            border: 1px solid white;
+            border-radius: 10px;
+            display: block;
+            margin-top: 10px;
+            padding: 10px;
+            color: white;
+            
+            &:focus {
+                outline: none;
+            }
+        }
+        
+        search-result {
+            display: block;
+            padding: 20px;
+            max-height: calc(100% - 300px);
+            overflow-y: scroll;
+    
+            @import '../div/tagPanel';
+        }
+    }
+}

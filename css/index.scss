@@ -1,5 +1,6 @@
 @import './variables/darkmode';
 @import './variables/lightmode';
+@import './div/scrollbar';
 
 body {
     margin: 0;
@@ -27,6 +28,7 @@ app {
 @import './pages//page';
 @import './pages/home';
 @import './pages/post';
+@import './pages/options';
 @import './div/detail';
 @import './div/notify';
 @import './div/footer';

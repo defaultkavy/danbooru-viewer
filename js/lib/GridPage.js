@@ -11,7 +11,6 @@ import { Detail } from "./Detail.js";
 import { Grid } from "./Grid.js";
 import { Page } from "./Page.js";
 import { Posts } from "./Posts.js";
-import { Scrollbar } from "./Scrollbar.js";
 export class GridPage extends Page {
     constructor(_gridPage, client) {
         super(_gridPage, document.createElement('booru-page'), client);
@@ -20,7 +19,6 @@ export class GridPage extends Page {
         this.elements = this.posts.array;
         this.grid = new Grid(this.elements, document.createElement('booru-grid'), this, this.client);
         this.detail = new Detail(this, client);
-        this.scrollbar = new Scrollbar(this.node, this.client.app);
         // Parameter
         this.update_interval = 10000;
         this.update_count = 0; // auto update images count
@@ -32,9 +30,11 @@ export class GridPage extends Page {
     }
     load() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.node.style.opacity = '0';
             this.node.appendChild(this.grid.node);
             this.resize();
             yield this.getImages();
+            this.opacity(1);
             // Generate grid
             this.setAutoUpdate();
             this.node.addEventListener('scroll', this.scrollFn);
@@ -43,14 +43,27 @@ export class GridPage extends Page {
     close() {
         this.unsetAutoUpdate();
         this.node.removeEventListener('scroll', this.scrollFn);
-        this.node.remove();
+        this.opacity(0).then(() => {
+            this.node.remove();
+        });
     }
     unachived() {
-        if (!this.node.isConnected)
+        if (!this.node.isConnected) {
             this.client.app.append(this.node);
+            this.node.scrollTo({ top: this.scrollTop });
+            this.opacity(1);
+        }
         if (this.node.scrollTop === 0)
             this.setAutoUpdate();
         this.node.addEventListener('scroll', this.scrollFn);
+    }
+    achived() {
+        this.unsetAutoUpdate();
+        this.node.removeEventListener('scroll', this.scrollFn);
+        this.detail.slide(120);
+        this.opacity(0).then(() => {
+            this.node.remove();
+        });
     }
     update(times = 1) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -21,16 +21,20 @@ export class Detail {
     #touchstart: { x: number; y: number; };
     #touchmove: { x: number; y: number; };
     slided: number;
+    #freeze: boolean;
+    wrapper: HTMLElement;
     constructor(page: GridPage, client: Client) {
         this.client = client
         this.node = document.createElement('booru-detail')
         this.page = page
         this.preview = document.createElement('detail-preview')
         this.panel = document.createElement('detail-panel')
+        this.wrapper = document.createElement('detail-block')
         this.hovered = false
         this.#touch_top =  {x: 0,y: 0}
         this.#touchstart = {x: 0,y: 0}
         this.#touchmove =  {x: 0,y: 0}
+        this.#freeze = false
         this.slided = 0
 
         this.mouseenterFn = this.mouseenter.bind(this)
@@ -45,6 +49,7 @@ export class Detail {
     open(elements: PostGridElement[]) {
         if (this.page.grid.selected.length > 1) return this.close()
         this.page.node.append(this.node)
+        this.node.append(this.panel)
         this.loadPanel(elements)
         this.loadPreview(elements)
         
@@ -53,22 +58,26 @@ export class Detail {
         }
     }
 
-    close(force = false) {
-        if (force === true || !this.hovered) {
-            if (this.heightAn) this.heightAn.pause()
-            this.heightAn = anime({
-                targets: this.node,
-                easing: 'easeOutQuint',
-                duration: 500,
-                height: '0px',
-                complete: () => 
-                this.node.remove()
-            })
-        }
+    async close(force = false): Promise<void> {
+        return new Promise(resolve => {
+            if (force === true || !this.hovered) {
+                if (this.heightAn) this.heightAn.pause()
+                this.heightAn = anime({
+                    targets: this.node,
+                    easing: 'easeOutQuint',
+                    duration: 500,
+                    height: '0px',
+                    complete: () => {
+                        this.node.remove()
+                        resolve()
+                    }
+                })
+            }
+        })
     }
 
     loadPanel(elements: PostGridElement[]) {
-        removeAllChild(this.panel)
+        removeAllChild(this.wrapper)
         if (elements.length === 1) {
             const main = document.createElement('main-tags-panel')
             const sub = document.createElement('sub-tags-panel')
@@ -76,61 +85,82 @@ export class Detail {
                 category: 1,
                 id: 'artist-tag-panel',
                 title: 'Artist'
-            }, elements[0].post, this.client)
-            artistPanel.load()
-            if (artistPanel.tags.size !== 0) main.append(artistPanel.node)
+            }, this.client)
+            artistPanel.load(elements[0].post.tags.array)
+            if (artistPanel.tagButtons.size !== 0) main.append(artistPanel.node)
 
             const characterPanel = new TagsPanel({
                 category: 4,
                 id: 'character-tag-panel',
                 title: 'Character'
-            }, elements[0].post, this.client)
-            characterPanel.load()
-            if (characterPanel.tags.size !== 0) main.append(characterPanel.node)
+            }, this.client)
+            characterPanel.load(elements[0].post.tags.array)
+            if (characterPanel.tagButtons.size !== 0) main.append(characterPanel.node)
             
             const copyrightPanel = new TagsPanel({
                 category: 3,
                 id: 'character-tag-panel',
                 title: 'Copyright'
-            }, elements[0].post, this.client)
-            copyrightPanel.load()
-            if (characterPanel.tags.size !== 0) main.append(copyrightPanel.node)
+            }, this.client)
+            copyrightPanel.load(elements[0].post.tags.array)
+            if (characterPanel.tagButtons.size !== 0) main.append(copyrightPanel.node)
             
-            if (main.children[0]) this.panel.append(main)
+            if (main.children[0]) this.wrapper.append(main)
 
             const generalPanel = new TagsPanel({
                 category: 0,
                 id: 'general-tag-panel',
                 title: 'General'
-            }, elements[0].post, this.client)
-            generalPanel.load()
-            if (generalPanel.tags.size !== 0) sub.append(generalPanel.node)
+            }, this.client)
+            generalPanel.load(elements[0].post.tags.array)
+            if (generalPanel.tagButtons.size !== 0) sub.append(generalPanel.node)
 
-            if (sub.children[0]) this.panel.append(sub)
+            if (sub.children[0]) this.wrapper.append(sub)
         }
-        this.node.append(this.panel)
+        this.panel.append(this.wrapper)
     }
 
-    slide(height: number, shadow?: string) {
-        this.slided = height
-        if (this.heightAn) this.heightAn.pause()
-        this.heightAn = anime({
-            targets: this.node,
-            easing: 'easeOutQuint',
-            duration: 500,
-            height: height,
-            boxShadow: shadow
+    async slide(height: number, shadow?: string) {
+        return new Promise<void>(resolve => {
+            this.slided = height
+            if (this.heightAn) this.heightAn.pause()
+            this.heightAn = anime({
+                targets: this.node,
+                easing: 'easeOutQuint',
+                duration: 500,
+                height: height,
+                boxShadow: shadow,
+                complete: () => {
+                    resolve()
+                }
+            })
         })
+    }
+
+    freeze() {
+        this.#freeze = true
+    }
+
+    unfreeze() {
+        this.#freeze = false
     }
 
     loadPreview(elements: PostGridElement[]) {
         removeAllChild(this.preview)
-        if (elements.length === 1) {
-            const img = document.createElement('img') as HTMLImageElement
-            img.src = elements[0].post.large_file_url
-            this.preview.append(img)
-        }
         this.node.append(this.preview)
+        if (elements.length === 1) {
+            const isVideo = elements[0].post.large_file_url.endsWith('mp4') || elements[0].post.large_file_url.endsWith('webm')
+            if (isVideo) {
+                const video = document.createElement('video') as HTMLVideoElement
+                video.src = elements[0].post.large_file_url
+                this.preview.append(video)
+            } else {
+                const img = document.createElement('img') as HTMLImageElement
+                img.src = elements[0].post.large_file_url
+                this.preview.append(img)
+            }
+        }
+
     }
 
     private mouseenter() {
@@ -142,6 +172,7 @@ export class Detail {
     }
 
     private mouseleave() {
+        if (this.#freeze) return
         this.hovered = false
         document.body.style.overflow = 'auto'
         if (this.heightAn) this.heightAn.pause()

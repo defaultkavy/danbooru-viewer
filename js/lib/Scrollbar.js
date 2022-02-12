@@ -24,8 +24,8 @@ export class Scrollbar {
         });
         __classPrivateFieldSet(this, _Scrollbar_mousemoveFn, this.onmousemove.bind(this), "f");
         this.target.append(this.node);
-        this.target.onscroll = this.onscroll.bind(this);
-        this.node.onmousedown = this.onmousedown.bind(this);
+        this.target.addEventListener('scroll', this.onscroll.bind(this), { passive: true });
+        this.node.addEventListener('mousedown', this.onmousedown.bind(this));
         window.addEventListener('mousemove', __classPrivateFieldGet(this, _Scrollbar_mousemoveFn, "f"));
         window.addEventListener('mouseup', () => {
             this.mouse_up = true;

@@ -1,0 +1,1 @@
+{"version":3,"file":"AnimatedViewer.js","sourceRoot":"","sources":["../../ts/lib/AnimatedViewer.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,cAAc;IAEvB;QACI,IAAI,CAAC,GAAG,GAAG,QAAQ,CAAC,aAAa,CAAC,KAAK,CAAqB,CAAA;IAChE,CAAC;IAED,IAAI,CAAC,GAAW;QACZ,IAAI,CAAC,GAAG,CAAC,GAAG,GAAG,GAAG,CAAA;IAEtB,CAAC;CACJ"}

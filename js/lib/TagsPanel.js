@@ -10,22 +10,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { removeAllChild } from "../plugin/extension.js";
 import { TagButton } from "./TagButton.js";
 export class TagsPanel {
-    constructor(_panel, post, client) {
+    constructor(_panel, client) {
         this.client = client;
         this.node = document.createElement('tags-panel');
         this.id = _panel.id;
-        this.post = post;
         this.title = _panel.title;
         this.node.id = this.id;
         this.category = _panel.category;
-        this.tags = new Map();
+        this.tagButtons = new Map();
+        this.tags = [];
         this.init();
     }
     init() {
+        this.tags = [];
         removeAllChild(this.node);
     }
-    load() {
+    load(tags) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.init();
+            this.tags = tags;
             if (this.title) {
                 const title = document.createElement('panel-title');
                 title.innerText = this.title;
@@ -33,14 +36,12 @@ export class TagsPanel {
             }
             const tagWrapper = document.createElement('panel-tags');
             this.node.append(tagWrapper);
-            for (const tag of this.post.tags.values()) {
-                if (!tag)
-                    return;
-                if (tag.category === this.category) {
-                    const tagButton = new TagButton(tag, this.client);
-                    tagWrapper.append(tagButton.node);
-                    this.tags.set(tag.name, tagButton);
-                }
+            for (const tag of tags) {
+                if (this.category !== undefined && tag.category !== this.category)
+                    continue;
+                const tagButton = new TagButton(tag, this.client);
+                tagWrapper.append(tagButton.node);
+                this.tagButtons.set(tag.name, tagButton);
             }
         });
     }

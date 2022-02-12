@@ -1,3 +1,4 @@
+import { AnimatedViewer } from "./AnimatedViewer.js";
 import { ImageViewer } from "./ImageViewer.js";
 import { Page } from "./Page.js";
 import { VideoPlayer } from "./VideoPlayer.js";
@@ -7,7 +8,8 @@ export class PostPage extends Page {
         this.opened = false;
         this.viewer = new ImageViewer();
         this.player = new VideoPlayer();
-        this.node.addEventListener('click', this.click.bind(this));
+        this.anViewer = new AnimatedViewer();
+        this.viewer.canvas.addEventListener('mouseup', this.click.bind(this));
         this.node.addEventListener('wheel', this.scroll.bind(this), { passive: false });
         this.loadFn = this.load.bind(this);
     }
@@ -21,14 +23,25 @@ export class PostPage extends Page {
         this.post = post;
         this.client.app.append(this.node);
         if (post.ext === 'jpg' || post.ext === 'png') {
+            this.anViewer.img.remove();
             this.player.node.remove();
             this.node.append(this.viewer.canvas);
             this.viewer.load(post.large_file_url);
         }
+        else if (post.ext === 'gif' || post.ext === 'apng') {
+            this.player.node.remove();
+            this.viewer.canvas.remove();
+            this.node.append(this.anViewer.img);
+            this.anViewer.load(post.file_url);
+        }
         else {
+            this.anViewer.img.remove();
             this.viewer.canvas.remove();
             this.node.append(this.player.node);
-            this.player.load(post.file_url);
+            if (this.post.ext === 'zip')
+                this.player.load(post.large_file_url);
+            else
+                this.player.load(post.file_url);
         }
     }
     close() {
@@ -45,8 +58,18 @@ export class PostPage extends Page {
             return;
         this.viewer.replace(this.img);
     }
-    click() {
-        //this.close()
+    click(e) {
+        switch (e.button) {
+            case 1:
+                if (!this.post)
+                    return;
+                open(this.post.file_url, 'blank');
+                return;
+                break;
+            case 2:
+                this.client.pages.back();
+                break;
+        }
     }
     scroll() {
         if (!this.post)

@@ -1,4 +1,5 @@
 import anime, { AnimeInstance } from "../plugin/anime.js";
+import { AnimatedViewer } from "./AnimatedViewer.js";
 import Client from "./Client.js";
 import { ImageViewer } from "./ImageViewer.js";
 import { Page, _Page } from "./Page.js";
@@ -15,13 +16,15 @@ export class PostPage extends Page {
     lastLoad?: Post
     loadFn: () => void;
     player: VideoPlayer;
+    anViewer: AnimatedViewer;
     constructor(_page: _Page, client: Client) {
         super(_page, document.createElement('booru-post'), client)
         this.opened = false
         this.viewer = new ImageViewer()
         this.player = new VideoPlayer()
+        this.anViewer = new AnimatedViewer()
         
-        this.node.addEventListener('click', this.click.bind(this))
+        this.viewer.canvas.addEventListener('mouseup', this.click.bind(this))
         this.node.addEventListener('wheel', this.scroll.bind(this), {passive: false})
         this.loadFn = this.load.bind(this)
     }
@@ -36,13 +39,21 @@ export class PostPage extends Page {
         this.post = post
         this.client.app.append(this.node)
         if (post.ext === 'jpg' || post.ext === 'png') {
+            this.anViewer.img.remove()
             this.player.node.remove()
             this.node.append(this.viewer.canvas)
             this.viewer.load(post.large_file_url)
+        } else if (post.ext === 'gif' || post.ext === 'apng') {
+            this.player.node.remove()
+            this.viewer.canvas.remove()
+            this.node.append(this.anViewer.img)
+            this.anViewer.load(post.file_url)
         } else {
+            this.anViewer.img.remove()
             this.viewer.canvas.remove()
             this.node.append(this.player.node)
-            this.player.load(post.file_url)
+            if (this.post.ext === 'zip') this.player.load(post.large_file_url)
+            else this.player.load(post.file_url)
         }
     }
 
@@ -62,8 +73,17 @@ export class PostPage extends Page {
         this.viewer.replace(this.img)
     }
 
-    private click() {
-        //this.close()
+    private click(e: MouseEvent) {
+        switch (e.button) {
+            case 1:
+                if (!this.post) return
+                open(this.post.file_url, 'blank')
+                return
+            break;
+            case 2:
+                this.client.pages.back()
+            break;
+        }
     }
 
     private scroll() {

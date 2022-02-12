@@ -23,7 +23,8 @@ export class CanvasImage {
     clear() {
         if (!this.ctx)
             return;
-        this.ctx.clearRect(this.dx, this.dy, this.dw, this.dh);
+        //this.ctx.clearRect(this.dx, this.dy, this.dw, this.dh)
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
     place(img) {
         this.img = img;

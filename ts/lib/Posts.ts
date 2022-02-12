@@ -30,7 +30,6 @@ export class Posts {
         if (page < 1) throw new Error('page number must greater than 0')
         page = Math.floor(page)
         const path = `/${this.booru._post.path}.json?${post ? `post[${post.param}]=${post.value}&` : ''}page=${page}&limit=40`
-
         if (page === 1) this.client.footer.push(`Getting newest information...`)
         else this.client.footer.push(`Getting page ${page} information...`)
 
