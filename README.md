@@ -52,6 +52,7 @@ Touch screen device is not fully supported. (Will be supported in future)
 - This site is build with Vanilla Javascript/Typescript.
 
 ## Milestone
+- [x] Search tag.
 - [ ] Support other danbooru api type booru.
 - [ ] Login to your danbooru account to save your favorite image.
 - [ ] Support forum.
