@@ -36,10 +36,10 @@ export class ImageViewer {
         this.touch.ondbtouch(this.dbtouch.bind(this))
         this.canvas.onmousedown = (e: MouseEvent) => {
             e.preventDefault()
-            if (e.button === 1) this.mouse.z = true
+            if (e.button === 0) this.mouse.z = true
         }
         this.canvas.onmouseup = (e: MouseEvent) => {
-            if (e.button === 1) this.mouse.z = false
+            if (e.button === 0) this.mouse.z = false
         }
     }
 
@@ -50,7 +50,7 @@ export class ImageViewer {
         } else {
             this.#img.src = src
         }
-        this.imageInit()
+        this.#img.addEventListener('load', this.imageInit.bind(this))
     }
 
     replace(src: string | HTMLImageElement) {
@@ -62,10 +62,6 @@ export class ImageViewer {
         if (!this.img) return
         this.img.clear()
         this.img.place(this.#img)
-    }
-
-    set() {
-        
     }
 
     imageInit() {

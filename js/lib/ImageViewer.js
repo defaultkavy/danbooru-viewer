@@ -43,11 +43,11 @@ export class ImageViewer {
         this.touch.ondbtouch(this.dbtouch.bind(this));
         this.canvas.onmousedown = (e) => {
             e.preventDefault();
-            if (e.button === 1)
+            if (e.button === 0)
                 this.mouse.z = true;
         };
         this.canvas.onmouseup = (e) => {
-            if (e.button === 1)
+            if (e.button === 0)
                 this.mouse.z = false;
         };
     }
@@ -60,7 +60,7 @@ export class ImageViewer {
         else {
             __classPrivateFieldGet(this, _ImageViewer_img, "f").src = src;
         }
-        this.imageInit();
+        __classPrivateFieldGet(this, _ImageViewer_img, "f").addEventListener('load', this.imageInit.bind(this));
     }
     replace(src) {
         if (src instanceof HTMLImageElement) {
@@ -73,8 +73,6 @@ export class ImageViewer {
             return;
         this.img.clear();
         this.img.place(__classPrivateFieldGet(this, _ImageViewer_img, "f"));
-    }
-    set() {
     }
     imageInit() {
         const parent = this.canvas.parentElement;
