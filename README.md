@@ -49,3 +49,9 @@ Touch screen device is not fully supported. (Will be supported in future)
 
 ## Used Code Sources
 - [Anime.js](animejs.com) - Use for animation.
+- This site is build with Vanilla Javascript/Typescript.
+
+## Milestone
+[] Support other danbooru api type booru.
+[] Login to your danbooru account to save your favorite image.
+[] Support forum.
