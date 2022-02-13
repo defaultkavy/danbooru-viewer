@@ -18,10 +18,11 @@ Touch screen device is not fully supported. (Will be supported in future)
 
 [Keyborad]
 - WASD/Arrow keys: Move the selection cursor.
-- Spacebar: Open the selected object in Viewer/Player.
+- Enter/Spacebar: Open the selected object in Viewer/Player.
 - Esc (Selected): Cancel selection.
 - Esc (Unselected): Back to previous page.
 - Tab: Slide up/down Detail Panel.
+- `: Open search page.
 
 [Mouse]
 - Left Click on unselected object: Select object.
@@ -33,14 +34,18 @@ Touch screen device is not fully supported. (Will be supported in future)
 
 [Keyboard]
 - AD/LR Arrow Key: Move the selection and switch object in Image Viewer.
-- Esc: Close Image Viewer.
+- Enter/Spacebar/Esc: Close Image Viewer.
 
 [Mouse]
 - Scroll: Scale image.
 - Drag: Move image.
 - Double Click: Reset image position and scale.
 - Middle Click: Open image in new tab.
-- Right Click: Download full image.
+- Right Click: Close Image Viewer.
+
+**Search Page**
+- `: Closh search page.
+- Enter: Select the first search tag.
 
 ## Used Code Sources
 - [Anime.js](animejs.com) - Use for animation.
