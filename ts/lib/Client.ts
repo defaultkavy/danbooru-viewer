@@ -81,7 +81,7 @@ export default class Client {
     db: Db
     constructor() {
         this.app = document.querySelector('app') as HTMLElement
-        this.booru = new Booru(sfwdan, this)
+        this.booru = new Booru(this.booruChoose(), this)
         this.pages = new Pages(this)
         this.footer = new Footer(this)
         this.key = new KeyHandle(this)
@@ -98,5 +98,15 @@ export default class Client {
         this.footer.updateLocation()
         this.key.init()
         this.pages.locationCheck()
+    }
+
+    booruChoose() {
+        if (window.location.hash === '#sakuga') {
+            return sakuga
+        }
+        if (window.location.hash === '#danbooru') {
+            return dan
+        }
+        return sfwdan
     }
 }

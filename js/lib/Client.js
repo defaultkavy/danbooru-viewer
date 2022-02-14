@@ -68,7 +68,7 @@ const sakuga = {
 export default class Client {
     constructor() {
         this.app = document.querySelector('app');
-        this.booru = new Booru(sfwdan, this);
+        this.booru = new Booru(this.booruChoose(), this);
         this.pages = new Pages(this);
         this.footer = new Footer(this);
         this.key = new KeyHandle(this);
@@ -84,6 +84,15 @@ export default class Client {
         this.footer.updateLocation();
         this.key.init();
         this.pages.locationCheck();
+    }
+    booruChoose() {
+        if (window.location.hash === '#sakuga') {
+            return sakuga;
+        }
+        if (window.location.hash === '#danbooru') {
+            return dan;
+        }
+        return sfwdan;
     }
 }
 //# sourceMappingURL=Client.js.map
