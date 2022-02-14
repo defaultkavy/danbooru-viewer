@@ -9,9 +9,9 @@ Prefer Chrome or Edge 79.
 Touch screen device is not fully supported. (Will be supported in future)
 
 ## Supported Booru
-- Danbooru.donmai.us
-- Safebooru.donmai.us
-- Sakugabooru.com
+- Safebooru.donmai.us（default)
+- Danbooru.donmai.us (https://defaultkavy.github.io/danbooru-viewer/#danbooru)
+- Sakugabooru.com (https://defaultkavy.github.io/danbooru-viewer/#sakuga)
 
 ## Shortcut Keys
 ### Grid Page:
