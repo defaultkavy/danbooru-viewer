@@ -35,6 +35,9 @@ export class PostGridElement extends GridElement {
                 return;
             this.img.remove();
         };
+        this.video.onpause = () => {
+            this.durationCounter.innerText = this.post.ext;
+        };
         this.node.style.height = `${this.img.clientHeight}px`;
         this.video.autoplay = true;
         this.video.muted = true;
@@ -115,9 +118,20 @@ export class PostGridElement extends GridElement {
             duration: 500,
             scale: 1.05
         });
-        if (e.button === 1) {
-            window.open(`https://${this.post.booru.host}/${this.post.booru._post.origin}/${this.post.id}`, '_blank');
-            return false;
+        if (e.shiftKey) {
+            if (e.button === 1) {
+                window.open(this.post.source, '_blank');
+            }
+        }
+        else if (e.ctrlKey) {
+            if (e.button === 1) {
+                window.open(`https://${this.post.booru.host}/${this.post.booru._post.origin}/${this.post.id}`, '_blank');
+            }
+        }
+        else {
+            if (e.button === 1) {
+                open(this.post.file_url, 'blank');
+            }
         }
         this.node.removeEventListener('mouseup', this.mouseupFn);
     }

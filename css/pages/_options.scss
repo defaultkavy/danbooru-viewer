@@ -1,7 +1,7 @@
 booru-options {
     width: 100%;
     height: calc(100% - 25px);
-    background-color: #000000dd;
+    background-color: var(--options-background-color);
     position: fixed;
     top: 0;
     z-index: 5;
@@ -15,19 +15,19 @@ booru-options {
 
         search-title {
             font-size: 18px;
-            color: white;
+            color: var(--options-color);
             margin-top: 150px;
             display: block;
         }
     
         booru-search {
             height: 15px;
-            border: 1px solid white;
+            border: var(--searchbar-border);
             border-radius: 10px;
             display: block;
             margin-top: 10px;
             padding: 10px;
-            color: white;
+            color: var(--options-color);
             
             &:focus {
                 outline: none;

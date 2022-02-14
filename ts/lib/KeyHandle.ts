@@ -20,6 +20,8 @@ export class KeyHandle {
         if (page instanceof GridPage) {
             const grid = this.grid
             if (!grid) return
+            const postElement = grid.selected[0] 
+            // Normal 
             switch (e.key) {
                 case 'ArrowLeft':
                 case 'a':
@@ -46,7 +48,23 @@ export class KeyHandle {
                 case 'Enter':
                 case ' ':
                     if (grid.selected[0]) e.preventDefault()
-                    if (grid.selected[0] instanceof PostGridElement) this.client.pages.openPost(grid.selected[0].post)
+                    
+                    // Open source in new tab
+                    if (postElement instanceof PostGridElement) {
+                        if (e.shiftKey && e.ctrlKey) {
+                            if (e.key === ' ') open(postElement.post.file_url, 'blank')
+                            return
+                        }
+                        else if (e.shiftKey) {
+                            if (e.key === ' ') open(postElement.post.source, '_blank')
+                            return
+                        } else if (e.ctrlKey) {
+                            if (e.key === ' ') open(`https://${postElement.post.booru.host}/${postElement.post.booru._post.origin}/${postElement.post.id}`, '_blank')
+                            return
+                        } else {
+                            this.client.pages.openPost(postElement.post)
+                        }
+                    }
                 break
     
                 case 'Escape':
@@ -71,10 +89,36 @@ export class KeyHandle {
                 case '`':
                     this.client.pages.openOptions()
                 break
+
+                case 'f':
+                    if (grid.selected[0]) this.client.db.fav(grid.selected[0].postOnly(grid.selected)[0].post)
+                break;
             }
         } else if (page instanceof PostPage) {
             const grid = this.grid
             if (!grid) return
+            if (e.shiftKey) {
+                switch (e.key) {
+                    case 'ArrowLeft':
+                    case "W":
+                        page.viewer.move('UP')
+                    break;
+                    case 'ArrowRight':
+                    case "S":
+                        page.viewer.move('DOWN')
+                    break;
+                    case 'ArrowLeft':
+                    case "A":
+                        page.viewer.move('LEFT')
+                    break;
+                    case 'ArrowRight':
+                    case "D":
+                        page.viewer.move('RIGHT')
+                    break;
+                }
+
+                return
+            }
             switch (e.key) {
                 case 'ArrowLeft':
                 case 'a':
@@ -86,6 +130,19 @@ export class KeyHandle {
                     grid.move('NEXT')
                     if (this.client.pages.postPage.opened && grid.selected[0] instanceof PostGridElement) this.client.pages.postPage.open(grid.selected[0].post)
                 break
+
+                case 'w':
+                    page.highres()
+                    page.viewer.zoom(1.2, false)
+                break;
+
+                case 's':
+                    page.viewer.zoom(0.8, false)
+                break;
+
+                case 'r':
+                    page.viewer.imageInit()
+                break;
                 
                 case 'Escape':
                     window.history.back()
@@ -94,6 +151,18 @@ export class KeyHandle {
                 case 'Enter':
                 case ' ':
                     if (grid.selected[0]) e.preventDefault()
+                    // Open source in new tab
+                    if (e.shiftKey && e.ctrlKey) {
+                        if (page.post) open(page.post.file_url, 'blank')
+                        return
+                    }
+                    else if (e.shiftKey) {
+                        if (page.post) open(page.post.source, '_blank')
+                        return
+                    } else if (e.ctrlKey) {
+                        if (page.post) open(`https://${page.post.booru.host}/${page.post.booru._post.origin}/${page.post.id}`, '_blank')
+                        return
+                    }
                     window.history.back()
                 break
 
@@ -104,10 +173,6 @@ export class KeyHandle {
         }
         if (page instanceof OptionsPage) {
             switch (e.key) {
-                case ' ':
-                    e.preventDefault()
-                break;
-
                 case '`':
                 case 'Escape':
                     e.preventDefault()

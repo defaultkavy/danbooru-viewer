@@ -12,6 +12,7 @@ booru-detail {
 
     detail-panel {
         overflow-y: overlay;
+        overflow-x: hidden;
         width: calc(100% - 200px);
         display: inline-flex;
         flex-grow: 2;
@@ -57,10 +58,19 @@ booru-detail {
             height: 100px
         }
     }
-}
 
-@media only screen and (max-width: 600px) {
-    detail-preview {
-        display: none !important;
+    @media only screen and (max-width: 600px) {
+        detail-panel {
+            width: 100%;
+            detail-block {
+                main-tags-panel {
+                    flex-wrap: wrap;
+                }
+            }
+        }
+    
+        detail-preview {
+            display: none !important;
+        }
     }
 }

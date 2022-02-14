@@ -4,9 +4,14 @@
     --detail-background-color: #131313;
     --detail-preview-background-color: #101010;
     --detail-title-color: #dedede;
-    --footer-log-color: #dedede;
-    --footer-border-top: 2px solid black;
+    --footer-log-color: rgb(222, 222, 222);
+    --footer-border-top: 2px solid #101010;
     --footer-background-color: #131313;
+    --post-background-color: #000000cc;
+    --options-background-color: #000000dd;
+    --options-color: #dedede;
+    --searchbar-border: 1px solid #dedede
+    ;
   }
 }
 
@@ -16,6 +21,14 @@
     --detail-background-color: #cecece;
     --detail-preview-background-color: #dedede;
     --detail-title-color: #131313;
+    --footer-log-color: rgb(19, 19, 19);
+    --footer-border-top: 2px solid #dedede;
+    --footer-background-color: #cecece;
+    --post-background-color: #ffffffcc;
+    --options-background-color: #ffffffcc;
+    --options-color: #131313;
+    --searchbar-border: 1px solid #131313
+    ;
   }
 }
 
@@ -134,6 +147,13 @@ booru-grid grid-column grid-element video-duration {
   z-index: 1;
 }
 
+@media only screen and (max-width: 600px) {
+  booru-grid {
+    gap: 10px;
+    padding: 10px;
+  }
+}
+
 scrollbar {
   height: 30px;
   width: 10px;
@@ -147,7 +167,7 @@ scrollbar {
 booru-post {
   width: 100%;
   height: calc(100% - 25px);
-  background-color: #000000cc;
+  background-color: var(--post-background-color);
   position: fixed;
   top: 0;
   z-index: 4;
@@ -180,7 +200,7 @@ booru-post img {
 booru-options {
   width: 100%;
   height: calc(100% - 25px);
-  background-color: #000000dd;
+  background-color: var(--options-background-color);
   position: fixed;
   top: 0;
   z-index: 5;
@@ -197,19 +217,19 @@ booru-options options-block {
 
 booru-options options-block search-title {
   font-size: 18px;
-  color: white;
+  color: var(--options-color);
   margin-top: 150px;
   display: block;
 }
 
 booru-options options-block booru-search {
   height: 15px;
-  border: 1px solid white;
+  border: var(--searchbar-border);
   border-radius: 10px;
   display: block;
   margin-top: 10px;
   padding: 10px;
-  color: white;
+  color: var(--options-color);
 }
 
 booru-options options-block booru-search:focus {
@@ -268,6 +288,7 @@ booru-detail {
 
 booru-detail detail-panel {
   overflow-y: overlay;
+  overflow-x: hidden;
   width: calc(100% - 200px);
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
@@ -357,7 +378,14 @@ booru-detail detail-preview video {
 }
 
 @media only screen and (max-width: 600px) {
-  detail-preview {
+  booru-detail detail-panel {
+    width: 100%;
+  }
+  booru-detail detail-panel detail-block main-tags-panel {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+  }
+  booru-detail detail-preview {
     display: none !important;
   }
 }
@@ -396,26 +424,26 @@ booru-footer {
 
 booru-footer footer-log {
   display: inline-block;
-  color: white;
+  color: var(--footer-log-color);
   padding: 5px;
 }
 
 booru-footer footer-counter {
   display: inline-block;
-  color: white;
+  color: var(--footer-log-color);
   padding: 5px;
 }
 
 booru-footer footer-download {
   display: block;
-  color: white;
+  color: var(--footer-log-color);
   padding: 5px;
   cursor: pointer;
   float: right;
 }
 
 booru-footer footer-dimension {
-  color: white;
+  color: var(--footer-log-color);
   padding: 5px;
   float: right;
 }
@@ -426,7 +454,7 @@ booru-footer footer-address {
 }
 
 booru-footer footer-address location {
-  color: white;
+  color: var(--footer-log-color);
   cursor: pointer;
 }
 
@@ -436,7 +464,16 @@ booru-footer footer-address location:hover {
 }
 
 booru-footer footer-address direct {
-  color: white;
+  color: var(--footer-log-color);
+}
+
+@media only screen and (max-width: 600px) {
+  booru-footer footer-download {
+    display: none;
+  }
+  booru-footer footer-dimension {
+    display: none;
+  }
 }
 
 /* width */

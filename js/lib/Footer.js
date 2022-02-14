@@ -142,9 +142,10 @@ export class Footer {
             easing: 'easeOutQuint',
             duration: 500,
             backgroundColor: 'rgba(255, 255, 255, 0)',
-            color: '#ffffff',
+            color: getComputedStyle(document.documentElement).getPropertyValue('--footer-log-color'),
             complete: () => {
                 this.dlButton.style.transition = '';
+                this.dlButton.style.color = '';
             }
         }), "f");
     }

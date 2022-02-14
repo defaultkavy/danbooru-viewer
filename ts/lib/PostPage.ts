@@ -2,6 +2,7 @@ import anime, { AnimeInstance } from "../plugin/anime.js";
 import { AnimatedViewer } from "./AnimatedViewer.js";
 import Client from "./Client.js";
 import { ImageViewer } from "./ImageViewer.js";
+import { Loader } from "./Loader.js";
 import { Page, _Page } from "./Page.js";
 import { Post } from "./Post.js";
 import { VideoPlayer } from "./VideoPlayer.js";
@@ -17,36 +18,52 @@ export class PostPage extends Page {
     loadFn: () => void;
     player: VideoPlayer;
     anViewer: AnimatedViewer;
+    highresCached: string[];
+    viewTimer?: NodeJS.Timeout;
+    loader?: Loader;
+    opening?: ImageViewer | VideoPlayer | AnimatedViewer
     constructor(_page: _Page, client: Client) {
         super(_page, document.createElement('booru-post'), client)
         this.opened = false
         this.viewer = new ImageViewer()
         this.player = new VideoPlayer()
         this.anViewer = new AnimatedViewer()
+        this.highresCached = []
         
         this.viewer.canvas.addEventListener('mouseup', this.click.bind(this))
-        this.node.addEventListener('wheel', this.scroll.bind(this), {passive: false})
+        this.node.addEventListener('wheel', this.highres.bind(this), {passive: false})
         this.loadFn = this.load.bind(this)
     }
 
     init() {
         if (this.opacityAn) this.opacityAn.pause()
+        this.client.footer.push('')
+        if (this.loader) this.loader.abort()
     }
 
     open(post: Post) {
         this.init()
         this.opened = true
+        this.lastLoad = this.post
         this.post = post
         this.client.app.append(this.node)
+        if (this.viewTimer) clearTimeout(this.viewTimer)
         if (post.ext === 'jpg' || post.ext === 'png') {
             this.anViewer.img.remove()
             this.player.node.remove()
             this.node.append(this.viewer.canvas)
+            this.opening = this.viewer
             this.viewer.load(post.large_file_url)
+            if (this.highresCached.includes(this.post.file_url)) this.highres()
+            
+            this.viewTimer = setTimeout(() => {
+                this.highres()
+            }, 3000)
         } else if (post.ext === 'gif' || post.ext === 'apng') {
             this.player.node.remove()
             this.viewer.canvas.remove()
             this.node.append(this.anViewer.img)
+            this.opening = this.anViewer
             this.anViewer.load(post.file_url)
         } else {
             this.anViewer.img.remove()
@@ -54,10 +71,13 @@ export class PostPage extends Page {
             this.node.append(this.player.node)
             if (this.post.ext === 'zip') this.player.load(post.large_file_url)
             else this.player.load(post.file_url)
+            this.opening = this.player
         }
     }
 
     close() {
+        if (this.loader) this.loader.abort()
+        if (this.viewTimer) clearTimeout(this.viewTimer)
         this.node.remove()
         this.opened = false
     }
@@ -86,13 +106,25 @@ export class PostPage extends Page {
         }
     }
 
-    private scroll() {
+    highres() {
         if (!this.post) return
+        if (!(this.opening instanceof ImageViewer)) return
         if (this.lastLoad === this.post) return
         if (this.img) this.img.removeEventListener('load', this.loadFn)
         this.lastLoad = this.post
-        this.img = new Image()
-        this.img.src = this.post.file_url
-        this.img.addEventListener('load', this.loadFn)
+        this.client.footer.push(`Starting to load full image...`)
+        this.loader = new Loader(this.post.file_url, (url) => {
+            this.img = new Image()
+            this.img.src = url
+            this.img.addEventListener('load', this.loadFn)
+            this.client.footer.push(`Loaded full image.`)
+            if (this.post) this.highresCached.push(this.post.file_url)
+        })
+        this.loader.onloadprogress(() => {
+            if (this.loader) this.client.footer.push(`Load full image (${Math.round(this.loader.percentage)}%)`)
+        })
+        this.loader.onabort(() => {
+            this.client.footer.push(`Load image cancel.`)
+        })
     }
 }

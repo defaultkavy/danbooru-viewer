@@ -11,26 +11,26 @@ booru-footer {
 
     footer-log {
         display: inline-block;
-        color: white;
+        color: var(--footer-log-color);
         padding: 5px;
     }
 
     footer-counter {
         display: inline-block;
-        color: white;
+        color: var(--footer-log-color);
         padding: 5px;
     }
 
     footer-download {
         display: block;
-        color: white;
+        color: var(--footer-log-color);
         padding: 5px;
         cursor: pointer;
         float: right;
     }
 
     footer-dimension {
-        color: white;
+        color: var(--footer-log-color);
         padding: 5px;
         float: right;
     }
@@ -40,7 +40,7 @@ booru-footer {
         padding: 5px;
 
         location {
-            color: white;
+            color: var(--footer-log-color);
             cursor: pointer;
 
             &:hover {
@@ -49,7 +49,17 @@ booru-footer {
         }
 
         direct {
-            color: white;
+            color: var(--footer-log-color);
+        }
+    }
+
+    @media only screen and (max-width: 600px) {
+        footer-download {
+            display: none;
+        }
+
+        footer-dimension {
+            display: none;
         }
     }
 }

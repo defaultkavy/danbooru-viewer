@@ -1,7 +1,7 @@
 booru-post {
     width: 100%;
     height: calc(100% - 25px);
-    background-color: #000000cc;
+    background-color: var(--post-background-color);
     position: fixed;
     top: 0;
     z-index: 4;

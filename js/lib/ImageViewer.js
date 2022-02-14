@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _ImageViewer_img, _ImageViewer_scaleAn;
+var _ImageViewer_img, _ImageViewer_scaleAn, _ImageViewer_moveAn;
 import anime from "../plugin/anime.js";
 import { CanvasImage } from "./CanvasImage.js";
 import { Touch } from "./Touch.js";
@@ -17,13 +17,14 @@ export class ImageViewer {
     constructor() {
         _ImageViewer_img.set(this, void 0);
         _ImageViewer_scaleAn.set(this, void 0);
+        _ImageViewer_moveAn.set(this, void 0);
         this.canvas = document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         __classPrivateFieldSet(this, _ImageViewer_img, new Image(), "f");
         this.touch = new Touch(this.canvas);
         // Parameter
         this.mouse = { x: 0, y: 0, z: false };
-        this.parent = { w: window.innerWidth, h: window.innerHeight };
+        this.origin = { x: 0, y: 0 };
         // Listener
         window.onresize = (e) => this.resize();
         this.canvas.onmousemove = this.mousemove.bind(this);
@@ -52,6 +53,8 @@ export class ImageViewer {
         };
     }
     load(src) {
+        // reset parent size
+        this.parent = undefined;
         if (this.img)
             this.img.clear();
         if (src instanceof HTMLImageElement) {
@@ -86,11 +89,14 @@ export class ImageViewer {
         const offsetX = width < this.canvas.width ? ((this.canvas.width - width) / 2) : 0;
         const offsetY = height < this.canvas.height ? ((this.canvas.height - height) / 2) : 0;
         this.img.draw(offsetX, offsetY, width, height);
+        this.origin = { x: this.img.dx + this.img.dw / 2, y: this.img.dy + this.img.dh / 2 };
     }
     resize() {
         const parent = this.canvas.parentElement;
         if (!parent)
             return;
+        if (!this.parent)
+            this.parent = { w: parent.clientWidth, h: parent.clientHeight };
         this.canvas.width = parent.clientWidth;
         this.canvas.height = parent.clientHeight;
         if (!this.img)
@@ -102,6 +108,7 @@ export class ImageViewer {
         this.parent.w = parent.clientWidth;
         this.img.clear();
         this.img.draw(offsetX, offsety, dw, dh);
+        this.origin = { x: this.img.dx + this.img.dw / 2, y: this.img.dy + this.img.dh / 2 };
     }
     reset() {
         const parent = this.canvas.parentElement;
@@ -136,17 +143,17 @@ export class ImageViewer {
             }
         }), "f");
     }
-    zoom(factor) {
+    zoom(factor, mouse = true) {
         if (this.mouse.z)
             return;
         if (!this.img)
             return;
-        const image_mouse = {
-            x: (this.mouse.x - this.img.dx),
-            y: (this.mouse.y - this.img.dy)
+        const image_origin = {
+            x: ((mouse ? this.mouse.x : this.origin.x) - this.img.dx),
+            y: ((mouse ? this.mouse.y : this.origin.y) - this.img.dy)
         };
-        const x = this.img.dx - (image_mouse.x * factor - image_mouse.x);
-        const y = this.img.dy - (image_mouse.y * factor - image_mouse.y);
+        const x = this.img.dx - (image_origin.x * factor - image_origin.x);
+        const y = this.img.dy - (image_origin.y * factor - image_origin.y);
         const d = {
             x: this.img.dx,
             y: this.img.dy,
@@ -208,7 +215,45 @@ export class ImageViewer {
             }
         }), "f");
     }
-    pan(e) {
+    pan(x, y) {
+        if (!this.img)
+            return;
+        if (__classPrivateFieldGet(this, _ImageViewer_moveAn, "f"))
+            __classPrivateFieldGet(this, _ImageViewer_moveAn, "f").pause();
+        const { dx, dy, dw, dh } = this.img;
+        const d = {
+            x: dx,
+            y: dy,
+            w: dw,
+            h: dh,
+        };
+        __classPrivateFieldSet(this, _ImageViewer_moveAn, anime({
+            targets: d,
+            easing: 'easeOutQuint',
+            duration: 200,
+            x: dx + x,
+            y: dy + y,
+            w: dw,
+            h: dh,
+            update: () => {
+                if (!this.img)
+                    return;
+                this.img.clear();
+                this.img.draw(d.x, d.y, d.w, d.h);
+            }
+        }), "f");
+    }
+    move(d) {
+        if (d === 'DOWN')
+            this.pan(0, -50);
+        if (d === 'UP')
+            this.pan(0, 50);
+        if (d === 'LEFT')
+            this.pan(50, 0);
+        if (d === 'RIGHT')
+            this.pan(-50, 0);
+    }
+    drag(e) {
         if (!this.img)
             return;
         const x = this.img.dx + e.movementX;
@@ -223,7 +268,7 @@ export class ImageViewer {
             z: this.mouse.z
         };
         if (this.mouse.z) {
-            this.pan(e);
+            this.drag(e);
         }
     }
     touchstart(e) {
@@ -256,5 +301,5 @@ export class ImageViewer {
         this.touchZoom(1.2);
     }
 }
-_ImageViewer_img = new WeakMap(), _ImageViewer_scaleAn = new WeakMap();
+_ImageViewer_img = new WeakMap(), _ImageViewer_scaleAn = new WeakMap(), _ImageViewer_moveAn = new WeakMap();
 //# sourceMappingURL=ImageViewer.js.map

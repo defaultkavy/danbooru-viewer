@@ -1,4 +1,5 @@
 import { Booru } from "./Booru.js";
+import { Db } from "./Db.js";
 import { Footer } from "./Footer.js";
 import { KeyHandle } from "./KeyHandle.js";
 import { Mouse } from "./Mouse.js";
@@ -66,14 +67,14 @@ const sakuga = {
 };
 export default class Client {
     constructor() {
-        //window.history.pushState(null, '', `/`)
         this.app = document.querySelector('app');
-        this.footer = new Footer(this);
         this.booru = new Booru(sfwdan, this);
         this.pages = new Pages(this);
+        this.footer = new Footer(this);
         this.key = new KeyHandle(this);
         this.notifier = new Notifier(this);
         this.mouse = new Mouse();
+        this.db = new Db(this);
         this.init();
         document.oncontextmenu = (e) => e.preventDefault();
     }
@@ -82,6 +83,7 @@ export default class Client {
         this.pages.homePage.load();
         this.footer.updateLocation();
         this.key.init();
+        this.pages.locationCheck();
     }
 }
 //# sourceMappingURL=Client.js.map

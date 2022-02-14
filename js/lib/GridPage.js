@@ -50,6 +50,7 @@ export class GridPage extends Page {
     unachived() {
         if (!this.node.isConnected) {
             this.client.app.append(this.node);
+            this.resize();
             this.node.scrollTo({ top: this.scrollTop });
             this.opacity(1);
         }
