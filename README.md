@@ -14,29 +14,40 @@ Touch screen device is not fully supported. (Will be supported in future)
 - Sakugabooru.com
 
 ## Shortcut Keys
-**Grid Page:**
+### Grid Page:
 
-[Keyborad]
+**Keyborad**
 - WASD/Arrow keys: Move the selection cursor.
 - Enter/Spacebar: Open the selected object in Viewer/Player.
 - Esc (Selected): Cancel selection.
 - Esc (Unselected): Back to previous page.
 - Tab: Slide up/down Detail Panel.
 - `: Open search page.
+- Ctrl + Spacebar: Open booru page.
+- Shift + Spacebar: Open source page.
+- Ctrl + Shift + Spacebar: Open image in new tab.
 
-[Mouse]
+**Mouse**
 - Left Click on unselected object: Select object.
 - Left Click on selected object: Open object in Viewer/Player.
-- Middle Click on object: Open Booru website source.
 - Ctrl + Left Click: Multi select.
+- Middle Click on object: Open image in new tab.
+- Ctrl + Middle Click: Open booru page.
+- Shift + Middle Click: Open source page.
 
-**Image Viewer：**
+### Image Viewer
 
-[Keyboard]
-- AD/LR Arrow Key: Move the selection and switch object in Image Viewer.
+**Keyboard**
+- AD/Left/Right: Move the grid selection and switch object in Image Viewer (Prev/Next image).
+- WS/Up/Down: Scale image.
+- R: Reset image position and scale.
+- Shift + WASD: Pan move the image.
 - Enter/Spacebar/Esc: Close Image Viewer.
+- Ctrl + Spacebar: Open booru page.
+- Shift + Spacebar: Open source page.
+- Ctrl + Shift + Spacebar: Open image in new tab.
 
-[Mouse]
+**Mouse**
 - Scroll: Scale image.
 - Drag: Move image.
 - Double Click: Reset image position and scale.
