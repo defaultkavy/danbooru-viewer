@@ -4,14 +4,25 @@ A danbooru image browser.
 
 ![](https://raw.githubusercontent.com/defaultkavy/danbooru-viewer/master/images/screenshots/001.jpg)
 
+## Why I need this?
+- Waterfall style images browser.
+- Infinite scrolling.
+- Auto update the newest posts when scroll at top.
+- One-hand control with convenience shortcut key (Where is your other hand? 😏)
+- Don't need to download, run in your browser.
+- No complex UI, all we need is browsing IMAGES.
+
 ## Available Browser
 Prefer Chrome or Edge 79.
 Touch screen device is not fully supported. (Will be supported in future)
 
 ## Supported Booru
-- Danbooru.donmai.us
-- Safebooru.donmai.us
-- Sakugabooru.com
+- Safebooru.donmai.us（default)
+- Danbooru.donmai.us (https://defaultkavy.github.io/danbooru-viewer/#danbooru)
+- Sakugabooru.com (https://defaultkavy.github.io/danbooru-viewer/#sakuga)
+
+## Search tag?
+Use \` key (above the tab key) to open search page.
 
 ## Shortcut Keys
 ### Grid Page:
