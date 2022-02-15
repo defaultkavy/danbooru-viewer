@@ -101,7 +101,7 @@ export class PostPage extends Page {
                 return
             break;
             case 2:
-                this.client.pages.back()
+                window.history.back()
             break;
         }
     }
