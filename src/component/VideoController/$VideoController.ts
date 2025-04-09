@@ -63,10 +63,10 @@ export class $VideoController extends $Container {
                 $('div').class('progressbar').content([
                     $('div').class('progress').self($progress => {
                         this.$video.on('timeupdate', e => {
-                            $progress.css({width: `${(this.$video.currentTime() / this.$video.duration) * 100}%`})
+                            $progress.style({width: `${(this.$video.currentTime() / this.$video.duration) * 100}%`})
                         })
                         events.on('progressChange', percentage => {
-                            $progress.css({width: `${percentage * 100}%`})
+                            $progress.style({width: `${percentage * 100}%`})
                         })
                     })
                 ])

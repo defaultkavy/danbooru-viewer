@@ -3,8 +3,13 @@ import { Tag, TagCategory } from "../../structure/Tag";
 import { Booru } from "../../structure/Booru";
 import { Autocomplete } from "../../structure/Autocomplete";
 import { numberFormat } from "../../structure/Util";
+import { $TagInput } from "./$TagInput";
+import { $SelectionList } from "./$SelectionList";
+import { $Selection } from "./$Selection";
+import type { $Tag } from "./$Tag";
 
 export class $Searchbar extends $Container {
+    static $ele = new this().hide(true);
     $tagInput = new $TagInput(this);
     $selectionList = new $SelectionList();
     typingTimer: Timer | null = null;
@@ -171,167 +176,7 @@ export class $Searchbar extends $Container {
     }
 }
 
-class $SelectionList extends $Container {
-    focused: $Selection | null = null;
-    selections = new Set<$Selection>();
-    constructor() {
-        super('selection-list');
-    }
 
-    addSelections(selections: OrArray<$Selection>) {
-        selections = $.orArrayResolve(selections);
-        for (const $selection of selections) {
-            this.selections.add($selection);
-        }
-        this.insert(selections);
-        return this;
-    }
 
-    clearSelections() {
-        this.focused = null;
-        this.selections.clear();
-        this.clear();
-        return this;
-    }
 
-    focusSelection($selection: $Selection) {
-        this.blurSelection();
-        this.focused = $selection;
-        $selection.focus();
-        if ($selection.offsetTop < this.scrollTop()) this.scrollTop($selection.offsetTop);
-        if ($selection.offsetTop + $selection.offsetHeight > this.scrollTop() + this.offsetHeight) this.scrollTop($selection.offsetTop + $selection.offsetHeight - this.offsetHeight);
-        return this;
-    }
 
-    blurSelection() {
-        this.focused?.blur();
-        this.focused = null;
-        return this;
-    }
-
-    focusNextSelection() {
-        const selections = this.selections.array;
-        const first = selections.at(0);
-        if (this.focused) {
-            const next = selections.at(selections.indexOf(this.focused) + 1);
-            if (next) this.focusSelection(next);
-            else if (first) this.focusSelection(first);
-        } else if (first) this.focusSelection(first);
-    }
-
-    focusPrevSelection() {
-        const selections = this.selections.array;
-        if (this.focused) {
-            const next = selections.at(selections.indexOf(this.focused) - 1);
-            if (next) this.focusSelection(next);
-        } else {
-            const next = selections.at(0);
-            if (next) this.focusSelection(next);
-        }
-    }
-}
-
-class $Selection extends $Container {
-    private property = {
-        value: ''
-    }
-    constructor() {
-        super('selection');
-    }
-
-    value(): string;
-    value(value: string): this;
-    value(value?: string) { return $.fluent(this, arguments, () => this.property.value, () => $.set(this.property, 'value', value))}
-
-    focus() {
-        this.addClass('active');
-        return this;
-    }
-
-    blur() {
-        this.removeClass('active');
-        return this;
-    }
-}
-
-class $TagInput extends $Container {
-    $input = $('input').type('text');
-    $sizer = $('span').class('sizer');
-    $inputor = $('div').class('input-wrapper').content([
-        this.$sizer,
-        this.$input
-            .on('input', () => { 
-                this.$sizer.content(this.$input.value());
-            })
-    ])
-    tags = new Set<$Tag>();
-    $seachbar: $Searchbar
-    constructor($seachbar: $Searchbar) {
-        super('tag-input');
-        this.$seachbar = $seachbar;
-    }
-
-    input() {
-        this.insert(this.$inputor);
-        this.$input.focus();
-        this.$seachbar.$selectionList.clearSelections();
-        this.$seachbar.getSearchSuggestions();
-        return this;
-    }
-
-    addTag(tagName?: string) {
-        tagName = tagName ?? this.$input.value();
-        if (!tagName.length) return this;
-        const $tag = new $Tag(tagName);
-        $tag.on('click', () => this.editTag($tag))
-        this.tags.add($tag);
-        this.value('');
-        if (this.$input.inDOM()) this.$inputor.replace($tag);
-        else this.insert($tag);
-        return this;
-    }
-
-    editTag($tag: $Tag) {
-        this.addTag();
-        this.tags.delete($tag);
-        $tag.replace(this.$inputor);
-        this.value($tag.name);
-        this.$input.focus();
-        this.$seachbar.getSearchSuggestions();
-        return this;
-    }
-
-    clearAll() {
-        this.value('');
-        this.tags.clear();
-        this.clear();
-        return this;
-    }
-
-    value(value?: string) {
-        if (value === undefined) return this;
-        this.$input.value(value);
-        this.$sizer.content(value);
-        return this;
-    }
-
-    focus() {
-        this.$input.focus();
-        return this;
-    }
-
-    get query() { return this.tags.array.map(tag => tag.name).toString().toLowerCase().replace(',', '+') }
-}
-
-class $Tag extends $Container {
-    name: string;
-    constructor(name: string) {
-        super('tag');
-        this.name = name;
-        this.build();
-    }
-
-    private build() {
-        this.content(this.name)
-    }
-}

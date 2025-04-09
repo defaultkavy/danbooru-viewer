@@ -125,8 +125,8 @@ export class $DetailPanel extends $Container {
         let scrollTop = 0;
         addEventListener('scroll', () => { if (this.inDOM()) scrollTop = document.documentElement.scrollTop }, {passive: true})
         $page
-            .on('beforeShift', () => { if (innerWidth > 800) this.css({position: `absolute`, top: `calc(${scrollTop}px + var(--nav-height) + var(--padding))`}) })
-            .on('afterShift', () => this.css({position: '', top: ''}))
+            .on('beforeShift', () => { if (innerWidth > 800) this.style({position: `absolute`, top: `calc(${scrollTop}px + var(--nav-height) + var(--padding))`}) })
+            .on('afterShift', () => this.style({position: '', top: ''}))
         return this;
     }
 }

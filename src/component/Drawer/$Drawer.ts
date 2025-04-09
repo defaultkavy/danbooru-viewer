@@ -1,9 +1,10 @@
 import { $Container } from "elexis";
 import { Booru } from "../../structure/Booru";
 import { numberFormat } from "../../structure/Util";
-import { danbooru, safebooru } from "../../main";
+import { danbooru, safebooru } from "../../method/boorus";
 
 export class $Drawer extends $Container {
+    static $ele = new this();
     $filter = $('div').class('filter');
     $container = $('div').class('drawer-container')
     pointers = $.pointers($(document.body));

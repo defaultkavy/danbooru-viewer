@@ -7,9 +7,9 @@ import { PostManager } from "../../structure/PostManager";
 import { $PostViewer } from "../../component/PostViewer/$PostViewer";
 import { $Slide, $SlideViewer } from "../../component/$SlideViewer";
 import { $Video } from "elexis";
-import { detailPanelEnable$ } from "../../main";
+import { LocalSettings } from "../../structure/LocalSettings";
 
-export const post_route = $('route').path('/posts/:id?q').static(false).builder(({$page, params}) => {
+export const $post_route = $('route').path('/posts/:id?q').static(false).builder(({$page, params}) => {
     if (!Number(params.id)) return $page.content($('h1').content('404: POST NOT FOUND'));
     const events = $.events<{
         post_switch: [Post]
@@ -61,6 +61,14 @@ export const post_route = $('route').path('/posts/:id?q').static(false).builder(
         events.fire('post_switch', post);
     })
 
+    function slideViewerHandler(params: {manager: PostManager}) {
+        const { manager: posts } = params;
+        const $slideViewer = $getSlideViewer(posts.tags);
+        const postList = posts.cache.array.filter(post => !$slideViewer.slideMap.has(post.id));
+        $slideViewer.addSlides(postList.map(post => new $Slide().slideId(post.id).builder(() => new $PostViewer(post))));
+        if (postList.length) $slideViewer.arrange([...posts.orderMap.values()].map(post => post.id));
+    }
+
     /** create slide viewer or get from cached */
     function $getSlideViewer(q: string | undefined) {
         const $slideViewer = $slideViewerMap.get(q) ?? 
@@ -91,14 +99,6 @@ export const post_route = $('route').path('/posts/:id?q').static(false).builder(
         $.replace(`/posts/${targetPost.id}${posts.tags ? `?q=${posts.tags}` : ''}`);
     }
 
-    function slideViewerHandler(params: {manager: PostManager}) {
-        const { manager: posts } = params;
-        const $slideViewer = $getSlideViewer(posts.tags);
-        const postList = posts.cache.array.filter(post => !$slideViewer.slideMap.has(post.id));
-        $slideViewer.addSlides(postList.map(post => new $Slide().slideId(post.id).builder(() => new $PostViewer(post))));
-        if (postList.length) $slideViewer.arrange([...posts.orderMap.values()].map(post => post.id));
-    }
-
     return $page.id('post').content([
         $('div').class('slide-viewer-container').self($div => {
             $page.on('open', () => {
@@ -119,12 +119,12 @@ export const post_route = $('route').path('/posts/:id?q').static(false).builder(
                 })
             })
         ]),
-        new $DetailPanel().hide(detailPanelEnable$.convert(bool => !bool)).position($page).self($detail => {
+        new $DetailPanel().hide(LocalSettings.detailPanelEnable$.convert(bool => !bool)).position($page).self($detail => {
             events.on('post_switch', (post) => $detail.update(post));
             detailPanelCheck(); // initial detail panel status
-            detailPanelEnable$.on('update', ({state$}) => detailPanelCheck())
+            LocalSettings.detailPanelEnable$.on('update', ({state$}) => detailPanelCheck())
             function detailPanelCheck() {
-                if (detailPanelEnable$.value) $page.removeStaticClass('side-panel-disable')
+                if (LocalSettings.detailPanelEnable$.value) $page.removeStaticClass('side-panel-disable')
                 else $page.addStaticClass('side-panel-disable')
             }
         })

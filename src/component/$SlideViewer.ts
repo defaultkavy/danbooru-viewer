@@ -8,7 +8,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
     #pointerException?: (pointer: $Pointer, e: PointerEvent) => boolean;
     constructor() {
         super('slide-viewer');
-        this.css({position: 'relative'});
+        this.style({position: 'relative'});
         this.__build__();
         new ResizeObserver(() => {
             if (!this.inDOM()) return;
@@ -19,7 +19,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
 
     protected __build__() {
         this.content([ this.$container ]);
-        this.$container.css({position: 'relative', height: '100%'})
+        this.$container.style({position: 'relative', height: '100%'})
         let containerStartLeft = 0, containerLeft = 0;
         this.pointers.on('down', ($pointer, e) => {
             if (this.#pointerException) {
@@ -33,7 +33,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
             containerLeft = containerStartLeft + $pointer.move_x;
             if (containerLeft > containerStartLeft && this.slideList.at(0)?.slideId() === this.slideId) return;
             if (containerLeft < containerStartLeft && this.slideList.at(-1)?.slideId() === this.slideId) return;
-            this.$container.css({left: `${containerLeft}px`});
+            this.$container.style({left: `${containerLeft}px`});
         })
         this.pointers.on('up', ($pointer) => {
             const width = this.domRect().width;
@@ -96,7 +96,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
             duration: 300,
             easing: ease ? 'ease' : 'ease-out',
         }, (animation) => {
-            this.$container.css({left: `-${this.getPositionLeft(currentIndex)}px`})
+            this.$container.style({left: `-${this.getPositionLeft(currentIndex)}px`})
             this.__render__(false);
         })
     }
@@ -130,7 +130,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
         let i = 0;
         this.slideMap.forEach($slide => {
             $slide.hide(true, false);
-            $slide.css({top: '0', left: `${this.getPositionLeft(i)}px`});
+            $slide.style({top: '0', left: `${this.getPositionLeft(i)}px`});
             i++;
         })
         if (!this.currentSlide) return;
@@ -139,7 +139,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
         if (currentIndex !== 0) this.slideList.at(currentIndex - 1)?.build().hide(false, false);
         if (currentIndex !== this.slideList.length - 1) this.slideList.at(currentIndex + 1)?.build().hide(false, false);
         this.$container.children.render();
-        if (positioning) this.$container.css({left: `-${this.getPositionLeft(currentIndex)}px`})
+        if (positioning) this.$container.style({left: `-${this.getPositionLeft(currentIndex)}px`})
     }
 
     pointerException(resolver: (pointer: $Pointer, e: PointerEvent) => boolean) {
@@ -160,7 +160,7 @@ export class $Slide extends $Container {
     #slideId?: string | number;
     constructor() {
         super('slide');
-        this.css({width: '100%', height: '100%', display: 'block', position: 'absolute'})
+        this.style({width: '100%', height: '100%', display: 'block', position: 'absolute'})
     }
 
     builder(builder: () => OrMatrix<$ContainerContentType>) {

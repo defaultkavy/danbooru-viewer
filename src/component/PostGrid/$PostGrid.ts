@@ -4,6 +4,7 @@ import { Post } from "../../structure/Post";
 import { $PostTile } from "../PostTile/$PostTile";
 import { $Input } from "elexis/lib/node/$Input";
 import { PostManager } from "../../structure/PostManager";
+import { $Container } from "elexis";
 
 interface $PostGridOptions {
     tags?: string

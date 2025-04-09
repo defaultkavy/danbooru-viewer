@@ -1,8 +1,8 @@
 import { $Container, $Image, $State, $Video } from "elexis";
 import type { Post } from "../../structure/Post";
 import { time } from "../../structure/Util";
-import { previewPanelEnable$ } from "../../main";
 import type { $PostGrid } from "../PostGrid/$PostGrid";
+import { LocalSettings } from "../../structure/LocalSettings";
 export class $PostTile extends $Container {
     post: Post;
     $video: $Video | null;
@@ -14,7 +14,7 @@ export class $PostTile extends $Container {
         this.$grid = $grid;
         this.post = post;
         this.$video = this.post.isVideo ? $('video').width(this.post.image_width).height(this.post.image_height).disablePictureInPicture(true).loop(true).muted(true).hide(true).on('mousedown', (e) => e.preventDefault()) : null;
-        this.$img = $('img').draggable(false).css({opacity: '0'}).width(this.post.image_width).height(this.post.image_height).src(this.post.previewURL).loading('lazy');
+        this.$img = $('img').draggable(false).style({opacity: '0'}).width(this.post.image_width).height(this.post.image_height).src(this.post.previewURL).loading('lazy');
         this.attribute('filetype', this.post.file_ext);
         this.durationUpdate();
         this.build();
@@ -38,11 +38,11 @@ export class $PostTile extends $Container {
                     $('span').content('GIF')
                 ]) : null,
             // Tile
-            $('a').href(this.url).preventDefault(previewPanelEnable$).content(() => [
+            $('a').href(this.url).preventDefault(LocalSettings.previewPanelEnable$).content(() => [
                 this.$video,
                 this.$img.on('mousedown', (e) => e.preventDefault())
                     .once('load', (e, $img) => { 
-                        $img.animate({opacity: [0, 1]}, {duration: 300}, () => $img.css({opacity: ''}));
+                        $img.animate({opacity: [0, 1]}, {duration: 300}, () => $img.style({opacity: ''}));
                         this.removeClass('loading'); 
                     })
             ])
@@ -58,7 +58,7 @@ export class $PostTile extends $Container {
                 if (this.post.isGif) { this.$img.src(this.post.previewURL) }
             }, {passive: true} )
             .on('click', () => {
-                if (!previewPanelEnable$.value) return;
+                if (!LocalSettings.previewPanelEnable$.value) return;
                 if (innerWidth <= 800) return $.open(this.url);
                 if (this.attribute('focus') === '') $.open(this.url);
                 else this.trigger('$focus');

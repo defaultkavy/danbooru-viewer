@@ -8,7 +8,6 @@
 @forward '/src/component/DetailPanel/$DetailPanel';
 // routes
 @forward '/src/route/post/$post_route';
-@forward '/src/route/login/$login_route';
 
 :root {
     --primary-color: #d1d1ee;
@@ -171,12 +170,12 @@ router {
     display: block;
     position: relative;
 
-    page {
-        display: block;
-        position: relative;
-        padding-inline: 1rem;
-        padding-top: var(--nav-height);
-    }
+    // page {
+    //     display: block;
+    //     position: relative;
+    //     padding-inline: 1rem;
+    //     padding-top: var(--nav-height);
+    // }
 }
 
 #posts {
