@@ -7,7 +7,7 @@ WORKDIR /build
 COPY package.json ./
 RUN bun install
 COPY . .
-RUN bun run build
+RUN bun run vite-build
 
 #
 # Make final node_modules folder with only production dependencies
@@ -29,4 +29,4 @@ COPY --from=deps /build/node_modules /app/node_modules
 COPY --from=build /build/dist /app/dist
 
 ENTRYPOINT []
-CMD ["bun", "server.ts"]
+CMD ["bun", "server.js"]

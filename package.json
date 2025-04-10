@@ -2,12 +2,15 @@
   "name": "danbooru-viewer",
   "module": "index.ts",
   "type": "module",
-  "version": "0.14.9",
+  "version": "0.14.10",
   "license": "MIT",
   "scripts": {
-    "dev": "bun x vite",
-    "build": "bun x vite build",
-    "start": "bun server.ts"
+    "vite-dev": "bun x vite",
+    "vite-build": "bun x vite build",
+    "server-dev": "bun server.ts",
+    "server-build": "bun build server.ts --outdir ./ --target bun --minify-syntax",
+    "server-start": "bun server.js",
+    "start": "bun run vite-build && bun run server-build && bun run server-start"
   },
   "devDependencies": {
     "@elexis.js/css": "^1.0.2",

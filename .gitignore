@@ -2,3 +2,5 @@ node_modules
 .vscode
 bun.lockb
 package.local.json
+dist
+server.js
