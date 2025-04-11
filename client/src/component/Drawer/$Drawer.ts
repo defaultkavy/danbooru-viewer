@@ -1,7 +1,7 @@
 import { $Container } from "elexis";
 import { Booru } from "../../structure/Booru";
 import { numberFormat } from "../../structure/Util";
-import { danbooru, safebooru } from "../../method/booru";
+import { danbooru, safebooru } from "../../lib/booru";
 
 export class $Drawer extends $Container {
     static $ele = new this();
