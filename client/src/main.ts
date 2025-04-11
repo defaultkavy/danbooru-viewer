@@ -4,7 +4,7 @@ import '@elexis.js/router';
 import '@elexis.js/css';
 import './style';
 import './method/registerTagName';
-import './method/boorus';
+import './method/booru';
 import { $post_route } from './route/post/$post_route';
 import { $Router, $RouterNavigationDirection, type $RouterEventMap } from '@elexis.js/router';
 import { $Searchbar } from './component/Searchbar/$Searchbar';

@@ -2,7 +2,7 @@ import cors from "@elysiajs/cors";
 import Elysia from "elysia";
 import * as cheerio from 'cheerio';
 import html from "@elysiajs/html";
-import type { PostData } from "./src/structure/Post";
+import type { PostData } from "./client/src/structure/Post";
 const list_format = new Intl.ListFormat('en', {type: 'conjunction', style: 'long'})
 const app = new Elysia()
     .use(cors())

@@ -4,9 +4,14 @@
   "type": "module",
   "version": "0.14.10",
   "license": "MIT",
+  "author": {
+    "email": "defaultkavy@gmail.com",
+    "name": "defaultkavy",
+    "url": "https://defaultkavy.com"
+  },
   "scripts": {
-    "vite-dev": "bun x vite",
-    "vite-build": "bun x vite build",
+    "vite-dev": "cd client && bun x vite",
+    "vite-build": "cd client && bun x vite build",
     "server-dev": "bun server.ts",
     "server-build": "bun build server.ts --outdir ./ --target bun --minify-syntax",
     "server-start": "bun server.js",
