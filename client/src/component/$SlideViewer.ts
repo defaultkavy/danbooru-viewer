@@ -29,10 +29,12 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
         })
         this.pointers.on('move', ($pointer, e) => {
             if ($pointer.direction !== $PointerDirection.Horizontal) return;
+            if ($pointer.move_x > -20 && $pointer.move_x < 20) return;
             e.preventDefault();
-            containerLeft = containerStartLeft + $pointer.move_x;
+            containerLeft = containerStartLeft + $pointer.move_x + ($pointer.move_x > 0 ? -20 : 20);
             if (containerLeft > containerStartLeft && this.slideList.at(0)?.slideId() === this.slideId) return;
             if (containerLeft < containerStartLeft && this.slideList.at(-1)?.slideId() === this.slideId) return;
+            this.events.fire('slideMove', this.currentSlide);
             this.$container.style({left: `${containerLeft}px`});
         })
         this.pointers.on('up', ($pointer) => {
@@ -43,7 +45,9 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
             else if ($pointer.move_x > 0 && $pointer.movement_x > 2 || containerMove + width < width / 2) this.prev();
             else {
                 containerLeft = containerStartLeft;
-                this.__slideAnimate__()
+                this.__slideAnimate__().then(() => {
+                    this.events.fire('slideBack', this.currentSlide)
+                })
             }
         })
     }
@@ -81,23 +85,27 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
         if ($targetSlide.slideId() === this.slideId) return this;
         this.events.fire('beforeSwitch', {prevSlide: this.currentSlide, nextSlide: $targetSlide})
         this.slideId = id;
-        this.__slideAnimate__();
-        this.events.fire('switch', {nextSlide: $targetSlide})
+        this.__slideAnimate__().then(() => {
+            this.events.fire('switch', {nextSlide: $targetSlide})
+        });
         return this;
     }
 
-    protected __slideAnimate__() {
-        const currentIndex = this.currentSlide ? this.slideList.indexOf(this.currentSlide) : undefined;
-        if (currentIndex === undefined) return;
-        const ease = Math.abs(this.getPositionLeft(currentIndex) - this.$container.offsetLeft) === this.dom.clientWidth;
-        this.$container.animate({
-            left: `-${this.getPositionLeft(currentIndex)}px`,
-        }, {
-            duration: 300,
-            easing: ease ? 'ease' : 'ease-out',
-        }, (animation) => {
-            this.$container.style({left: `-${this.getPositionLeft(currentIndex)}px`})
-            this.__render__(false);
+    protected async __slideAnimate__() {
+        return new Promise<void>(resolve => {
+            const currentIndex = this.currentSlide ? this.slideList.indexOf(this.currentSlide) : undefined;
+            if (currentIndex === undefined) return;
+            const ease = Math.abs(this.getPositionLeft(currentIndex) - this.$container.offsetLeft) === this.dom.clientWidth;
+            this.$container.animate({
+                left: `-${this.getPositionLeft(currentIndex)}px`,
+            }, {
+                duration: 300,
+                easing: ease ? 'ease' : 'ease-out',
+            }, (animation) => {
+                this.$container.style({left: `-${this.getPositionLeft(currentIndex)}px`})
+                this.__render__(false);
+                resolve();
+            })
         })
     }
 
@@ -152,6 +160,10 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
 export interface $SlideViewerEventMap extends $ContainerEventMap {
     switch: [{nextSlide: $Slide}];
     beforeSwitch: [{prevSlide?: $Slide, nextSlide: $Slide}];
+    /** Slide is moving */
+    slideMove: [$Slide | undefined];
+    /** Slide return to origin position */
+    slideBack: [$Slide | undefined]
 }
 
 export class $Slide extends $Container {

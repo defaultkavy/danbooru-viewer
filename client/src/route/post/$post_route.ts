@@ -29,10 +29,12 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
         .keydown(['d', 'D'], e => { navPost('next') })
     )
     const $slideViewerMap = new Map<string | undefined, $SlideViewer>();
+
+    // Using path params to navigation post
     $page.on('open', async ({params, query}) => {
         posts = PostManager.get(query.q);
         post = Post.get(Booru.used, +params.id);
-        posts.events.on('post_fetch', slideViewerHandler);
+        posts.events.on('post_fetch', ({manager}) => slideViewerHandler(manager));
         if (!posts.orderMap.size || !posts.cache.has(post)) {
             await post.ready
             posts.addPosts(post);
@@ -55,20 +57,27 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
                 posts.fetchPosts('newer');
             }
         }
-        slideViewerHandler({manager: posts});
+        slideViewerHandler(posts);
         const $slideViewer = $getSlideViewer(posts.tags);
         $slideViewer.switch(post.id);
         events.fire('post_switch', post);
+
+        function slideViewerHandler(posts: PostManager) {
+            const $slideViewer = $getSlideViewer(posts.tags);
+            const postList = posts.cache.array.filter(post => !$slideViewer.slideMap.has(post.id));
+            $slideViewer.addSlides(postList.map(post => new $Slide().slideId(post.id).builder(() => new $PostViewer(post))));
+            if (postList.length) $slideViewer.arrange([...posts.orderMap.values()].map(post => post.id));
+        }
     })
 
-    function slideViewerHandler(params: {manager: PostManager}) {
-        const { manager: posts } = params;
-        const $slideViewer = $getSlideViewer(posts.tags);
-        const postList = posts.cache.array.filter(post => !$slideViewer.slideMap.has(post.id));
-        $slideViewer.addSlides(postList.map(post => new $Slide().slideId(post.id).builder(() => new $PostViewer(post))));
-        if (postList.length) $slideViewer.arrange([...posts.orderMap.values()].map(post => post.id));
+    function navPost(dir: 'next' | 'prev') {
+        const orderList = [...posts.orderMap.values()];
+        const index = orderList.indexOf(post);
+        if (dir === 'prev' && index === 0) return;
+        const targetPost = orderList.at(dir === 'next' ? index + 1 : index - 1);
+        if (!targetPost) return;
+        $.replace(`/posts/${targetPost.id}${posts.tags ? `?q=${posts.tags}` : ''}`);
     }
-
     /** create slide viewer or get from cached */
     function $getSlideViewer(q: string | undefined) {
         const $slideViewer = $slideViewerMap.get(q) ?? 
@@ -78,25 +87,28 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
                     if (pointer.type === 'mouse') return false;
                     return true;
                 })
+                // change path after slide switch
                 .on('switch', ({nextSlide: $target}) => {
                     $.replace(`/posts/${$target.slideId()}${q ? `?q=${q}` : ''}`);
-                }).on('beforeSwitch', ({prevSlide, nextSlide}) => {
-                    const $prevVideo = prevSlide?.$<$Video>(':video');
-                    if ($prevVideo?.isPlaying) $prevVideo.pause();
-                    const $nextVideo = nextSlide.$<$Video>(':video');
-                    if ($nextVideo?.isPlaying === false) $nextVideo.play();
+                    $target.$<$Video>(':video')?.play();
+                })
+                // pause prev slide video and play next one
+                .on('beforeSwitch', ({prevSlide, nextSlide}) => {
+                    prevSlide?.$<$Video>(':video')?.pause();
+                })
+                // pause video when slide moving
+                .on('slideMove', ($slide) => {
+                    if (!$slide) return;
+                    $slide.$<$Video>(':video')?.pause();
+                })
+                .on('slideBack', ($slide) => {
+                    if (!$slide) return;
+                    const $v = $slide.$<$Video>(':video')
+                    $v?.play();
+                    console.debug($v)
                 })
         $slideViewerMap.set(q, $slideViewer);
         return $slideViewer;
-    }
-
-    function navPost(dir: 'next' | 'prev') {
-        const orderList = [...posts.orderMap.values()];
-        const index = orderList.indexOf(post);
-        if (dir === 'prev' && index === 0) return;
-        const targetPost = orderList.at(dir === 'next' ? index + 1 : index - 1);
-        if (!targetPost) return;
-        $.replace(`/posts/${targetPost.id}${posts.tags ? `?q=${posts.tags}` : ''}`);
     }
 
     return $page.id('post').content([
