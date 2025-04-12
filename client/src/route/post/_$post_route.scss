@@ -6,12 +6,12 @@
 }
 
 #post {
-    padding: 0;
-    padding-top: var(--nav-height);
+    // padding: 0;
+    // padding-top: var(--nav-height);
 
     &.side-panel-disable {
         slide-viewer {
-            @include slideViewerWideWidth();
+            // @include slideViewerWideWidth();
         }
 
         div.content {
@@ -20,20 +20,20 @@
     }
 
     slide-viewer {
-        display: block;
-        height: calc(100dvh - 2rem - var(--nav-height));
-        background-color: #000000;
-        border-radius: var(--border-radius-large);
-        overflow: hidden;
-        width: calc(100vw - 300px - 4rem);
-        margin: 1rem;
-        position: relative;
-        transition: all 0.3s ease;
-        touch-action: pan-y;
+        // display: block;
+        // height: calc(100dvh - 2rem - var(--nav-height));
+        // background-color: #000000;
+        // border-radius: var(--border-radius-large);
+        // overflow: hidden;
+        // width: calc(100vw - 300px - 4rem);
+        // margin: 1rem;
+        // position: relative;
+        // transition: all 0.3s ease;
+        // touch-action: pan-y;
         
-        @media (max-width: 800px) {
-            @include slideViewerWideWidth()
-        }
+        // @media (max-width: 800px) {
+            // @include slideViewerWideWidth()
+        // }
     }
 
     div.viewer {

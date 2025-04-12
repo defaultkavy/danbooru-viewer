@@ -6,15 +6,27 @@ import { $DetailPanel } from "../../component/DetailPanel/$DetailPanel";
 import { PostManager } from "../../structure/PostManager";
 import { $PostViewer } from "../../component/PostViewer/$PostViewer";
 import { $Slide, $SlideViewer } from "../../component/$SlideViewer";
-import { $Video } from "elexis";
 import { LocalSettings } from "../../structure/LocalSettings";
+import { $getSlideViewer } from "../../lib/slideViewerManager";
 
 export const $post_route = $('route').path('/posts/:id?q').static(false).builder(({$page, params}) => {
     if (!Number(params.id)) return $page.content($('h1').content('404: POST NOT FOUND'));
     const events = $.events<{
         post_switch: [Post]
     }>();
-    let post: Post, posts: PostManager;
+    let currentPost: Post, posts: PostManager;
+
+    /** post url navigation */
+    function navPost(dir: 'next' | 'prev') {
+        const orderList = [...posts.orderMap.values()];
+        const index = orderList.indexOf(currentPost);
+        if (dir === 'prev' && index === 0) return;
+        const targetPost = orderList.at(dir === 'next' ? index + 1 : index - 1);
+        if (!targetPost) return;
+        $.replace(`/posts/${targetPost.id}${posts.tags ? `?q=${posts.tags}` : ''}`);
+    }
+
+    // keys assign
     $.keys($(window)).self($keys => $keys
         .if(e => {
             if ($(e.target) instanceof $Input) return;
@@ -22,96 +34,61 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
             return true;
         })
         .keydown(['f', 'F'], e => {
-            if (Booru.used.user?.favorites.has(post.id)) post.deleteFavorite();
-            else post.createFavorite();
+            if (Booru.used.user?.favorites.has(currentPost.id)) currentPost.deleteFavorite();
+            else currentPost.createFavorite();
         })
         .keydown(['a', 'A'], e => navPost('prev') )
         .keydown(['d', 'D'], e => { navPost('next') })
     )
-    const $slideViewerMap = new Map<string | undefined, $SlideViewer>();
 
     // Using path params to navigation post
     $page.on('open', async ({params, query}) => {
         posts = PostManager.get(query.q);
-        post = Post.get(Booru.used, +params.id);
-        posts.events.on('post_fetch', ({manager}) => slideViewerHandler(manager));
-        if (!posts.orderMap.size || !posts.cache.has(post)) {
-            await post.ready
-            posts.addPosts(post);
+        currentPost = Post.get(Booru.used, +params.id);
+        posts.events.on('post_fetch', ({manager}) => addSlide(manager));
+        if (!posts.orderMap.size || !posts.cache.has(currentPost)) {
+            // first post
+            await currentPost.ready
+            posts.addPosts(currentPost);
             const ordfav_tag = posts.tag_list?.find(tag => tag.startsWith('ordfav'));
             if (ordfav_tag) {
                 const username = ordfav_tag.split(':')[1];
-                const fav_list = await Booru.used.fetch(`/favorites.json?search[user_name]=${username}&search[post_id]=${post.id}`) as [{id: number}];
+                const fav_list = await Booru.used.fetch(`/favorites.json?search[user_name]=${username}&search[post_id]=${currentPost.id}`) as [{id: number}];
                 if (fav_list[0]) {
-                    posts.orderMap.set(fav_list[0].id, post);
+                    posts.orderMap.set(fav_list[0].id, currentPost);
                 }
-            } else posts.orderMap.set(post.id, post);
+            } else posts.orderMap.set(currentPost.id, currentPost);
             posts.fetchPosts('newer');
             posts.fetchPosts('older');
         } else {
+            // cached post
             const ordered = [...posts.orderMap.values()];
-            const index = ordered.indexOf(post);
+            const index = ordered.indexOf(currentPost);
             if (!posts.finished && index === ordered.length - 1) {
                 posts.fetchPosts('older');
             } else if (index === 0) {
                 posts.fetchPosts('newer');
             }
         }
-        slideViewerHandler(posts);
+        addSlide(posts);
         const $slideViewer = $getSlideViewer(posts.tags);
-        $slideViewer.switch(post.id);
-        events.fire('post_switch', post);
+        $slideViewer.switch(currentPost.id);
+        events.fire('post_switch', currentPost);
 
-        function slideViewerHandler(posts: PostManager) {
+        function addSlide(posts: PostManager) {
             const $slideViewer = $getSlideViewer(posts.tags);
             const postList = posts.cache.array.filter(post => !$slideViewer.slideMap.has(post.id));
-            $slideViewer.addSlides(postList.map(post => new $Slide().slideId(post.id).builder(() => new $PostViewer(post))));
+            $slideViewer.addSlides(postList.map(post => $($Slide).slideId(post.id).builder(() => $($PostViewer, post))));
             if (postList.length) $slideViewer.arrange([...posts.orderMap.values()].map(post => post.id));
         }
     })
 
-    function navPost(dir: 'next' | 'prev') {
-        const orderList = [...posts.orderMap.values()];
-        const index = orderList.indexOf(post);
-        if (dir === 'prev' && index === 0) return;
-        const targetPost = orderList.at(dir === 'next' ? index + 1 : index - 1);
-        if (!targetPost) return;
-        $.replace(`/posts/${targetPost.id}${posts.tags ? `?q=${posts.tags}` : ''}`);
-    }
-    /** create slide viewer or get from cached */
-    function $getSlideViewer(q: string | undefined) {
-        const $slideViewer = $slideViewerMap.get(q) ?? 
-            new $SlideViewer()
-                .pointerException((pointer) => {
-                    if ($slideViewer.currentSlide?.$('::.progressbar-container').find($div => $div.contains(pointer.$target))) return false;
-                    if (pointer.type === 'mouse') return false;
-                    return true;
-                })
-                // change path after slide switch
-                .on('switch', ({nextSlide: $target}) => {
-                    $.replace(`/posts/${$target.slideId()}${q ? `?q=${q}` : ''}`);
-                    $target.$<$Video>(':video')?.play();
-                })
-                // pause prev slide video and play next one
-                .on('beforeSwitch', ({prevSlide, nextSlide}) => {
-                    prevSlide?.$<$Video>(':video')?.pause();
-                })
-                // pause video when slide moving
-                .on('slideMove', ($slide) => {
-                    if (!$slide) return;
-                    $slide.$<$Video>(':video')?.pause();
-                })
-                .on('slideBack', ($slide) => {
-                    if (!$slide) return;
-                    const $v = $slide.$<$Video>(':video')
-                    $v?.play();
-                    console.debug($v)
-                })
-        $slideViewerMap.set(q, $slideViewer);
-        return $slideViewer;
-    }
-
-    return $page.id('post').content([
+    // Build page
+    return $page.id('post')
+    .css({
+        pT: `var(--nav-height)`, 
+        p: 0,
+    }).content([
         $('div').class('slide-viewer-container').self($div => {
             $page.on('open', () => {
                 $div.content($getSlideViewer(posts.tags))
@@ -131,14 +108,17 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
                 })
             })
         ]),
-        new $DetailPanel().hide(LocalSettings.detailPanelEnable$.convert(bool => !bool)).position($page).self($detail => {
-            events.on('post_switch', (post) => $detail.update(post));
-            detailPanelCheck(); // initial detail panel status
-            LocalSettings.detailPanelEnable$.on('update', ({state$}) => detailPanelCheck())
-            function detailPanelCheck() {
-                if (LocalSettings.detailPanelEnable$.value) $page.removeStaticClass('side-panel-disable')
-                else $page.addStaticClass('side-panel-disable')
-            }
-        })
+        $($DetailPanel)
+            .hide(LocalSettings.detailPanelEnable$.convert(bool => !bool))
+            .position($page)
+            .self($detail => {
+                events.on('post_switch', (post) => $detail.update(post));
+                detailPanelCheck(); // initial detail panel status
+                LocalSettings.detailPanelEnable$.on('update', ({state$}) => detailPanelCheck())
+                function detailPanelCheck() {
+                    if (LocalSettings.detailPanelEnable$.value) $page.removeStaticClass('side-panel-disable')
+                    else $page.addStaticClass('side-panel-disable')
+                }
+            })
     ])
 })

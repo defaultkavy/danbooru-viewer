@@ -28,7 +28,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
             containerStartLeft = this.$container.offsetLeft;
         })
         this.pointers.on('move', ($pointer, e) => {
-            if ($pointer.direction !== $PointerDirection.Horizontal) return;
+            // threshold before start move
             if ($pointer.move_x > -20 && $pointer.move_x < 20) return;
             e.preventDefault();
             containerLeft = containerStartLeft + $pointer.move_x + ($pointer.move_x > 0 ? -20 : 20);
@@ -80,13 +80,15 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
 
     switch(id: string | number | undefined) {
         if (id === undefined) return this;
-        const $targetSlide = this.slideMap.get(id);
-        if (!$targetSlide) throw 'target undefined';
-        if ($targetSlide.slideId() === this.slideId) return this;
-        this.events.fire('beforeSwitch', {prevSlide: this.currentSlide, nextSlide: $targetSlide})
+        const $prevSlide = this.currentSlide;
+        const $nextSlide = this.slideMap.get(id);
+        if (!$nextSlide) throw 'target undefined';
+        if ($nextSlide.slideId() === this.slideId) return this;
+        this.events.fire('beforeSwitch', {$prevSlide: this.currentSlide, $nextSlide})
         this.slideId = id;
+        this.events.fire('switch', {$prevSlide, $nextSlide})
         this.__slideAnimate__().then(() => {
-            this.events.fire('switch', {nextSlide: $targetSlide})
+            this.events.fire('afterSwitch', {$prevSlide, $nextSlide})
         });
         return this;
     }
@@ -158,8 +160,9 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
 }
 
 export interface $SlideViewerEventMap extends $ContainerEventMap {
-    switch: [{nextSlide: $Slide}];
-    beforeSwitch: [{prevSlide?: $Slide, nextSlide: $Slide}];
+    switch: [{$prevSlide?: $Slide, $nextSlide: $Slide}];
+    beforeSwitch: [{$prevSlide?: $Slide, $nextSlide: $Slide}];
+    afterSwitch: [{$prevSlide?: $Slide, $nextSlide: $Slide}];
     /** Slide is moving */
     slideMove: [$Slide | undefined];
     /** Slide return to origin position */
