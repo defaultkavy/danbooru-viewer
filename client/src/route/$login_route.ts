@@ -7,13 +7,13 @@ export const $login_route = $('route').path('/login').builder(({$page}) => {
         username: ''
     })
 
-    const input_container_css = $.css({display: 'flex', flexDir: 'column', gap: '0.5rem'})
+    const input_container_css = $.css({display: 'flex', flexDirection: 'column', gap: '0.5rem'})
     const input_css = $.css({display: 'block'})
     return $page
     .css({display: 'flex', justify: 'center', alignItems: 'center', mT: '5rem', pos: 'relative', pX: '1rem', pT: 'var(--nav-height)'}).id('login')
     .content([
         $('div').css({p: '2rem', b: '1px solid var(--secondary-color-9)', bRadius: 'var(--border-radius-large)', display: 'flex', flexDir: 'column', justify: 'center', gap: '1rem', maxW: '400px', w: '100%', sizing: 'border-box'}).content([
-            $('h1').css({m: 0}).content('Login'),
+            $('h1').css({margin: 0}).content('Login'),
             $('div').class('username').css(input_container_css).content([
                 $('label').for('username').content('Username'),
                 $('input').css(input_css).type('text').id('username').value(state.username$)

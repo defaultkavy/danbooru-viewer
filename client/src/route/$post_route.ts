@@ -1,13 +1,13 @@
-import { Post } from "../../structure/Post";
-import { ArtistCommentary } from "../../structure/Commentary";
-import { Booru } from "../../structure/Booru";
+import { Post } from "../structure/Post";
+import { ArtistCommentary } from "../structure/Commentary";
+import { Booru } from "../structure/Booru";
 import { $Input } from "elexis/lib/node/$Input";
-import { $DetailPanel } from "../../component/DetailPanel/$DetailPanel";
-import { PostManager } from "../../structure/PostManager";
-import { $PostViewer } from "../../component/PostViewer/$PostViewer";
-import { $Slide, $SlideViewer } from "../../component/$SlideViewer";
-import { LocalSettings } from "../../structure/LocalSettings";
-import { $getSlideViewer } from "../../lib/slideViewerManager";
+import { $DetailPanel } from "../component/DetailPanel/$DetailPanel";
+import { PostManager } from "../structure/PostManager";
+import { $PostViewer } from "../component/PostViewer/$PostViewer";
+import { $Slide, $SlideViewer } from "../component/$SlideViewer";
+import { LocalSettings } from "../structure/LocalSettings";
+import { $getSlideViewer } from "../lib/slideViewerManager";
 
 export const $post_route = $('route').path('/posts/:id?q').static(false).builder(({$page, params}) => {
     if (!Number(params.id)) return $page.content($('h1').content('404: POST NOT FOUND'));
@@ -85,18 +85,25 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
 
     // Build page
     return $page.id('post')
-    .css({
-        pT: `var(--nav-height)`, 
-        p: 0,
+    .css({ padding: 0, paddingTop: `var(--nav-height)`,
+        "$&.side-panel-disable": {
+            '$slide-viewer': { width: '100%', height: 'calc(100dvh - var(--nav-height))', borderRadius: 0, margin: 0 },
+            '$div.content': { width: '100%' }
+        }
     }).content([
         $('div').class('slide-viewer-container').self($div => {
             $page.on('open', () => {
                 $div.content($getSlideViewer(posts.tags))
             })
         }),
-        $('div').class('content').content([
-            $('h3').content(`Artist's Commentary`),
-            $('section').class('commentary').self(async ($comentary) => {
+        $('div').class('content')
+        .css({ width: 'calc(100vw - 300px - 2rem)', display: 'flex', flexDirection: 'column', padding: '1rem', boxSizing: 'border-box' ,
+            "@media (max-width: 800px)": { width: '100%' }
+        })
+        .content([
+            $('h3').css({ paddingLeft: '1rem', marginBlock: '1rem' }).content(`Artist's Commentary`),
+            $('section').class('commentary').css({ '$*': { textWrap: 'wrap', wordBreak: 'break-word' } })
+            .self(async ($comentary) => {
                 events.on('post_switch', async post => {
                     const commentary = (await ArtistCommentary.fetchMultiple(Booru.used, {post: {_id: post.id}})).at(0);
                     $comentary.content([

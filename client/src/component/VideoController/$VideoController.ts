@@ -21,10 +21,17 @@ export class $VideoController extends $Container {
             progressChange: [number]
         }>();
         this.$video.on('timeupdate', () => this.durationUpdate())
-        this.content([
-            $('div').class('video-details').content([
+        this
+        .css({ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', justifyContent: 'space-between', width: '100%' })
+        .content([
+            $('div').class('video-details')
+            .css({ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+                // controll buttons
+                "$div": { display: 'flex', alignItems: 'center', width: '100%', gap: '1rem', '$&.right': { justifyContent: 'end' } }
+             })
+            .content([
                 $('div').class('left').content([
-                    $('ion-icon').class('play').title('Play').name('play').self($play => {
+                    $('ion-icon').class('play').css({ flexShrink: 0 }).title('Play').name('play').self($play => {
                         this.$video.on('play', () => $play.name('pause'))
                             .on('pause', () => $play.name('play'))
                         $play.on('click', () => this.$video.isPlaying ? this.$video.pause() : this.$video.play())
@@ -59,9 +66,15 @@ export class $VideoController extends $Container {
                     })
                 ])
             ]),
-            $('div').class('progressbar-container').content([
-                $('div').class('progressbar').content([
-                    $('div').class('progress').self($progress => {
+            $('div').class('progressbar-container')
+            .css({ height: '2rem', width: '100%', display: 'flex', touchAction: 'none', alignItems: 'center', cursor: 'pointer' })
+            .content([
+                $('div').class('progressbar')
+                .css({ height: '0.4rem', width: '100%', backgroundColor: 'var(--secondary-color-1)', flexShrink: 1 })
+                .content([
+                    $('div').class('progress')
+                    .css({ height: '100%', backgroundColor: 'var(--secondary-color-3)', width: '100px' })
+                    .self($progress => {
                         this.$video.on('timeupdate', e => {
                             $progress.style({width: `${(this.$video.currentTime() / this.$video.duration) * 100}%`})
                         })

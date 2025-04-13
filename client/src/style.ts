@@ -1,3 +1,8 @@
-const style = {
-    page: $.css({selector: 'page', display: 'block', pos: 'relative', pX: '1rem', pT: 'var(--nav-height)'})
-}
+$.CSS({
+    '$page': {
+        display: 'block', 
+        position: 'relative', 
+        paddingBlock: '1rem', 
+        paddingTop: 'var(--nav-height)'
+    }
+})

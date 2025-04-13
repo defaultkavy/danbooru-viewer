@@ -11,22 +11,36 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
     constructor(post: Post) {
         super('div');
         this.post = post
-        this.class('viewer');
         this.build();
     }
 
     async build() {
         await this.post.ready;
-        this.events.on('video_play_pause', () => { if (this.$video.isPlaying) this.$video.pause(); else this.$video.play() })
-        this.content([
-            $('div').class('viewer-panel').hide(false).content($viewerPanel => {
+        this.events.on('video_play_pause', () => { 
+            if (this.$video.isPlaying) this.$video.pause(); else this.$video.play();
+        })
+        this.class('viewer')
+        .css({ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000', borderRadius: 'var(--border-radius-large)', overflow: 'hidden', position: 'relative', transition: 'all 0.3s ease'})
+        .content([
+            // viewer control panel
+            $('div').class('viewer-panel')
+            .css({ position: 'absolute', bottom: 0, width: '100%', zIndex: 1 })
+            .hide(false)
+            .content($viewerPanel => {
                 this.events.on('viewerPanel_hide', () => $viewerPanel.hide(true))
                     .on('viewerPanel_show', () => $viewerPanel.hide(false))
                     .on('viewerPanel_switch', () => { $viewerPanel.hide(!$viewerPanel.hide()) })
                 return [
-                    $('div').class('panel').content([
-                        this.post.isVideo ? new $VideoController(this.$video, this, this.post) : null,
-                        $('div').class('buttons').content([
+                    // button container
+                    $('div').class('panel')
+                    .css({ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '1rem', gap: '1rem', boxSizing: 'border-box' })
+                    .content([
+                        // if post is video, show video controller component
+                        this.post.isVideo ? $($VideoController, this.$video, this, this.post) : null,
+                        // buttons
+                        $('div').class('buttons')
+                        .css({ width: '100%', display: 'flex', justifyContent: 'center', gap: '2rem' })
+                        .content([
                             $('ion-icon').title('Favorite').name('heart-outline').self($heart => {
                                 if (Booru.used.user) $heart.hide(false);
                                 else $heart.hide(true);
@@ -47,42 +61,59 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                             })
                         ])
                     ]),
+                    // overlay on viewer
                     $('div').class('overlay')
+                    .css({position: 'absolute', bottom: 0, width: '100%', height: '200%', zIndex: -1, 
+                        background: `linear-gradient(180deg, 
+                            color-mix(in srgb, var(--secondary-color-1) 0%, transparent) 0%, 
+                            color-mix(in srgb, var(--secondary-color-0) 70%, transparent) 100%
+                    );`})
                 ]
             }),
             this.post.isVideo
-            ? this.$video.height(this.post.image_height).width(this.post.image_width).src(this.post.file_ext === 'zip' ? this.post.large_file_url : this.post.file_url)
+                // is video
+                ? this.$video.height(this.post.image_height).width(this.post.image_width)
+                .css({ maxWidth: '100%', maxHeight: '100%', '-webkit-user-drag': 'none', transition: 'all 0.3s ease' })
+                .src(this.post.file_ext === 'zip' ? this.post.large_file_url : this.post.file_url)
                 .controls(false).loop(true).disablePictureInPicture(true)
-            : $('img').height(this.post.image_height).width(this.post.image_width).self($img => {
-                $img.once('load', () => 
-                    $img.once('load', () => $img.removeClass('loading')).src(this.post.isLargeFile ? this.post.large_file_url : this.post.file_url)
-                ).src(this.post.preview_file_url)
-                if (!$img.complete) $img.class('loading')
-                this.events.on('original_size', () => $img.src(this.post.file_url))
-            })
+                // is image
+                : $('img').height(this.post.image_height).width(this.post.image_width)
+                .css({maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', transition: 'all 0.3s ease' })
+                .self($img => {
+                    $img.once('load', () => 
+                        $img.once('load', () => $img.removeClass('loading')).src(this.post.isLargeFile ? this.post.large_file_url : this.post.file_url)
+                    ).src(this.post.preview_file_url)
+                    if (!$img.complete) $img.css({ '$&.loading': {filter: 'blur(5px)'} }).class('loading')
+                    this.events.on('original_size', () => $img.src(this.post.file_url))
+                })
         ])
-        this.on('pointerleave', (e) => {
-            if (e.pointerType === 'touch') return;
-            this.events.fire('viewerPanel_hide');
-        })
-        this.on('pointermove', (e) => {
-            if (e.pointerType === 'mouse' || e.pointerType === 'pen') this.events.fire('viewerPanel_show');
-        })
+        // viewer panel hide/show
+        // .on('pointerleave', (e) => {
+        //     if (e.pointerType === 'touch') return;
+        //     this.events.fire('viewerPanel_hide');
+        // })
+        // .on('pointermove', (e) => {
+        //     if (e.pointerType === 'mouse' || e.pointerType === 'pen') this.events.fire('viewerPanel_show');
+        // })
+
         let doubleTap: Timer | null = null;
         $.pointers(this)
-            .on('up', pointer => {
-                if ( this.$(':.viewer-panel .panel')?.contains($(pointer.$target)) ) return;
-                if (pointer.type === 'mouse') this.events.fire('video_play_pause');
-                else {
-                    if (doubleTap !== null) {
-                        this.events.fire('video_play_pause');
-                    }
-                    doubleTap = setTimeout(() => {
-                        doubleTap = null;
-                    }, 300);
-                    this.events.fire('viewerPanel_switch');
+        // double tap control video play/pause and viewer panel hide/show
+        .on('up', pointer => {
+            if ( this.$(':.viewer-panel .panel')?.contains($(pointer.$target)) ) return;
+            if (pointer.type === 'mouse') this.events.fire('video_play_pause');
+            else {
+                if (doubleTap !== null) {
+                    this.events.fire('video_play_pause');
                 }
-            })
+                doubleTap = setTimeout(() => {
+                    doubleTap = null;
+                }, 300);
+                this.events.fire('viewerPanel_switch');
+            }
+        });
+
+        // hotkey assign
         $.keys($(window)).self($keys => $keys
             .if(e => {
                 if ($(e.target) instanceof $Input) return;

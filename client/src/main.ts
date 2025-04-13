@@ -5,7 +5,7 @@ import '@elexis.js/css';
 import './style';
 import './lib/registerTagName';
 import './lib/booru';
-import { $post_route } from './route/post/$post_route';
+import { $post_route } from './route/$post_route';
 import { $Router, $RouterNavigationDirection, type $RouterEventMap } from '@elexis.js/router';
 import { $Searchbar } from './component/Searchbar/$Searchbar';
 import { $login_route } from './route/$login_route';

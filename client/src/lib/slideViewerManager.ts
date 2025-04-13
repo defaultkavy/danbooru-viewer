@@ -1,6 +1,5 @@
 import type { $Video } from "elexis";
 import { $SlideViewer } from "../component/$SlideViewer";
-import { $CSS } from "@elexis.js/css";
 
 export const $slideViewerMap = new Map<string | undefined, $SlideViewer>();
 /** create slide viewer or get from cached */
@@ -8,22 +7,20 @@ export function $getSlideViewer(q: string | undefined) {
     const $slideViewer = $slideViewerMap.get(q) ?? 
         $($SlideViewer)
             .css({
-                selector: '.slide-viewer',
                 display: 'block',
-                h: 'calc(100dvh - 2rem - var(--nav-height))',
-                w: 'calc(100vw - 300px - 4rem)',
-                bgColor: '#000000',
-                bRadius: 'var(--border-radius-large)',
+                height: 'calc(100dvh - 2rem - var(--nav-height))',
+                width: 'calc(100vw - 300px - 4rem)',
+                backgroundColor: '#000000',
+                borderRadius: 'var(--border-radius-large)',
                 overflow: 'hidden',
-                m: '1rem',
+                margin: '1rem',
                 transition: 'all 0.3s ease',
                 touchAction: 'pan-y',
-                media: {
-                    query: '(max-width: 800px)',
-                    w: '100%',
-                    h: 'calc(100dvh - var(--nav-height))',
-                    bRadius: 0,
-                    m: 0
+                '@media (max-width: 800px)': {
+                    width: '100%',
+                    height: 'calc(100dvh - var(--nav-height))',
+                    borderRadius: 0,
+                    margin: 0
                 }
             })
             .pointerException((pointer) => {
