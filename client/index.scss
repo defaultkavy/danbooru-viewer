@@ -6,8 +6,6 @@
 @forward '/src/component/IonIcon/$IonIcon';
 @forward '/src/component/Drawer/$Drawer';
 @forward '/src/component/DetailPanel/$DetailPanel';
-// routes
-@forward '/src/route/post/$post_route';
 
 :root {
     --primary-color: #d1d1ee;
