@@ -2,7 +2,7 @@
   "name": "danbooru-viewer",
   "module": "index.ts",
   "type": "module",
-  "version": "0.14.13",
+  "version": "0.14.14",
   "license": "MIT",
   "author": {
     "email": "defaultkavy@gmail.com",
