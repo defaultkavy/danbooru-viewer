@@ -24,7 +24,7 @@
     },
   },
   "packages": {
-    "@elexis.js/css": ["@elexis.js/css@2.0.2", "", { "peerDependencies": { "elexis": "^1.0.0" } }, "sha512-9oxE/x86GfmRATpVt5Ei7btzInPdQ50ktcr7Y/Ci9OcFeO4VhorH/qF9vJD7wP8J39zxb56rEaDwBp46pkUnug=="],
+    "@elexis.js/css": ["@elexis.js/css@2.0.3", "", { "peerDependencies": { "elexis": "^1.0.0" } }, "sha512-DKLZZrwj86s1JYd/mX+tgurJFFuiHsBElJ3tAlWwt7JaViy6IX7wW1A+TRw5G0Hv1oC7hDLWrZe9T83vdIwXCw=="],
 
     "@elexis.js/layout": ["@elexis.js/layout@1.0.1", "", { "peerDependencies": { "elexis": "^1.0.0" } }, "sha512-6Q0xSSfhImOHc4KE8vueoQGx+pIsymys2CFpvDQ/fzhQlAb3vsqbSc7W9VxASztSx+Zw9Jny2Y6oY0Be7yUivw=="],
 

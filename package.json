@@ -18,7 +18,7 @@
     "start": "bun run vite-build && bun run server-build && bun run server-start"
   },
   "devDependencies": {
-    "@elexis.js/css": "^2.0.2",
+    "@elexis.js/css": "^2.0.3",
     "@elexis.js/layout": "^1.0.1",
     "@elexis.js/router": "^1.1.3",
     "@types/bun": "latest",

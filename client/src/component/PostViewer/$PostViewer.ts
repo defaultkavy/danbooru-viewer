@@ -88,13 +88,13 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                 })
         ])
         // viewer panel hide/show
-        // .on('pointerleave', (e) => {
-        //     if (e.pointerType === 'touch') return;
-        //     this.events.fire('viewerPanel_hide');
-        // })
-        // .on('pointermove', (e) => {
-        //     if (e.pointerType === 'mouse' || e.pointerType === 'pen') this.events.fire('viewerPanel_show');
-        // })
+        .on('pointerleave', (e) => {
+            if (e.pointerType === 'touch') return;
+            this.events.fire('viewerPanel_hide');
+        })
+        .on('pointermove', (e) => {
+            if (e.pointerType === 'mouse' || e.pointerType === 'pen') this.events.fire('viewerPanel_show');
+        })
 
         let doubleTap: Timer | null = null;
         $.pointers(this)

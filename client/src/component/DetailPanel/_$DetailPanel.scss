@@ -23,6 +23,7 @@ detail-panel {
     right: var(--padding);
     width: 300px;
     height: calc(100dvh - 2rem - var(--nav-height));
+    z-index: 1;
     // transition: all 0.3s ease;
     background-color: var(--secondary-color-1);
 
