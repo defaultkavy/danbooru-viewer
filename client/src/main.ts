@@ -5,23 +5,27 @@ import '@elexis.js/css';
 import './style';
 import './lib/registerTagName';
 import './lib/booru';
-import { $post_route } from './route/$post_route';
 import { $Router, $RouterNavigationDirection, type $RouterEventMap } from '@elexis.js/router';
 import { $Searchbar } from './component/Searchbar/$Searchbar';
-import { $login_route } from './route/$login_route';
 import { $Drawer } from './component/Drawer/$Drawer';
 import { $Input } from 'elexis/lib/node/$Input';
 import { LocalSettings } from './structure/LocalSettings';
 import { $NavigationBar } from './component/$NavigationBar';
 import { $posts_route, $root_posts_route } from './route/$posts_route';
+import { $Notify } from './component/$Notify';
+import $post_route from './route/$post_route';
+import $login_route from './route/$login_route';
 
 // render
 $(document.body).content([
   $NavigationBar.$ele,
   $Searchbar.$ele,
   $Drawer.$ele,
+  $Notify.$ele,
   // Base Router
-  $('router').base('/').on('beforeSwitch', pageTransitionHandler).map([
+  $('router').base('/')
+  .on('beforeSwitch', pageTransitionHandler)
+  .map([
     $root_posts_route,
     $posts_route,
     $post_route,
@@ -49,11 +53,12 @@ function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
       transform
     }, {
       duration: DURATION,
-      easing: 'ease'
-    }, () => {
-      e.switched();
-      $(document.documentElement).style({scrollBehavior: ''});
-      e.nextContent.element?.removeClass('animated')
+      easing: 'ease',
+      onfinish: () => {
+        e.switched();
+        $(document.documentElement).style({scrollBehavior: ''});
+        e.nextContent.element?.removeClass('animated')
+      }
     })
   }
   function outro() {
@@ -71,10 +76,11 @@ function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
       transform
     }, {
       duration: DURATION,
-      easing: 'ease'
-    }, () => {
-      e.previousContent?.element?.removeClass('animated');
-      intro();
+      easing: 'ease',
+      onfinish: () => {
+        e.previousContent?.element?.removeClass('animated');
+        intro();
+      }
     })
   }
 

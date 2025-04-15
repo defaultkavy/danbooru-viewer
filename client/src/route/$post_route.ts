@@ -4,7 +4,7 @@ import { Booru } from "../structure/Booru";
 import { $Input } from "elexis/lib/node/$Input";
 import { $DetailPanel } from "../component/DetailPanel/$DetailPanel";
 import { PostManager } from "../structure/PostManager";
-import { $PostViewer } from "../component/PostViewer/$PostViewer";
+import { $PostViewer } from "../component/$PostViewer";
 import { $Slide, $SlideViewer } from "../component/$SlideViewer";
 import { LocalSettings } from "../structure/LocalSettings";
 import { $getSlideViewer } from "../lib/slideViewerManager";
@@ -129,3 +129,5 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
             })
     ])
 })
+
+export default $post_route;

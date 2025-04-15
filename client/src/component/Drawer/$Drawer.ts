@@ -96,8 +96,9 @@ export class $Drawer extends $Container {
         }, {
             fill: 'both',
             duration: 300,
-            easing: 'ease'
-        }, () => this.hide(!this.opened))
+            easing: 'ease',
+            onfinish: () => this.hide(!this.opened)
+        })
         this.$filter.animate({
             opacity: [1, 0]
         }, {

@@ -61,7 +61,7 @@ export class $Searchbar extends $Container {
     inactivate() {
         this.animate({
             opacity: [0.5, 0]
-        }, { duration: 300, easing: 'ease'}, () => this.hide(true))
+        }, { duration: 300, easing: 'ease', onfinish: () => this.hide(true) })
         return this;
     }
 

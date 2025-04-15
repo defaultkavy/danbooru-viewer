@@ -92,7 +92,7 @@ export class $PostGrid extends $Layout {
     removeAll() {
         this.$postMap.clear();
         this.$focus.layer(100).removeAll();
-        this.animate({opacity: [1, 0]}, {duration: 300, easing: 'ease'}, () => this.clear().render())
+        this.animate({opacity: [1, 0]}, {duration: 300, easing: 'ease', onfinish: () => this.clear().render()})
         return this;
     }
 

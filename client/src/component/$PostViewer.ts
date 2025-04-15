@@ -1,9 +1,10 @@
 import { $Container } from "elexis";
-import type { Post } from "../../structure/Post";
-import { Booru } from "../../structure/Booru";
-import { ClientUser } from "../../structure/ClientUser";
-import { $VideoController } from "../VideoController/$VideoController";
+import type { Post } from "../structure/Post";
+import { Booru } from "../structure/Booru";
+import { ClientUser } from "../structure/ClientUser";
+import { $VideoController } from "./VideoController/$VideoController";
 import { $Input } from "elexis/lib/node/$Input";
+import { $Notify } from "./$Notify";
 
 export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
     $video = $('video');
@@ -57,7 +58,7 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                             }),
                             $('ion-icon').title('Original Size').name('resize-outline').self($original => {
                                 $original.on('click', () => { this.events.fire('original_size'); $original.disable(true); })
-                                if (!this.post.isLargeFile || this.post.isVideo) $original.disable(true);
+                                if (!this.post.isLargeFile || this.post.isVideo) $original.hide(true);
                             })
                         ])
                     ]),
@@ -83,8 +84,11 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                     $img.once('load', () => 
                         $img.once('load', () => $img.removeClass('loading')).src(this.post.isLargeFile ? this.post.large_file_url : this.post.file_url)
                     ).src(this.post.preview_file_url)
-                    if (!$img.complete) $img.css({ '$&.loading': {filter: 'blur(5px)'} }).class('loading')
-                    this.events.on('original_size', () => $img.src(this.post.file_url))
+                    if (!$img.complete) $img.css({ '$&.loading': {filter: 'blur(5px)'} }).class('loading');
+                    this.events.on('original_size', () => {
+                        $Notify.push('Original size image is loading...')
+                        $img.src(this.post.file_url).once('load', () => $Notify.push('Original size image loaded.'));
+                    })
                 })
         ])
         // viewer panel hide/show

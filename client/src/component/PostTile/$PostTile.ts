@@ -42,7 +42,7 @@ export class $PostTile extends $Container {
                 this.$video,
                 this.$img.on('mousedown', (e) => e.preventDefault())
                     .once('load', (e, $img) => { 
-                        $img.animate({opacity: [0, 1]}, {duration: 300}, () => $img.style({opacity: ''}));
+                        $img.animate({opacity: [0, 1]}, {duration: 300, onfinish: () => $img.style({opacity: ''})});
                         this.removeClass('loading'); 
                     })
             ])

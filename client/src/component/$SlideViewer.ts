@@ -103,10 +103,10 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
             }, {
                 duration: 300,
                 easing: ease ? 'ease' : 'ease-out',
-            }, (animation) => {
+                onfinish: () => {
                 this.$container.style({left: `-${this.getPositionLeft(currentIndex)}px`})
                 this.__render__(false);
-                resolve();
+                resolve();}
             })
         })
     }
