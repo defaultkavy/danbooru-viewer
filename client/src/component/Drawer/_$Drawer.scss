@@ -55,8 +55,13 @@ drawer {
             display: flex;
             gap: 1rem;
             flex-direction: column;
+            a {
+                display: block;
+            }
             button.icon {
                 justify-content: start;
+                width: 100%;
+                gap: 1rem;
             }
         }
     }

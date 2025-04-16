@@ -21,7 +21,9 @@
     - Support URL query like `/posts?tags=ord:fav+minato_aqua`.
 - Search tags with autocomplete.
 - Infinite scroll posts with waterfall image layout.
-- Mobile friendly.
+- Auto load newest posts when user stay on the top of page.
+- Swap image to switch between posts. Just like a gallery app.
+- Mobile friendly. Modern design.
 
 ## Hotkeys
 - Global Shortcut
@@ -42,12 +44,12 @@
 - [x] Booru Account Login (Using API keys)
 - [x] Favorite Post with Account
 - [x] Post Detail Panel in Posts Browser
+- [x] User Page
 - [ ] Saved Searches
-- [ ] User Page
 - [ ] Post Commentary
 - [ ] More...
 
 ## Tools
-- [Elexis](https://git.defaultkavy.com/defaultkavy/elexis): Web Builder.
+- [Elexis](https://github.com/defaultkavy/elexis): Web Builder.
 - [Elysia](https://elysiajs.com/): Server Framework.
 - [ionicons](https://ionic.io/ionicons): Open Souces Icons.

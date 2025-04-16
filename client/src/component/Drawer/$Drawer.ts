@@ -61,6 +61,8 @@ export class $Drawer extends $Container {
                             else Booru.set(danbooru);
                             this.close();
                         }),
+                    
+                    $('a').content($('icon-button').icon('logo-github').class('switch').content('GitHub Repository')).href('https://github.com/defaultkavy/danbooru-viewer')
                 ])
             ]),
             this.$filter.on('click', () => $.back())
