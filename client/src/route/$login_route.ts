@@ -1,5 +1,5 @@
 import { Booru } from "../structure/Booru"
-import { ClientUser } from "../structure/ClientUser";
+import { User } from "../structure/User"
 
 export const $login_route = $('route').path('/login').builder(({$page}) => {
     const state = $.state({
@@ -30,7 +30,7 @@ export const $login_route = $('route').path('/login').builder(({$page}) => {
     async function login() {
         await Booru.used.login(state.username$.value, state.apiKey$.value);
         if (Booru.used.user) { 
-            ClientUser.storageUserData = { apiKey: state.apiKey$.value, username: state.username$.value }
+            User.storageUserData = { apiKey: state.apiKey$.value, username: state.username$.value }
             // Clear input
             state.username$.set('');
             state.apiKey$.set('');

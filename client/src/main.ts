@@ -15,6 +15,9 @@ import { $posts_route, $root_posts_route } from './route/$posts_route';
 import { $Notify } from './component/$Notify';
 import $post_route from './route/$post_route';
 import $login_route from './route/$login_route';
+import { $user_route } from './route/$user_route';
+import { pageTransitionHandler } from './lib/pageTransition';
+import { $DetailPanel } from './component/DetailPanel/$DetailPanel';
 
 // render
 $(document.body).content([
@@ -29,64 +32,11 @@ $(document.body).content([
     $root_posts_route,
     $posts_route,
     $post_route,
-    $login_route
-  ])
+    $login_route,
+    $user_route
+  ]),
+  $DetailPanel.$container
 ])
-
-function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
-  const DURATION = 300;
-  const TX = 2;
-  e.preventDefault();
-  function intro() {
-    $(document.documentElement).style({scrollBehavior: 'auto'});
-    const transform = $.call(() => {
-      switch ($Router.navigationDirection) {
-        case $RouterNavigationDirection.Forward: return [`translateX(${TX}%)`, `translateX(0%)`];
-        case $RouterNavigationDirection.Back: return [`translateX(-${TX}%)`, `translateX(0%)`];
-        case $RouterNavigationDirection.Replace: return '';
-      }
-    })
-    e.$view.content(e.nextContent);
-    e.rendered();
-    e.nextContent.element?.class('animated').animate({
-      opacity: [0, 1],
-      transform
-    }, {
-      duration: DURATION,
-      easing: 'ease',
-      onfinish: () => {
-        e.switched();
-        $(document.documentElement).style({scrollBehavior: ''});
-        e.nextContent.element?.removeClass('animated')
-      }
-    })
-  }
-  function outro() {
-    $(document.documentElement).style({scrollBehavior: 'auto'});
-    const transform = $.call(() => {
-      switch ($Router.navigationDirection) {
-        case $RouterNavigationDirection.Forward: return [`translateX(0%)`, `translateX(-${TX}%)`];
-        case $RouterNavigationDirection.Back: return [`translateX(0%)`, `translateX(${TX}%)`];
-        case $RouterNavigationDirection.Replace: return '';
-      }
-    })
-
-    e.previousContent?.element?.class('animated').animate({
-      opacity: [1, 0],
-      transform
-    }, {
-      duration: DURATION,
-      easing: 'ease',
-      onfinish: () => {
-        e.previousContent?.element?.removeClass('animated');
-        intro();
-      }
-    })
-  }
-
-  if (e.previousContent) outro();
-  else intro();
-}
 
 $Router.events.on('stateChange', ({beforeURL, afterURL}) => componentState(beforeURL, afterURL))
 componentState(undefined, new URL(location.href))
@@ -104,7 +54,5 @@ $.keys($(window))
   .keydown(['q', 'Q'], e => { e.preventDefault(); if ($Router.index !== 0) $.back(); })
   .keydown(['e', 'E'], e => { e.preventDefault(); if ($Router.forwardIndex !== 0) $.forward(); })
   .keydown('Tab', e => { 
-    e.preventDefault(); 
-    if ($(':page#posts')) LocalSettings.previewPanelEnable$.set(!LocalSettings.previewPanelEnable$.value);
-    else if ($(':page#post')) LocalSettings.detailPanelEnable$.set(!LocalSettings.detailPanelEnable$.value);
+    e.preventDefault(); $DetailPanel.toogle();
   })

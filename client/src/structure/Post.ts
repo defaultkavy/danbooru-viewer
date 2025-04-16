@@ -3,7 +3,6 @@ import { Booru } from "./Booru";
 import { Tag } from "./Tag";
 import { User } from "./User";
 import { dateFrom, digitalUnit } from "./Util";
-import { ClientUser } from "./ClientUser";
 
 const LOADING_STRING = '...'
 
@@ -113,7 +112,7 @@ export class Post extends $EventManager<{update: []}> {
         this.booru.user.favorites.add(data.id);
         this.booru.user.favorite_count += 1;
         this.booru.user.update$();
-        ClientUser.events.fire('favoriteUpdate', this.booru.user);
+        User.events.fire('favoriteUpdate', this.booru.user);
         return data.id;
     }
 
@@ -126,7 +125,7 @@ export class Post extends $EventManager<{update: []}> {
         this.booru.user.favorites.delete(this.id);
         this.booru.user.favorite_count -= 1;
         this.booru.user.update$();
-        ClientUser.events.fire('favoriteUpdate', this.booru.user);
+        User.events.fire('favoriteUpdate', this.booru.user);
         return;
     }
 

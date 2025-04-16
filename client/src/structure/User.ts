@@ -1,18 +1,51 @@
-import type { Booru } from "./Booru";
+import { Booru } from "./Booru";
+import { Favorite } from "./Favorite";
 
 export class UserOptions {}
 export interface User extends UserOptions, UserData {}
 export class User {
+    id$ = $.state(0);
     name$ = $.state('...');
     post_upload_count$ = $.state(0);
+    note_update_count$ = $.state(0);
+    pool_version_count$ = $.state(0);
+    artist_commentary_version_count$ = $.state(0);
+    artist_version_count$ = $.state(0);
+    favorite_group_count$ = $.state(0);
+    flag_count$ = $.state(0);
+    forum_post_count$ = $.state(0);
+    post_update_count$ = $.state(0);
+    wiki_page_version_count$ = $.state(0);
     level$ = $.state(10);
     level_string$ = $.state('...');
+    created_date$ = $.state('...')
     booru: Booru;
     favorites = new Set<id>();
+    favorite_count$ = $.state(0);
+    is_client = false;
+    apiKey: string | null = null;
+    static events = $.events<ClientUserEventMap>()
+    events = $.events<{ready: [User]}>()
+    ready: Promise<User> = new Promise(resolve => this.events.once('ready', () => resolve(this)))
+    favorite_count = 0;
     constructor(booru: Booru, data: UserData, update$: boolean = true) {
         this.booru = booru;
         Object.assign(this, data);
         if (update$) this.update$();
+    }
+
+    static partial(booru: Booru, id: id) {
+        const user = new User(booru, {id} as any, false);
+        return user;
+    }
+
+    async fetch() {
+        const res = (await this.booru.fetch<UserData[]>(`/users.json?search[id]=${this.id}`)).at(0);
+        if (!res) throw 'User Not Found';
+        this.update(res);
+        this.booru.users.set(this.id, this);
+        this.events.fire('ready', this);
+        return this;
     }
 
     static async fetch(booru: Booru, id: username): Promise<User>;
@@ -51,6 +84,20 @@ export class User {
         return list;
     }
 
+    async init() {
+        await this.fetchFavorites();
+    }
+
+    async fetchFavorites() {
+        const oldestId = Array.from(this.favorites.keys()).at(-1);
+        const list = await Favorite.fetchUserFavorites(this.booru, this, ``, 1000, oldestId ? `b${oldestId}` : 1);
+        User.events.fire('favoriteUpdate', this);
+        this.favorite_count = this.favorites.size;
+        this.update$();
+        if (list.length >= 1000) this.fetchFavorites();
+        return list;
+    }
+
     update(data: UserData) {
         Object.assign(this, data);
         this.update$();
@@ -58,14 +105,35 @@ export class User {
     }
 
     update$() {
+        this.id$.set(this.id);
         this.name$.set(this.name);
         this.post_upload_count$.set(this.post_upload_count);
         this.level$.set(this.level);
         this.level_string$.set(this.level_string);
+        this.created_date$.set(new Date(this.created_at).toLocaleDateString('en', {dateStyle: 'medium'}))
+        this.favorite_count$.set(this.favorite_count);
     }
 
     get booruURL() { return `${this.booru.origin}/users/${this.id}`}
     get url() { return `/users/${this.id}`}
+
+    isClient(): this is ClientUser {
+        return !!this.apiKey
+    }
+
+    static get storageUserData() { const data = localStorage.getItem('user_data'); return data ? JSON.parse(data) as ClientUserStoreData : null }
+    static set storageUserData(data: ClientUserStoreData | null) { localStorage.setItem('user_data', JSON.stringify(data)) }
+}
+
+export interface ClientUser extends User, ClientUserData {}
+
+export interface ClientUserStoreData {
+    username: string;
+    apiKey: string;
+}
+
+export interface ClientUserEventMap {
+    favoriteUpdate: [user: User]
 }
 
 export enum UserLevel {
@@ -109,4 +177,48 @@ export interface UserSearchParam {
     max_level: UserLevel;
     current_user_first: boolean;
     order: 'name' | 'post_upload_count' | 'post_update_count' | 'note_update_count';
+}
+
+export interface ClientUserData extends UserData {
+    "last_logged_in_at": ISOString,
+    "last_forum_read_at": ISOString,
+    "comment_threshold": number,
+    "updated_at": ISOString,
+    "default_image_size": "large" | "original",
+    "favorite_tags": null | string,
+    "blacklisted_tags": string,
+    "time_zone": string,
+    "favorite_count": number,
+    "per_page": number,
+    "custom_style": string,
+    "theme": "auto" | "light" | "dark",
+    "receive_email_notifications": boolean,
+    "new_post_navigation_layout": boolean,
+    "enable_private_favorites": boolean,
+    "show_deleted_children": boolean,
+    "disable_categorized_saved_searches": boolean,
+    "disable_tagged_filenames": boolean,
+    "disable_mobile_gestures": boolean,
+    "enable_safe_mode": boolean,
+    "enable_desktop_mode": boolean,
+    "disable_post_tooltips": boolean,
+    "requires_verification": boolean,
+    "is_verified": boolean,
+    "show_deleted_posts": boolean,
+    "statement_timeout": number,
+    "favorite_group_limit": 10 | 100,
+    "tag_query_limit": 2 | 6,
+    "max_saved_searches": 250,
+    "wiki_page_version_count": number,
+    "artist_version_count": number,
+    "artist_commentary_version_count": number,
+    "pool_version_count": number | null,
+    "forum_post_count": number,
+    "comment_count": number,
+    "favorite_group_count": number,
+    "appeal_count": number,
+    "flag_count": number,
+    "positive_feedback_count": number,
+    "neutral_feedback_count": number,
+    "negative_feedback_count": number
 }

@@ -4,7 +4,6 @@ import { Post } from "../../structure/Post";
 import { $PostTile } from "../PostTile/$PostTile";
 import { $Input } from "elexis/lib/node/$Input";
 import { PostManager } from "../../structure/PostManager";
-import { $Container } from "elexis";
 
 interface $PostGridOptions {
     tags?: string
@@ -25,6 +24,15 @@ export class $PostGrid extends $Layout {
 
     protected async init() {
         this.posts.events.on('post_fetch', (posts) => { this.renderPosts() })
+        this.posts.events.on('noPost', () => {
+            this.parent?.insert([
+                $('div')
+                .css({ fontSize: '2rem', fontWeight: 900, color: `var(--secondary-color-3)`, display: 'flex', justifyContent: 'center', alignItems: 'center', userSelect: 'none', marginBlock: '10rem'})
+                .content([
+                    $('span').content('No Post')
+                ])
+            ])
+        })
         
         const timer = setInterval(async () => { 
             if (this.posts.tag_list.includes('order:random')) return clearInterval(timer);

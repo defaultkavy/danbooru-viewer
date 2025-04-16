@@ -1,8 +1,7 @@
 import { $EventManager, type $EventMap } from "elexis";
 import type { Post } from "./Post";
 import type { Tag } from "./Tag";
-import { ClientUser, type ClientUserData } from "./ClientUser";
-import type { User } from "./User";
+import { User, type ClientUser, type ClientUserData } from "./User";
 import type { Favorite } from "./Favorite";
 import { $Notify } from "../component/$Notify";
 
@@ -16,7 +15,7 @@ export class Booru {
     static events = new $EventManager<BooruStaticEventMap>();
     static name$ = $.state(this.name);
     static manager = new Map<string, Booru>()
-    user?: ClientUser;
+    user: ClientUser = User.partial(this, 0) as ClientUser;
     posts = new Map<id, Post>();
     tags = new Map<id, Tag>();
     users = new Map<id, User>();
@@ -31,7 +30,7 @@ export class Booru {
         this.used = booru;
         this.name$.set(booru.name);
         this.storageAPI = booru.name;
-        const userdata = ClientUser.storageUserData;
+        const userdata = User.storageUserData;
         if (userdata) booru.login(userdata.username, userdata.apiKey);
         this.events.fire('set');
         return this;
@@ -42,7 +41,7 @@ export class Booru {
 
     async fetch<T>(endpoint: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET', errMessage?: string) {
         try {
-            const auth = this.user ? `${endpoint.includes('?') ? '&' : '?'}login=${this.user.name}&api_key=${this.user.apiKey}` : '';
+            const auth = this.user.isClient() ? `${endpoint.includes('?') ? '&' : '?'}login=${this.user.name}&api_key=${this.user.apiKey}` : '';
             const data = await fetch(`${this.origin}${endpoint}${auth}`, {
                 method: method,
             }).then(res => res.json()) as any;
@@ -57,16 +56,20 @@ export class Booru {
 
     async login(username: string, apiKey: string) {
         const data = await this.fetch<ClientUserData>(`/profile.json?login=${username}&api_key=${apiKey}`, 'GET');
-        this.user = new ClientUser(this, apiKey, data);
+        Object.assign(this.user, data);
+        this.user.apiKey = apiKey;
         this.user.init();
-        Booru.events.fire('login', this.user);
+        this.user.update$();
+        this.users.set(this.user.id, this.user);
+        this.user.events.fire('ready', this.user);
+        Booru.events.fire('login', this.user as ClientUser);
         $Notify.push(`Welcome, ${this.user.name}`)
         return this.user;
     }
 
     logout() {
-        this.user = undefined;
-        ClientUser.storageUserData = null;
+        this.user = User.partial(this, -1) as ClientUser;
+        User.storageUserData = null;
         Booru.events.fire('logout');
         return this
     }

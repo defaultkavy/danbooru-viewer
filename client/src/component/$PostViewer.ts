@@ -1,10 +1,10 @@
 import { $Container } from "elexis";
 import type { Post } from "../structure/Post";
 import { Booru } from "../structure/Booru";
-import { ClientUser } from "../structure/ClientUser";
 import { $VideoController } from "./VideoController/$VideoController";
 import { $Input } from "elexis/lib/node/$Input";
 import { $Notify } from "./$Notify";
+import { User } from "../structure/User";
 
 export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
     $video = $('video');
@@ -46,7 +46,7 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                                 if (Booru.used.user) $heart.hide(false);
                                 else $heart.hide(true);
                                 Booru.events.on('login', () => $heart.hide(false))
-                                ClientUser.events.on('favoriteUpdate', (user) => {
+                                User.events.on('favoriteUpdate', (user) => {
                                     if (user.favorites.has(this.post.id)) $heart.name('heart');
                                     else $heart.name('heart-outline');
                                 })

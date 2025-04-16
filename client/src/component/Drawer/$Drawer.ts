@@ -2,6 +2,7 @@ import { $Container } from "elexis";
 import { Booru } from "../../structure/Booru";
 import { numberFormat } from "../../structure/Util";
 import { danbooru, safebooru } from "../../lib/booru";
+import { $Notify } from "../$Notify";
 
 export class $Drawer extends $Container {
     static $ele = new this();
@@ -28,7 +29,7 @@ export class $Drawer extends $Container {
                                         $('span').class('userid').content(`ID: ${user.id}`),
                                         $('span').class('level').content(['Level: ', user.level_string$])
                                     ])
-                                ]),//.on('click', () => $.replace(user.url)),
+                                ]).on('click', () => $.replace('/profile')),
                                 $('div').class('user-nav').content([
                                     $('icon-button').title('Uploaded Posts').icon('image').content(user.post_upload_count$.convert(numberFormat)).link(`/posts?tags=user:${user.name}`, true),
                                     $('icon-button').title('Favorites').icon('heart').content(user.favorite_count$.convert(numberFormat)).link(`/posts?tags=ordfav:${user.name}`, true),
@@ -43,7 +44,15 @@ export class $Drawer extends $Container {
                 $('div').class('nav').content([
                     $('icon-button').icon('log-in-outline').content('Login').link('/login', true)
                         .self(($div => Booru.events.on('login', () => $div.hide(true)).on('logout', () => $div.hide(false)))),
-                    $('icon-button').icon('log-in-outline').content('Logout').on('dblclick', () => Booru.used.logout()).hide(true)
+                    $('icon-button').icon('log-out-outline').content('Logout').self($button => {
+                        let clicked = false
+                        $button.on('click', () => {
+                            if (clicked) { Booru.used.logout(); $Notify.push('Logged Out.'); return }
+                            clicked = true;
+                            $Notify.push('Click button again to confirm logout.')
+                            setTimeout(() => { clicked = false }, 3000);
+                        })
+                    }).hide(true)
                         .self(($div => Booru.events.on('login', () => $div.hide(false)).on('logout', () => $div.hide(true)))),
                     
                     $('icon-button').icon('swap-horizontal').class('switch').content('Switch Booru')
@@ -67,7 +76,7 @@ export class $Drawer extends $Container {
         })
     }
 
-    open() { if (location.hash !== '#drawer') $.open(location.href + '#drawer'); return this; }
+    open() { if (location.hash !== '#drawer') $.open('#drawer'); return this; }
     close() { if (location.hash === '#drawer') $.back(); return this; }
 
     private activate() {

@@ -83,6 +83,21 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
         }
     })
 
+    $($DetailPanel)
+    .hide(LocalSettings.detailPanelEnable$.convert(bool => !bool))
+    .self($detail => {
+        events.on('post_switch', (post) => $detail.update(post));
+        detailPanelCheck(); // initial detail panel status
+        LocalSettings.detailPanelEnable$.on('update', state$ => detailPanelCheck())
+        $detail.open();
+        $page.on('open', () => !$detail.inDOM() && $detail.open());
+        $page.on('close', () => $detail.inDOM() && $detail.close());
+        function detailPanelCheck() {
+            if (LocalSettings.detailPanelEnable$.value) $page.removeStaticClass('side-panel-disable')
+            else $page.addStaticClass('side-panel-disable')
+        }
+    })
+
     // Build page
     return $page.id('post')
     .css({ padding: 0, paddingTop: `var(--nav-height)`,
@@ -115,18 +130,6 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
                 })
             })
         ]),
-        $($DetailPanel)
-            .hide(LocalSettings.detailPanelEnable$.convert(bool => !bool))
-            .position($page)
-            .self($detail => {
-                events.on('post_switch', (post) => $detail.update(post));
-                detailPanelCheck(); // initial detail panel status
-                LocalSettings.detailPanelEnable$.on('update', ({state$}) => detailPanelCheck())
-                function detailPanelCheck() {
-                    if (LocalSettings.detailPanelEnable$.value) $page.removeStaticClass('side-panel-disable')
-                    else $page.addStaticClass('side-panel-disable')
-                }
-            })
     ])
 })
 

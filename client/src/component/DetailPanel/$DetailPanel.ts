@@ -5,8 +5,12 @@ import { Tag, TagCategory } from "../../structure/Tag";
 import { numberFormat } from "../../structure/Util";
 import type { $IonIcon } from "../IonIcon/$IonIcon";
 import type { $Page, $Route } from "@elexis.js/router";
+import { LocalSettings } from "../../structure/LocalSettings";
 
 export class $DetailPanel extends $Container {
+    static $container = $('div').class('detail-panel-container').css({ width: '300px', position: 'fixed', right: 0, top: 0,
+        "@media (max-width: 800px)": { position: 'relative', width: '100%' }
+     })
     post: Post | null = null;
     options: $DetailPanelOptions;
     constructor(options?: $DetailPanelOptions) {
@@ -28,8 +32,14 @@ export class $DetailPanel extends $Container {
                 $('div').class('detail').content([
                     $('section').class('post-info').content([
                         new $Property('id').name('Post').content(`#${this.post.id}`),
-                        new $Property('uploader').name('Uploader').content(this.post.uploader$),
-                        new $Property('approver').name('Approver').content(this.post.approver$),
+                        new $Property('uploader').name('Uploader').content(this.post.uploader$).href(`/users/${this.post.uploader?.id}`).self($prop => {
+                            if (this.post?.uploader) $prop.href(`/users/${this.post.uploader?.id}`);
+                            this.post?.on('update', () => this.post?.uploader && $prop.href(`/users/${this.post.uploader.id}`))
+                        }),
+                        new $Property('approver').name('Approver').content(this.post.approver$).self($prop => {
+                            if (this.post?.approver) $prop.href(`/users/${this.post.approver?.id}`);
+                            this.post?.on('update', () => this.post?.approver ? $prop.href(`/users/${this.post.approver.id}`) : null)
+                        }),
                         new $Property('date').name('Date').content(this.post.created_date$),
                         new $Property('size').name('Size').content([this.post.file_size$, this.post.dimension$]),
                         new $Property('file-type').name('File Type').content(this.post.file_ext$),
@@ -129,6 +139,35 @@ export class $DetailPanel extends $Container {
             .on('afterShift', () => this.style({position: '', top: ''}))
         return this;
     }
+
+    open() {
+        $DetailPanel.$container.insert(this);
+        this.animate({
+            transform: ['translateX(100%)', 'translateX(0)'],
+            opacity: [0, 1]
+        }, {
+            duration: 300,
+            composite: 'replace',
+            easing: 'ease',
+        })
+    }
+
+    close() {
+        this.animate({
+            transform: ['translateX(0)', 'translateX(100%)'],
+            opacity: [1, 0]
+        }, {
+            duration: 300,
+            composite: 'replace',
+            easing: 'ease',
+            onfinish: () => this.remove()
+        })
+    }
+
+    static toogle() {
+        if ($(':page#posts') || $(':page#user')) LocalSettings.previewPanelEnable$.set(!LocalSettings.previewPanelEnable$.value)
+        else if ($(':page#post')) LocalSettings.detailPanelEnable$.set(!LocalSettings.detailPanelEnable$.value)
+    }
 }
 
 export interface $DetailPanelOptions {
@@ -138,7 +177,7 @@ export interface $DetailPanelOptions {
 
 class $Property extends $Container {
     $name = $('span').class('property-name')
-    $values = $('div').class('property-values')
+    $values = $('a').class('property-values')
     constructor(id: string) {
         super('div');
         this.staticClass('property').attribute('property-id', id);
@@ -157,6 +196,11 @@ class $Property extends $Container {
         this.$values.hide(false);
         const list = $.orArrayResolve(content);
         this.$values.content(list.map($item => $('span').staticClass('property-value').content($item)));
+        return this;
+    }
+
+    href(url: string) {
+        this.$values.href(url);
         return this;
     }
 }

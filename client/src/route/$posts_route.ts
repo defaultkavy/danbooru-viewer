@@ -6,37 +6,33 @@ import { Booru } from "../structure/Booru";
 import { LocalSettings } from "../structure/LocalSettings";
 
 export const $root_posts_route = $('route').path(['/', '/posts']).builder(({$page, query}) => {
-    const { $postGrid, $detail } = $postsPageComponents($page, query);
-    return $page.id('posts').content([ $postGrid, $detail ]);
+    const { $postGrid, $detail } = $postsPageComponents(query);
+    $detail.open();
+    $page.on('close', () => $detail.close()).on('open', () => $detail.open());
+    return $page.id('posts').content([ $postGrid ]);
 })
 
 export const $posts_route = $('route').path('/posts?tags').builder(({$page, query}) => {
-    const { $postGrid, $detail } = $postsPageComponents($page, query)
+    const { $postGrid, $detail } = $postsPageComponents(query)
+    
+    $detail.open();
+    $page.on('close', () => $detail.close()).on('open', () => $detail.open());
     return $page.id('posts').content([
-    $('header').content([
-        $('h2').content('Posts'),
-        $('div').class('tags').self($div => {
-        query.tags.split('+').forEach(tag => {
-            $div.insert($('a').class('tag').content(decodeURIComponent(tag)).href(`posts?tags=${tag}`))
-        })
-        })
-    ]),
-    $('div').class('no-post').hide(true).self($div => {
-        $div.on('startLoad', () => $div.hide(true))
-        $postGrid.self(() => {
-        $postGrid.posts.events
-            .on('noPost', () => $div.hide(false).content('No Posts'))
-            .on('post_error', message => $div.hide(false).content(message))
-        })
-    }),
-    $postGrid,
-    $detail
+        $('header').content([
+            $('h2').content('Posts'),
+            $('div').class('tags').self($div => {
+            query.tags.split('+').forEach(tag => {
+                $div.insert($('a').class('tag').content(decodeURIComponent(tag)).href(`posts?tags=${tag}`))
+            })
+            })
+        ]),
+        $postGrid
     ])
 })
 
-function $postsPageComponents($page: $Page, query: {tags?: string}) {
+export function $postsPageComponents(query: {tags?: string}) {
     const $postGrid = new $PostGrid(query);
-    const $previewPanel = new $DetailPanel({preview: true, tagsType: 'name_only'}).hide(LocalSettings.previewPanelEnable$.convert(bool => !bool)).position($page);
+    const $previewPanel = new $DetailPanel({preview: true, tagsType: 'name_only'}).hide(LocalSettings.previewPanelEnable$.convert(bool => !bool));
     detailPanelCheck();
     LocalSettings.previewPanelEnable$.on('update', detailPanelCheck);
     Booru.events.on('set', () => $previewPanel.update(null));
