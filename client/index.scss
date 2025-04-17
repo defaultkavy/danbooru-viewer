@@ -29,6 +29,7 @@
     --nav-height: 50px;
 }
 html {
+    overflow-y: scroll;
     overflow-x: hidden;
     font-size: 14px;
     scroll-behavior: smooth;

@@ -36,6 +36,7 @@ export class $TagInput extends $Container {
         this.value('');
         if (this.$input.inDOM()) this.$inputor.replace($tag);
         else this.insert($tag);
+        if (tagName.endsWith(':')) this.editTag($tag);
         return this;
     }
 

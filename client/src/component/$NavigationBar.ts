@@ -3,7 +3,6 @@ import { $Container } from "elexis";
 import { Booru } from "../structure/Booru";
 import { $Searchbar } from "./Searchbar/$Searchbar";
 import { $Drawer } from "./Drawer/$Drawer";
-import { LocalSettings } from "../structure/LocalSettings";
 import { $DetailPanel } from "./DetailPanel/$DetailPanel";
 
 export class $NavigationBar extends $Container {
@@ -26,7 +25,10 @@ export class $NavigationBar extends $Container {
           ])
         ]),
         // Searchbar
-        $('div').class('searchbar').content(['Search in ', Booru.name$])
+        $('div').css({ position: 'relative' }).class('searchbar').content([
+          `Search in ${Booru.name$}`,
+          $('span').css({ position: 'absolute', right: '0.4rem', top: '0.3rem', border: '1px solid var(--secondary-color-4)', padding: '0rem 0.4rem 0.1rem', borderRadius: '0.4rem', color: 'var(--secondary-color-4)' }).content('/')
+        ])
           .self($self => $Router.events.on('stateChange', ({beforeURL, afterURL}) => {if (beforeURL.hash === '#search') $self.hide(false); if (afterURL.hash === '#search') $self.hide(true)}))
           .on('click', () => $Searchbar.$ele.open()),
         // Buttons

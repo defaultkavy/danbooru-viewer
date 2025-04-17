@@ -4,6 +4,8 @@ import { Post } from "../../structure/Post";
 import { $PostTile } from "../PostTile/$PostTile";
 import { $Input } from "elexis/lib/node/$Input";
 import { PostManager } from "../../structure/PostManager";
+import { LocalSettings } from "../../structure/LocalSettings";
+import { $Notify } from "../$Notify";
 
 interface $PostGridOptions {
     tags?: string
@@ -65,6 +67,8 @@ export class $PostGrid extends $Layout {
                 if (focused instanceof $PostTile) $.open(focused.url);
             })
             .keydown(['Escape'], e => { e.preventDefault(); this.$focus.blur(); })
+            .keydown(['='], e => { e.preventDefault(); LocalSettings.columnSize$.set(state$ => state$.value + 1); this.resize(); $Notify.push(`The delta of post grid column number set to ${LocalSettings.columnSize$.value}`) })
+            .keydown(['-'], e => { e.preventDefault(); LocalSettings.columnSize$.set(state$ => state$.value - 1); this.resize(); $Notify.push(`The delta of post grid column number set to ${LocalSettings.columnSize$.value}`) })
     }
 
     protected async loader() {
@@ -81,7 +85,8 @@ export class $PostGrid extends $Layout {
     }
 
     protected resize() {
-        const col = Math.round(this.dom.clientWidth / 300);
+        
+        const col = Math.round(this.dom.clientWidth / 300) + LocalSettings.columnSize$.value;
         this.column(col >= 2 ? col : 2);
     }
 
