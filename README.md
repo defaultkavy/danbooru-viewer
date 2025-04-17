@@ -22,7 +22,7 @@
 - Search tags with autocomplete.
 - Infinite scroll posts with waterfall image layout.
 - Auto load newest posts when user stay on the top of page.
-- Swap image to switch between posts. Just like a gallery app.
+- Swap image to switch between posts, just like a gallery app.
 - Mobile friendly. Modern design.
 
 ## Hotkeys
@@ -34,6 +34,7 @@
   - `W/A/S/D`: Navigation posts in direction.
   - `Tab`: Toogle post detail panel.
   - `Space/Enter`: Open selected post page.
+  - `-/=`: Adjust posts grid column size.
 - Post Page
   - `A/D`: Switch to previous/next post page.
   - `Spacebar`: Play/Pause video.
