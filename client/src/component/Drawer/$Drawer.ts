@@ -78,7 +78,7 @@ export class $Drawer extends $Container {
         })
     }
 
-    open() { if (location.hash !== '#drawer') $.open('#drawer'); return this; }
+    open() { if (location.hash !== '#drawer') $.open(`#drawer`); return this; }
     close() { if (location.hash === '#drawer') $.back(); return this; }
 
     private activate() {
