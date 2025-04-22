@@ -101,7 +101,7 @@ export class $Searchbar extends $Container {
             const inputIndex = this.$tagInput.children.indexOf(this.$tagInput.$inputor);
             if (this.$tagInput.$input.value().at(-1) === ':') return this.getSearchSuggestions();
             const nextTag = this.$tagInput.children.array.at(inputIndex + 1) as $Tag;
-            $selection.value().forEach(this.$tagInput.addTag)
+            $selection.value().forEach((tagname) => this.$tagInput.addTag(tagname))
             if (nextTag) this.$tagInput.editTag(nextTag);
             else this.$tagInput.input();
         }
@@ -118,7 +118,7 @@ export class $Searchbar extends $Container {
                 this.$tagInput.value(this.$selectionList.focused?.value().at(0));
                 break;
             }
-            case ' ': addTag(); break;
+            // case ' ': addTag(); break;
             case 'Enter': {
                 e.preventDefault();
                 if (this.$selectionList.focused) addSelectedTag(this.$selectionList.focused);
@@ -167,12 +167,13 @@ export class $Searchbar extends $Container {
 
     async getSearchSuggestions() {
         const input = this.$tagInput.$input.value();
+        const tags = this.$tagInput.tags.array.map(tag => tag.name);
         const history = await $Searchbar.history();
         const results = await Autocomplete.fetch(Booru.used, input, 20);
         this.$selectionList
             .clearSelections()
             .addSelections([
-                ...Array.from(history.values()).filter(v => v.tag.includes(input)).reverse().slice(0, 3).map(data => new $Selection().value([data.tag])
+                ...Array.from(history.values()).filter(v => v.tag.includes(input) && !tags.includes(v.tag)).reverse().slice(0, 3).map(data => new $Selection().value([data.tag])
                     .content([
                         $('div').class('selection-label').content([
                             data.tag.split(',').map(tag => $('span').content(tag))
@@ -219,9 +220,8 @@ export class $Searchbar extends $Container {
     }
 
     search() {
-        $.replace(`/posts?tags=${this.$tagInput.query.replace(':', '%3A')}`);
+        $.replace(`/posts?tags=${this.$tagInput.query.replace(':', '%3A').replaceAll(' ', '_')}`);
         this.$tagInput.tags.array.forEach(tag => $Searchbar.store.put({tag: tag.name, timestamp: Date.now()}))
-        
         this.$tagInput.clearAll();
         this.inactivate();
         return this;

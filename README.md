@@ -46,6 +46,7 @@
 - [x] Favorite Post with Account
 - [x] Post Detail Panel in Posts Browser
 - [x] User Page
+- [x] Search History
 - [ ] Saved Searches
 - [ ] Post Commentary
 - [ ] More...

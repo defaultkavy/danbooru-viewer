@@ -4,6 +4,7 @@ import { $Tag } from "./$Tag";
 
 export class $TagInput extends $Container {
     $input = $('input').type('text')
+    .spellcheck(false)
     .css({color: 'inherit', height: '100%', textOverflow: 'ellipsis', fontFamily: 'inherit', background: 'none', top: 0, left: 0,
         fontSize: 'inherit', lineHeight: 'inherit', padding: 'inherit', position: 'absolute', boxSizing: 'border-box', width: '100%',
         border: 'none', outline: 'none'
