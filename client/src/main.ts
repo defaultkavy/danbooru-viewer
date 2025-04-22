@@ -2,6 +2,7 @@ import 'elexis';
 import '@elexis.js/layout';
 import '@elexis.js/router';
 import '@elexis.js/css';
+import '@elexis.js/idb';
 import './style';
 import './lib/registerTagName';
 import './lib/booru';
@@ -9,7 +10,6 @@ import { $Router, $RouterNavigationDirection, type $RouterEventMap } from '@elex
 import { $Searchbar } from './component/Searchbar/$Searchbar';
 import { $Drawer } from './component/Drawer/$Drawer';
 import { $Input } from 'elexis/lib/node/$Input';
-import { LocalSettings } from './structure/LocalSettings';
 import { $NavigationBar } from './component/$NavigationBar';
 import { $posts_route, $root_posts_route } from './route/$posts_route';
 import { $Notify } from './component/$Notify';
@@ -18,7 +18,6 @@ import $login_route from './route/$login_route';
 import { $user_route } from './route/$user_route';
 import { pageTransitionHandler } from './lib/pageTransition';
 import { $DetailPanel } from './component/DetailPanel/$DetailPanel';
-
 // render
 $(document.body).content([
   $NavigationBar.$ele,

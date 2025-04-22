@@ -7,7 +7,7 @@ $.CSS({
         paddingInline: '1rem',
         boxSizing: 'border-box',
 
-        "$&.custom": {
+        "&.custom": {
             padding: 0
         }
     }

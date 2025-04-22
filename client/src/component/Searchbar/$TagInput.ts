@@ -3,9 +3,21 @@ import type { $Searchbar } from "./$Searchbar";
 import { $Tag } from "./$Tag";
 
 export class $TagInput extends $Container {
-    $input = $('input').type('text');
-    $sizer = $('span').class('sizer');
-    $inputor = $('div').class('input-wrapper').content([
+    $input = $('input').type('text')
+    .css({color: 'inherit', height: '100%', textOverflow: 'ellipsis', fontFamily: 'inherit', background: 'none', top: 0, left: 0,
+        fontSize: 'inherit', lineHeight: 'inherit', padding: 'inherit', position: 'absolute', boxSizing: 'border-box', width: '100%',
+        border: 'none', outline: 'none'
+    });
+    $sizer = $('span').class('sizer')
+    .css({fontFamily: 'inherit', whiteSpace: 'pre', height: '1em', display: 'inline-block', fontSize: 'inherit', 
+        lineHeight: 'inherit', boxSizing: 'border-box', position: 'relative', opacity: 0, minWidth: '2px', userSelect: 'none', 
+        verticalAlign: 'top'});
+    $inputor = $('div').class('input-wrapper')
+    .css({color: 'var(--primary-color)', border: '1px solid var(--secondary-color-9)', borderRadius: 'var(--border-radius-small)',
+        position: 'relative', boxSizing: 'border-box', lineHeight: '1em', fontSize: '14px', padding: '4px 8px', 
+        display: 'inline-block', maxWidth: '100%', textOverflow: 'ellipsis'
+    })
+    .content([
         this.$sizer,
         this.$input
             .on('input', () => { 
@@ -17,6 +29,9 @@ export class $TagInput extends $Container {
     constructor($seachbar: $Searchbar) {
         super('tag-input');
         this.$seachbar = $seachbar;
+        this.css({
+            display: 'flex', gap: '0.4rem', width: '100%', height: '100%', overflow: 'hidden', 
+            paddingInline: '0.4rem', boxSizing: 'border-box', cursor: 'text'})
     }
 
     input() {

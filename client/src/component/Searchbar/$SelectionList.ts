@@ -6,6 +6,23 @@ export class $SelectionList extends $Container {
     selections = new Set<$Selection>();
     constructor() {
         super('selection-list');
+        this.css({
+            display: 'block', 
+            maxHeight: '40vh', 
+            overflowY: 'scroll', 
+            overflowX: 'hidden', 
+            position: 'relative',
+            '&::-webkit-scrollbar': {
+                width: '4px'
+            },
+            '$.tag-category, .user-level, .history-tag': {
+                padding: '0.1rem 0.4rem', 
+                borderRadius: 'var(--border-radius-small)', 
+                fontSize: '0.9rem', 
+                backgroundColor: 'var(--secondary-color-4)', 
+                color: 'var(--secondary-color-9)'
+            }
+        })
     }
 
     addSelections(selections: OrArray<$Selection>) {

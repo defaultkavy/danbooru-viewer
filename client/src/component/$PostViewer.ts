@@ -1,10 +1,10 @@
 import { $Container } from "elexis";
 import type { Post } from "../structure/Post";
 import { Booru } from "../structure/Booru";
-import { $VideoController } from "./VideoController/$VideoController";
 import { $Input } from "elexis/lib/node/$Input";
 import { $Notify } from "./$Notify";
 import { User } from "../structure/User";
+import { $VideoController } from "./$VideoController";
 
 export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
     $video = $('video');

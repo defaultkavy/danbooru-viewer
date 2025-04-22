@@ -1,7 +1,7 @@
-import { $Container, $Node, type $Video } from "elexis";
-import { time } from "../../structure/Util";
-import type { Post } from "../../structure/Post";
-import type { $PostViewer } from "../$PostViewer";
+import { $Container, $Video } from "elexis";
+import type { Post } from "../structure/Post";
+import { time } from "../structure/Util";
+import type { $PostViewer } from "./$PostViewer";
 
 export class $VideoController extends $Container {
     $video: $Video;
