@@ -7,7 +7,6 @@
     "description": "Danbooru images viewer, modern style user interface.",
     "start_url": "/",
     "dir": "ltr",
-    "orientation": "any",
     "display": "standalone",
     "categories": [
       "photo"

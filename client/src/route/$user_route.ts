@@ -3,7 +3,7 @@ import { pageTransitionHandler } from "../lib/pageTransition"
 import { Booru } from "../structure/Booru"
 import { User } from "../structure/User"
 import { $postsPageComponents } from "./$posts_route"
-import type { $Anchor, $State } from "elexis"
+import type { $Anchor, $Container, $State } from "elexis"
 import { LocalSettings } from "../structure/LocalSettings"
 
 export const $user_route = $('route')
@@ -15,8 +15,11 @@ export const $user_route = $('route')
 })
 .builder(({params, $page}) => {
     const user = params.id === 'CLIENT' ? Booru.used.user : Booru.used.users.get(+params.id) ?? User.partial(Booru.used, +params.id);
-    user.fetch();
-    user.fetchFavorites();
+    // skip client user page fetch, client will be fetch on logon
+    if (user.id !== 0) {
+        user.fetch();
+        user.fetchFavorites();
+    }
     LocalSettings.previewPanelEnable$.on('update', state$ => checkDetailPanel(state$) )
     checkDetailPanel(LocalSettings.previewPanelEnable$);
     function checkDetailPanel(state$: $State<boolean>) {
@@ -61,11 +64,12 @@ export const $user_route = $('route')
             .css({
                 display: 'flex',
                 gap: '1rem',
-                '$a': {
+                '$div': {
                     width: '100%',
                     textAlign: 'center',
                     fontSize: '1.2rem',
                     fontWeight: 900,
+                    cursor: 'pointer',
 
                     "$&:hover": {
                         "$span": {
@@ -83,8 +87,8 @@ export const $user_route = $('route')
                 }
             })
             .content([
-                $('a').content($('span').content('Upload Posts')).href(`#upload`).self($a => tabActiveCheck($a, '', '#upload')),
-                $('a').content($('span').content('Favorite Posts')).href(`#favorite`).self($a => tabActiveCheck($a, `#favorite`))
+                $('div').content($('span').content('Upload Posts')).on('click', () => $.replace('#upload')).self($a => tabActiveCheck($a, '', '#upload')),
+                $('div').content($('span').content('Favorite Posts')).on('click', () => $.replace('#favorite')).self($a => tabActiveCheck($a, `#favorite`))
             ]),
             $('router').base(`${location.pathname}`)
             .on('beforeSwitch', pageTransitionHandler)
@@ -117,7 +121,7 @@ export const $user_route = $('route')
     ])
 })
 
-function tabActiveCheck($a: $Anchor, ...list: string[]) {
+function tabActiveCheck($a: $Container, ...list: string[]) {
     $Router.events.on('stateChange', ({afterURL}) => list.includes(afterURL.hash) ? $a.class('active') : $a.removeClass('active') );
     list.includes(location.hash) ? $a.class('active') : $a.removeClass('active');
 }
