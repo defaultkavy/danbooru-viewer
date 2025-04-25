@@ -1,5 +1,5 @@
 import { $Container } from "elexis";
-import { Tag, TagCategory } from "../../structure/Tag";
+import { TagCategory } from "../../structure/Tag";
 import { Booru } from "../../structure/Booru";
 import { Autocomplete } from "../../structure/Autocomplete";
 import { numberFormat } from "../../structure/Util";
@@ -26,7 +26,7 @@ export class $Searchbar extends $Container {
     static store = $idb.getStore('search-history')
     static index = this.store.getIndex('timestamp');
     static async history() {
-        return await this.index.getAll(obj => true);
+        return await this.index.getArray();
     }
 
     private build() {
@@ -75,7 +75,7 @@ export class $Searchbar extends $Container {
         ])
     }
 
-    open() { if (location.hash !== '#search') $.open(location.href + '#search'); return this; }
+    open() { if (location.hash !== '#search') $.open('#search'); return this; }
     close() { if (location.hash === '#search') $.back(); return this; }
 
     activate() {
