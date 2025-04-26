@@ -28,7 +28,7 @@ export class Booru {
 
     static set(booru: Booru) {
         this.used = booru;
-        this.name$.set(booru.name);
+        this.name$.value(booru.name);
         this.storageAPI = booru.name;
         const userdata = User.storageUserData;
         if (userdata) booru.login(userdata.username, userdata.apiKey);

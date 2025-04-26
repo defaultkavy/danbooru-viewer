@@ -31,7 +31,7 @@ export class $VideoController extends $Container {
              })
             .content([
                 $('div').class('left').content([
-                    $('ion-icon').class('play').css({ flexShrink: 0 }).title('Play').name('play').self($play => {
+                    $('ion-icon').class('play').css({ flexShrink: 0 }).title('Play').name('play').use($play => {
                         this.$video.on('play', () => $play.name('pause'))
                             .on('pause', () => $play.name('play'))
                         $play.on('click', () => this.$video.isPlaying ? this.$video.pause() : this.$video.play())
@@ -39,7 +39,7 @@ export class $VideoController extends $Container {
                     $('div').class('duration').content([
                         $('span').class('current-time').content(this.duration$),
                         $('span').content('/'),
-                        $('span').class('total-time').content('00:00').self($time => {
+                        $('span').class('total-time').content('00:00').use($time => {
                             this.$video.on('loadeddata', () => {
                                 const t = time(this.$video.duration * 1000);
                                 $time.content(Number(t.hh) > 0 ? `${t.hh}:${t.mm}:${t.ss}` : `${t.mm}:${t.ss}`);
@@ -48,7 +48,7 @@ export class $VideoController extends $Container {
                     ]),
                 ]),
                 $('div').class('right').content([
-                    $('ion-icon').class('volume').title('Volume').name('volume-high').disable(!this.post.hasSound).self($volume => {
+                    $('ion-icon').class('volume').title('Volume').name('volume-high').disable(!this.post.hasSound).use($volume => {
                         const check = () => {
                             if (this.$video.muted()) $volume.name('volume-mute');
                             else $volume.name('volume-high');
@@ -58,7 +58,7 @@ export class $VideoController extends $Container {
                             check();
                         })
                     }),
-                    $('ion-icon').class('full-screen').title('Full-Screen').name('scan').self($fullscreen => {
+                    $('ion-icon').class('full-screen').title('Full-Screen').name('scan').use($fullscreen => {
                         $fullscreen.on('click', () => {
                             if (document.fullscreenElement) document.exitFullscreen()
                             else this.$viewer.dom.requestFullscreen()
@@ -74,7 +74,7 @@ export class $VideoController extends $Container {
                 .content([
                     $('div').class('progress')
                     .css({ height: '100%', backgroundColor: 'var(--secondary-color-3)', width: '100px' })
-                    .self($progress => {
+                    .use($progress => {
                         this.$video.on('timeupdate', e => {
                             $progress.style({width: `${(this.$video.currentTime() / this.$video.duration) * 100}%`})
                         })
@@ -83,7 +83,7 @@ export class $VideoController extends $Container {
                         })
                     })
                 ])
-            ]).self($bar => {
+            ]).use($bar => {
                 const pointers = $.pointers($(document.body));
                 let isPlaying = false;
                 pointers.on('down', (pointer, e) => {
@@ -93,12 +93,12 @@ export class $VideoController extends $Container {
                         isPlaying = true;
                         this.$video.pause();
                     }
-                    const percentage = (pointer.x - $bar.domRect().x) / $bar.offsetWidth;
+                    const percentage = (pointer.x - $bar.dom.getBoundingClientRect().x) / $bar.offsetWidth;
                     this.$video.currentTime(percentage * this.$video.duration);
                 })
                 pointers.on('move', (pointer, e) => {
                     e.preventDefault()
-                    const percentage = (pointer.x - $bar.domRect().x) / $bar.offsetWidth;
+                    const percentage = (pointer.x - $bar.dom.getBoundingClientRect().x) / $bar.offsetWidth;
                     this.$video.currentTime(percentage * this.$video.duration);
                     events.fire('progressChange', percentage)
                 })
@@ -112,6 +112,6 @@ export class $VideoController extends $Container {
 
     durationUpdate() {
         const t = time(this.$video.currentTime() * 1000)
-        this.duration$.set(Number(t.hh) > 0 ? `${t.hh}:${t.mm}:${t.ss}` : `${t.mm}:${t.ss}`)
+        this.duration$.value(Number(t.hh) > 0 ? `${t.hh}:${t.mm}:${t.ss}` : `${t.mm}:${t.ss}`)
     }
 }

@@ -28,12 +28,12 @@ export const $login_route = $('route').path('/login').builder(({$page}) => {
     ])
 
     async function login() {
-        await Booru.used.login(state.username$.value, state.apiKey$.value);
+        await Booru.used.login(state.username$.value(), state.apiKey$.value());
         if (Booru.used.user) { 
-            User.storageUserData = { apiKey: state.apiKey$.value, username: state.username$.value }
+            User.storageUserData = { apiKey: state.apiKey$.value(), username: state.username$.value() }
             // Clear input
-            state.username$.set('');
-            state.apiKey$.set('');
+            state.username$.value('');
+            state.apiKey$.value('');
             $.replace('/');
         };
     }

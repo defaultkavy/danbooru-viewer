@@ -23,7 +23,7 @@ export const $user_route = $('route')
     LocalSettings.previewPanelEnable$.on('update', state$ => checkDetailPanel(state$) )
     checkDetailPanel(LocalSettings.previewPanelEnable$);
     function checkDetailPanel(state$: $State<boolean>) {
-        state$.value ? $page.class('side-panel-disable') : $page.removeClass('side-panel-disable')
+        state$.value() ? $page.class('side-panel-disable') : $page.removeClass('side-panel-disable')
     }
     return $page.id('user')
     .css({ display: 'flex', justifyContent: 'center', transition: 'all 0.3s ease', width: '100%',
@@ -87,8 +87,8 @@ export const $user_route = $('route')
                 }
             })
             .content([
-                $('div').content($('span').content('Upload Posts')).on('click', () => $.replace('#upload')).self($a => tabActiveCheck($a, '', '#upload')),
-                $('div').content($('span').content('Favorite Posts')).on('click', () => $.replace('#favorite')).self($a => tabActiveCheck($a, `#favorite`))
+                $('div').content($('span').content('Upload Posts')).on('click', () => $.replace('#upload')).use($a => tabActiveCheck($a, '', '#upload')),
+                $('div').content($('span').content('Favorite Posts')).on('click', () => $.replace('#favorite')).use($a => tabActiveCheck($a, `#favorite`))
             ]),
             $('router').base(`${location.pathname}`)
             .on('beforeSwitch', pageTransitionHandler)
@@ -127,7 +127,7 @@ function tabActiveCheck($a: $Container, ...list: string[]) {
 }
 
 function $ProfileItem(title: string, value$: $State<any> | string) {
-    return $('a')
+    return $('ra')
     .css({ display: 'block', minWidth: '12rem', background: `var(--secondary-color-3)`, padding: '1rem', borderRadius: `var(--border-radius-large)`, flexGrow: 1 })
     .content([
         $('div').css({ fontWeight: 900 }).content(title),

@@ -52,8 +52,8 @@ export class Tag {
     }
 
     $update() {
-        this.post_count$.set(this.post_count);
-        this.name$.set(this.name); 
+        this.post_count$.value(this.post_count);
+        this.name$.value(this.name); 
     }
 }
 

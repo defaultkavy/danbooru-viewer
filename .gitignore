@@ -4,3 +4,5 @@ bun.lockb
 package.local.json
 dist
 server.js
+bun.lock
+static.html

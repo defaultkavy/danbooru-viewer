@@ -19,7 +19,7 @@ export class $Drawer extends $Container {
     private build() {
         this.content([
             this.$container.content([
-                $('div').class('user-info').hide(true).self(($div) => [
+                $('div').class('user-info').hide(true).use(($div) => [
                     Booru.events
                         .on('login', (user) => {
                             $div.content([
@@ -43,8 +43,8 @@ export class $Drawer extends $Container {
                 ]),
                 $('div').class('nav').content([
                     $('icon-button').icon('log-in-outline').content('Login').link('/login', true)
-                        .self(($div => Booru.events.on('login', () => $div.hide(true)).on('logout', () => $div.hide(false)))),
-                    $('icon-button').icon('log-out-outline').content('Logout').self($button => {
+                        .use(($div => Booru.events.on('login', () => $div.hide(true)).on('logout', () => $div.hide(false)))),
+                    $('icon-button').icon('log-out-outline').content('Logout').use($button => {
                         let clicked = false
                         $button.on('click', () => {
                             if (clicked) { Booru.used.logout(); $Notify.push('Logged Out.'); return }
@@ -53,7 +53,7 @@ export class $Drawer extends $Container {
                             setTimeout(() => { clicked = false }, 3000);
                         })
                     }).hide(true)
-                        .self(($div => Booru.events.on('login', () => $div.hide(false)).on('logout', () => $div.hide(true)))),
+                        .use(($div => Booru.events.on('login', () => $div.hide(false)).on('logout', () => $div.hide(true)))),
                     
                     $('icon-button').icon('swap-horizontal').class('switch').content('Switch Booru')
                         .on('click', () => {
@@ -62,7 +62,7 @@ export class $Drawer extends $Container {
                             this.close();
                         }),
                     
-                    $('a').content($('icon-button').icon('logo-github').class('switch').content('GitHub Repository')).href('https://github.com/defaultkavy/danbooru-viewer')
+                    $('ra').content($('icon-button').icon('logo-github').class('switch').content('GitHub Repository')).href('https://github.com/defaultkavy/danbooru-viewer')
                 ])
             ]),
             this.$filter.on('click', () => $.back())

@@ -38,7 +38,7 @@ export class $PostTile extends $Container {
                     $('span').content('GIF')
                 ]) : null,
             // Tile
-            $('a').href(this.url).preventDefault(LocalSettings.previewPanelEnable$).content(() => [
+            $('ra').href(this.url).preventDefault(LocalSettings.previewPanelEnable$).content(() => [
                 this.$video,
                 this.$img.on('mousedown', (e) => e.preventDefault())
                     .once('load', (e, $img) => { 
@@ -58,7 +58,7 @@ export class $PostTile extends $Container {
                 if (this.post.isGif) { this.$img.src(this.post.previewURL) }
             }, {passive: true} )
             .on('click', () => {
-                if (!LocalSettings.previewPanelEnable$.value) return;
+                if (!LocalSettings.previewPanelEnable$.value()) return;
                 if (innerWidth <= 800) return $.open(this.url);
                 if (this.attribute('focus') === '') $.open(this.url);
                 else this.trigger('$focus');
@@ -68,7 +68,7 @@ export class $PostTile extends $Container {
     durationUpdate() {
         if (!this.$video) return;
         const t = time(this.post.media_asset.duration * 1000 - this.$video.currentTime() * 1000)
-        this.duration$.set(Number(t.hh) > 0 ? `${t.hh}:${t.mm}:${t.ss}` : `${t.mm}:${t.ss}`)
+        this.duration$.value(Number(t.hh) > 0 ? `${t.hh}:${t.mm}:${t.ss}` : `${t.mm}:${t.ss}`)
     }
 
     get url() { return `${this.post.pathname}${this.$grid.tags ? `?q=${this.$grid.tags}` : ''}` }

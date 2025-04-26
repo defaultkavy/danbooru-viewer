@@ -75,18 +75,18 @@ export class Post extends $EventManager<{update: []}> {
     }
 
     update$() {
-        this.uploader$.set(this.uploader?.name$ ?? this.uploader_id?.toString());
-        this.approver$.set(this.approver?.name$ ?? this.approver_id?.toString() ?? 'None');
-        this.created_date$.set(dateFrom(+new Date(this.created_at)));
-        this.favcount$.set(this.fav_count);
-        this.score$.set(this.score);
-        this.file_size$.set(digitalUnit(this.file_size));
-        this.file_ext$.set(this.file_ext as any);
-        this.file_url$.set(this.file_url);
-        this.source$.set(this.source);
-        this.dimension$.set(`${this.image_width}x${this.image_height}`);
-        this.booruUrl$.set(`${this.booruUrl}`);
-        if (this.isUgoria) this.webm_url$.set(this.large_file_url);
+        this.uploader$.value(this.uploader?.name$ ?? this.uploader_id?.toString());
+        this.approver$.value(this.approver?.name$ ?? this.approver_id?.toString() ?? 'None');
+        this.created_date$.value(dateFrom(+new Date(this.created_at)));
+        this.favcount$.value(this.fav_count);
+        this.score$.value(this.score);
+        this.file_size$.value(digitalUnit(this.file_size));
+        this.file_ext$.value(this.file_ext as any);
+        this.file_url$.value(this.file_url);
+        this.source$.value(this.source);
+        this.dimension$.value(`${this.image_width}x${this.image_height}`);
+        this.booruUrl$.value(`${this.booruUrl}`);
+        if (this.isUgoria) this.webm_url$.value(this.large_file_url);
         this.createdDate = new Date(this.created_at);
         this.fire('update');
     }
@@ -121,7 +121,7 @@ export class Post extends $EventManager<{update: []}> {
         const data = await fetch(`/api/favorites/${this.id}?login=${this.booru.user.name}&api_key=${this.booru.user.apiKey}&origin=${this.booru.origin}`, {method: 'DELETE'}).then(res => res.json()) as boolean;
         if (data === false) return;
         this.fav_count--;
-        this.favcount$.set(this.fav_count);
+        this.favcount$.value(this.fav_count);
         this.booru.user.favorites.delete(this.id);
         this.booru.user.favorite_count -= 1;
         this.booru.user.update$();

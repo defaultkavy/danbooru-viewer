@@ -1,11 +1,11 @@
-import { $Layout, type $LayoutEventMap } from "@elexis.js/layout";
+import { $Layout } from "@elexis.js/layout";
 import { Booru } from "../../structure/Booru";
 import { Post } from "../../structure/Post";
 import { $PostTile } from "../PostTile/$PostTile";
-import { $Input } from "elexis/lib/node/$Input";
 import { PostManager } from "../../structure/PostManager";
 import { LocalSettings } from "../../structure/LocalSettings";
 import { $Notify } from "../$Notify";
+import { $Input } from "elexis";
 
 interface $PostGridOptions {
     tags?: string
@@ -49,7 +49,7 @@ export class $PostGrid extends $Layout {
         //     this.$focus.currentLayer?.focus(this.$focus.currentLayer.currentFocus);
         // })
         this.loader();
-        this.$focus.layer(100).loop(false).scrollThreshold($.rem(2) + 60);
+        this.$focus.layer(100).loop(false).scrollThreshold($.rem(2) + 60).scrollBehavior('smooth');
 
         $.keys($(window))
             .if(e => {
@@ -67,8 +67,8 @@ export class $PostGrid extends $Layout {
                 if (focused instanceof $PostTile) $.open(focused.url);
             })
             .keydown(['Escape'], e => { e.preventDefault(); this.$focus.blur(); })
-            .keydown(['='], e => { e.preventDefault(); LocalSettings.columnSize$.set(state$ => state$.value + 1); this.resize(); this.render(); $Notify.push(`The delta of post grid column number set to ${LocalSettings.columnSize$.value}`) })
-            .keydown(['-'], e => { e.preventDefault(); LocalSettings.columnSize$.set(state$ => state$.value - 1); this.resize(); this.render(); $Notify.push(`The delta of post grid column number set to ${LocalSettings.columnSize$.value}`) })
+            .keydown(['='], e => { e.preventDefault(); LocalSettings.columnSize$.value(state$ => state$.value() + 1); this.resize(); this.render(); $Notify.push(`The delta of post grid column number set to ${LocalSettings.columnSize$.value()}`) })
+            .keydown(['-'], e => { e.preventDefault(); LocalSettings.columnSize$.value(state$ => state$.value() - 1); this.resize(); this.render(); $Notify.push(`The delta of post grid column number set to ${LocalSettings.columnSize$.value()}`) })
     }
 
     protected async loader() {
@@ -85,8 +85,26 @@ export class $PostGrid extends $Layout {
     }
 
     protected resize() {
-        const col = Math.round(this.dom.clientWidth / 300) + LocalSettings.columnSize$.value;
+        const col = Math.round(this.dom.clientWidth / 300) + LocalSettings.columnSize$.value();
         this.column(col >= 2 ? col : 2);
+    }
+
+    scrollToPost() {
+        if (!this.inDOM()) return;
+        const $layer = this.$focus.layer(100);
+        if (this.posts.opened) {
+            const $post = this.$postMap.get(this.posts.opened)
+            this.posts.opened = null;
+            if ($post) $layer.prevBlur = $post;
+            if ($layer.currentFocus) $layer.focus($post);
+            else {
+                if ($post?.inDOM() && $post.inViewport()) return;
+                $layer.focus($post);
+                setTimeout(() => $layer.blur(), 300);
+            }
+        } else {
+            $.scrollTo($layer.currentFocus, {threshold: $layer.scrollThreshold(), behavior: 'smooth'})
+        }
     }
 
     /* Grid items update display */
@@ -95,7 +113,7 @@ export class $PostGrid extends $Layout {
         const $postList = [...this.posts.orderMap.values()].map(post => {
             const $post = this.$postMap.get(post) ?? new $PostTile(this, post).on('$focus', (e, $post) => this.$focus.layer(100).focus($post));
             this.$postMap.set(post, $post)
-            return $post.self(this.$focus.layer(100).add)
+            return $post.use(this.$focus.layer(100).add)
         });
         this.content($postList).render();
         return this;

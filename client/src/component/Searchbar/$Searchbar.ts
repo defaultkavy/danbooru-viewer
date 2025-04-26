@@ -192,14 +192,14 @@ export class $Searchbar extends $Container {
                         $('div').class('selection-label')
                         .content([
                             data.isTagAntecedent() 
-                            ? $('span').class('tag-antecedent').self($span => $span.dom.innerHTML = data.antecedent.replaceAll(input, `<b>${input}</b>`)) 
+                            ? $('span').class('tag-antecedent').use($span => $span.dom.innerHTML = data.antecedent.replaceAll(input, `<b>${input}</b>`)) 
                             : null,
                             $('div').class('label-container').css({display: 'flex', 'gap': '0.5rem', alignItems: 'center'})
                             .content([ 
                                 data.isTagAntecedent() 
                                 ? $('ion-icon').css({fontSize: '1rem'}).name('arrow-forward-outline') 
                                 : null,
-                                $('span').class('label').self($span => $span.dom.innerHTML = data.label.replaceAll(input, `<b>${input}</b>`))
+                                $('span').class('label').use($span => $span.dom.innerHTML = data.label.replaceAll(input, `<b>${input}</b>`))
                             ])
                         ]),
 

@@ -8,10 +8,8 @@ declare module 'elexis' {
       export interface TagNameElementMap {
         'ion-icon': typeof $IonIcon;
         'icon-button': typeof $IconButton;
-        'a': typeof $RouterAnchor;
       } 
   }
 }
 $.registerTagName('ion-icon', $IonIcon)
 $.registerTagName('icon-button', $IconButton)
-$.registerTagName('a', $RouterAnchor)

@@ -38,7 +38,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
             this.$container.style({left: `${containerLeft}px`});
         })
         this.pointers.on('up', ($pointer) => {
-            const width = this.domRect().width;
+            const width = this.dom.getBoundingClientRect().width;
             const containerMove = containerStartLeft - this.$container.offsetLeft;
             if ($pointer.move_x === 0) return;
             if ($pointer.move_x < 0 && $pointer.movement_x < -2 || containerMove > width / 2) this.next();

@@ -8,6 +8,7 @@ export class PostManager {
     cache = new Set<Post>();
     limit = 100;
     tags?: string;
+    opened: null | Post = null;
     finished = false;
     events = new $EventManager<PostManagerEventMap>();
     constructor(tags?: string) {

@@ -1,13 +1,13 @@
 import { Post } from "../structure/Post";
 import { ArtistCommentary } from "../structure/Commentary";
 import { Booru } from "../structure/Booru";
-import { $Input } from "elexis/lib/node/$Input";
 import { $DetailPanel } from "../component/DetailPanel/$DetailPanel";
 import { PostManager } from "../structure/PostManager";
 import { $PostViewer } from "../component/$PostViewer";
 import { $Slide, $SlideViewer } from "../component/$SlideViewer";
 import { LocalSettings } from "../structure/LocalSettings";
 import { $getSlideViewer } from "../lib/slideViewerManager";
+import { $Input } from "elexis";
 
 export const $post_route = $('route').path('/posts/:id?q').static(false).builder(({$page, params}) => {
     if (!Number(params.id)) return $page.content($('h1').content('404: POST NOT FOUND'));
@@ -45,6 +45,7 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
     $page.on('open', async ({params, query}) => {
         posts = PostManager.get(query.q);
         currentPost = Post.get(Booru.used, +params.id);
+        posts.opened = currentPost;
         posts.events.on('post_fetch', ({manager}) => addSlide(manager));
         if (!posts.orderMap.size || !posts.cache.has(currentPost)) {
             // first post
@@ -85,7 +86,7 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
 
     $($DetailPanel)
     .hide(LocalSettings.detailPanelEnable$.convert(bool => !bool))
-    .self($detail => {
+    .use($detail => {
         events.on('post_switch', (post) => $detail.update(post));
         detailPanelCheck(); // initial detail panel status
         LocalSettings.detailPanelEnable$.on('update', state$ => detailPanelCheck())
@@ -93,7 +94,7 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
         $page.on('open', () => !$detail.inDOM() && $detail.open());
         $page.on('close', () => $detail.inDOM() && $detail.close());
         function detailPanelCheck() {
-            if (LocalSettings.detailPanelEnable$.value) $page.removeStaticClass('side-panel-disable')
+            if (LocalSettings.detailPanelEnable$.value()) $page.removeStaticClass('side-panel-disable')
             else $page.addStaticClass('side-panel-disable')
         }
     })
@@ -106,7 +107,7 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
             '$div.content': { width: '100%' }
         }
     }).content([
-        $('div').class('slide-viewer-container').self($div => {
+        $('div').class('slide-viewer-container').use($div => {
             $page.on('open', () => {
                 $div.content($getSlideViewer(posts.tags))
             })
@@ -118,7 +119,7 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
         .content([
             $('h3').css({ paddingLeft: '1rem', marginBlock: '1rem' }).content(`Artist's Commentary`),
             $('section').class('commentary').css({ '$*': { textWrap: 'wrap', wordBreak: 'break-word' } })
-            .self(async ($comentary) => {
+            .use(async ($comentary) => {
                 events.on('post_switch', async post => {
                     const commentary = (await ArtistCommentary.fetchMultiple(Booru.used, {post: {_id: post.id}})).at(0);
                     $comentary.content([

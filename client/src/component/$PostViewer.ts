@@ -1,7 +1,6 @@
-import { $Container } from "elexis";
+import { $Container, $Input } from "elexis";
 import type { Post } from "../structure/Post";
 import { Booru } from "../structure/Booru";
-import { $Input } from "elexis/lib/node/$Input";
 import { $Notify } from "./$Notify";
 import { User } from "../structure/User";
 import { $VideoController } from "./$VideoController";
@@ -42,7 +41,7 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                         $('div').class('buttons')
                         .css({ width: '100%', display: 'flex', justifyContent: 'center', gap: '2rem' })
                         .content([
-                            $('ion-icon').title('Favorite').name('heart-outline').self($heart => {
+                            $('ion-icon').title('Favorite').name('heart-outline').use($heart => {
                                 if (Booru.used.user) $heart.hide(false);
                                 else $heart.hide(true);
                                 Booru.events.on('login', () => $heart.hide(false))
@@ -56,7 +55,7 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                                     else this.post.createFavorite();
                                 })
                             }),
-                            $('ion-icon').title('Original Size').name('resize-outline').self($original => {
+                            $('ion-icon').title('Original Size').name('resize-outline').use($original => {
                                 $original.on('click', () => { this.events.fire('original_size'); $original.disable(true); })
                                 if (!this.post.isLargeFile || this.post.isVideo) $original.hide(true);
                             })
@@ -80,7 +79,7 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                 // is image
                 : $('img').height(this.post.image_height).width(this.post.image_width)
                 .css({maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', transition: 'all 0.3s ease' })
-                .self($img => {
+                .use($img => {
                     $img.once('load', () => 
                         $img.once('load', () => $img.removeClass('loading')).src(this.post.isLargeFile ? this.post.large_file_url : this.post.file_url)
                     ).src(this.post.preview_file_url)
@@ -118,7 +117,7 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
         });
 
         // hotkey assign
-        $.keys($(window)).self($keys => $keys
+        $.keys($(window))
             .if(e => {
                 if ($(e.target) instanceof $Input) return;
                 if (!this.inDOM()) return;
@@ -129,7 +128,6 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
                 if (this.$video.isPlaying) this.$video.pause();
                 else this.$video.play();
             })
-        )
     }
 }
 

@@ -2,7 +2,7 @@
   "name": "danbooru-viewer",
   "module": "index.ts",
   "type": "module",
-  "version": "0.16.3",
+  "version": "0.17.0",
   "license": "MIT",
   "author": {
     "email": "defaultkavy@gmail.com",
@@ -18,14 +18,14 @@
     "start": "bun run vite-build && bun run server-build && bun run server-start"
   },
   "devDependencies": {
-    "@elexis.js/idb": "^0.1.0",
-    "@elexis.js/css": "^2.0.4",
-    "@elexis.js/layout": "^1.0.2",
-    "@elexis.js/router": "^1.3.2",
+    "@elexis.js/css": "^3.0.0",
+    "@elexis.js/idb": "^1.0.0",
+    "@elexis.js/layout": "^2.0.0",
+    "@elexis.js/router": "^2.0.0",
+    "@elexis.js/focus": "^1.0.0",
     "@types/bun": "latest",
-    "elexis": "^1.3.0",
-    "sass": "^1.86.3",
-    "vite": "^6.3.2"
+    "sass": "^1.87.0",
+    "vite": "^6.3.3"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"

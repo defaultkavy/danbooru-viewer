@@ -32,11 +32,11 @@ export class $DetailPanel extends $Container {
                 $('div').class('detail').content([
                     $('section').class('post-info').content([
                         new $Property('id').name('Post').content(`#${this.post.id}`),
-                        new $Property('uploader').name('Uploader').content(this.post.uploader$).href(`/users/${this.post.uploader?.id}`).self($prop => {
+                        new $Property('uploader').name('Uploader').content(this.post.uploader$).href(`/users/${this.post.uploader?.id}`).use($prop => {
                             if (this.post?.uploader) $prop.href(`/users/${this.post.uploader?.id}`);
                             this.post?.on('update', () => this.post?.uploader && $prop.href(`/users/${this.post.uploader.id}`))
                         }),
-                        new $Property('approver').name('Approver').content(this.post.approver$).self($prop => {
+                        new $Property('approver').name('Approver').content(this.post.approver$).use($prop => {
                             if (this.post?.approver) $prop.href(`/users/${this.post.approver?.id}`);
                             this.post?.on('update', () => this.post?.approver ? $prop.href(`/users/${this.post.approver.id}`) : null)
                         }),
@@ -48,20 +48,20 @@ export class $DetailPanel extends $Container {
                             new $Property('score').name('Score').content(this.post.score$)
                         ]),
                         this.post.file_url ? new $Property('file-url').name('File').content([
-                            $('a').href(this.post.file_url$).content(this.post.file_url$.convert((value) => value ? value.replace('https://', '') : '' )).target('_blank'),
+                            $('ra').href(this.post.file_url$).content(this.post.file_url$.convert((value) => value ? value.replace('https://', '') : '' )).target('_blank'),
                             $('ion-icon').name('clipboard').on('click', (e, $ion) => this.copyButtonHandler($ion, this.post!.file_url!))
                         ]) : null,
                         new $Property('source-url').name('Source').content([
-                            $('a').href(this.post.source$).content(this.post.source$.convert((value) => value.replace('https://', ''))).target('_blank'),
+                            $('ra').href(this.post.source$).content(this.post.source$.convert((value) => value.replace('https://', ''))).target('_blank'),
                             $('ion-icon').name('clipboard').on('click', (e, $ion) => this.copyButtonHandler($ion, this.post!.source))
                         ]),
                         new $Property('booru-url').name(Booru.name$).content([
-                            $('a').href(this.post.booruUrl$).content(this.post.booruUrl$.convert((value) => value.replace('https://', ''))).target('_blank'),
+                            $('ra').href(this.post.booruUrl$).content(this.post.booruUrl$.convert((value) => value.replace('https://', ''))).target('_blank'),
                             $('ion-icon').name('clipboard').on('click', (e, $ion) => this.copyButtonHandler($ion, this.post!.booruUrl))
                         ]),
-                        new $Property('webm-url').name('Webm').hide(true).self(async ($property) => {
+                        new $Property('webm-url').name('Webm').hide(true).use(async ($property) => {
                             await this.post!.ready;
-                            if (this.post!.isUgoria) $property.content($('a').href(this.post!.webm_url$).content(this.post!.webm_url$.convert((value) => value.replace('https://', ''))).target('_blank')).hide(false);
+                            if (this.post!.isUgoria) $property.content($('ra').href(this.post!.webm_url$).content(this.post!.webm_url$.convert((value) => value.replace('https://', ''))).target('_blank')).hide(false);
                         }),
                     ]),
                     $('div').class('post-tags').content(async $tags => {
@@ -80,7 +80,7 @@ export class $DetailPanel extends $Container {
                                     $('h3').content(category),
                                     $('section').content([
                                         tags.map(tag => $('div').class('tag').content([
-                                            $('a').class('tag-name').content(tag.name).href(`/posts?tags=${tag.name}`),
+                                            $('ra').class('tag-name').content(tag.name).href(`/posts?tags=${tag.name}`),
                                             $('span').class('tag-post-count').content(tag.post_count$.convert(numberFormat))
                                         ]))
                                     ])
@@ -99,7 +99,7 @@ export class $DetailPanel extends $Container {
                                 return tags.at(0)?.length ? [
                                     $('h3').content(category),
                                     $('section').class('tag-name-only').content([
-                                        tags.map(tag => $('a').class('tag').content(tag).href(`/posts?tags=${tag}`)),
+                                        tags.map(tag => $('ra').class('tag').content(tag).href(`/posts?tags=${tag}`)),
                                     ])
                                 ] : null
                             }
@@ -165,8 +165,8 @@ export class $DetailPanel extends $Container {
     }
 
     static toogle() {
-        if ($(':page#posts') || $(':page#user')) LocalSettings.previewPanelEnable$.set(!LocalSettings.previewPanelEnable$.value)
-        else if ($(':page#post')) LocalSettings.detailPanelEnable$.set(!LocalSettings.detailPanelEnable$.value)
+        if ($(':page#posts') || $(':page#user')) LocalSettings.previewPanelEnable$.value(!LocalSettings.previewPanelEnable$.value())
+        else if ($(':page#post')) LocalSettings.detailPanelEnable$.value(!LocalSettings.detailPanelEnable$.value())
     }
 }
 
@@ -177,7 +177,7 @@ export interface $DetailPanelOptions {
 
 class $Property extends $Container {
     $name = $('span').class('property-name')
-    $values = $('a').class('property-values')
+    $values = $('ra').class('property-values')
     constructor(id: string) {
         super('div');
         this.staticClass('property').attribute('property-id', id);

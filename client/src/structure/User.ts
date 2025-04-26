@@ -105,13 +105,13 @@ export class User {
     }
 
     update$() {
-        this.id$.set(this.id);
-        this.name$.set(this.name);
-        this.post_upload_count$.set(this.post_upload_count);
-        this.level$.set(this.level);
-        this.level_string$.set(this.level_string);
-        this.created_date$.set(new Date(this.created_at).toLocaleDateString('en', {dateStyle: 'medium'}))
-        this.favorite_count$.set(this.favorite_count);
+        this.id$.value(this.id);
+        this.name$.value(this.name);
+        this.post_upload_count$.value(this.post_upload_count);
+        this.level$.value(this.level);
+        this.level_string$.value(this.level_string);
+        this.created_date$.value(new Date(this.created_at).toLocaleDateString('en', {dateStyle: 'medium'}))
+        this.favorite_count$.value(this.favorite_count);
     }
 
     get booruURL() { return `${this.booru.origin}/users/${this.id}`}
