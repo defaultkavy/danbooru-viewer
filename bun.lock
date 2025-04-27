@@ -7,7 +7,6 @@
         "@elysiajs/cors": "^1.2.0",
         "@elysiajs/html": "^1.2.0",
         "cheerio": "^1.0.0",
-        "elexis": "^2.0.0",
         "elysia": "^1.2.25",
       },
       "devDependencies": {
@@ -17,6 +16,7 @@
         "@elexis.js/layout": "^2.0.0",
         "@elexis.js/router": "^2.0.0",
         "@types/bun": "latest",
+        "elexis": "^2.0.0",
         "sass": "^1.87.0",
         "vite": "^6.3.3",
       },
@@ -36,7 +36,7 @@
 
     "@elexis.js/router": ["@elexis.js/router@2.0.0", "", { "peerDependencies": { "@elexis.js/view": "^2.0.0", "elexis": "^2.0.0" } }, "sha512-a6rxu5QVZXsmKhaxAl1gqoadsiJHumYg6tPCvK/O9Vx5+JoNtG0dMKxJ282OLTfmQIM35OWlyYMsieeszmpPiQ=="],
 
-    "@elexis.js/view": ["@elexis.js/view@1.0.2", "", { "peerDependencies": { "elexis": "^1.0.0" } }, "sha512-zk8FHUnczCRi5Mxxy19TcM8Y1WFu9qo3xWpcFOXouLI/ELFys8f2/hT5BBqQ0zCloWz1OU9zpesmMnoqW8tBWw=="],
+    "@elexis.js/view": ["@elexis.js/view@2.0.0", "", { "peerDependencies": { "elexis": "^1.0.0" } }, "sha512-kWUV2wAtJMV2W062m0v7qaQUjm8E47VXK3uJy/ZkqrPBp62F5TmkQRbwPVv08j14AIIdiDAbzqXmQL91mKG1wg=="],
 
     "@elysiajs/cors": ["@elysiajs/cors@1.2.0", "", { "peerDependencies": { "elysia": ">= 1.2.0" } }, "sha512-qsJwDAg6WfdQRMfj6uSMcDPSpXvm/zQFeAX1uuJXhIgazH8itSfcDxcH9pMuXVRX1yQNi2pPwNQLJmAcw5mzvw=="],
 
