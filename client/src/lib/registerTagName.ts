@@ -1,4 +1,3 @@
-import { $RouterAnchor } from "@elexis.js/router";
 import { $IconButton } from "../component/IconButton/$IconButton";
 import { $IonIcon } from "../component/IonIcon/$IonIcon";
 

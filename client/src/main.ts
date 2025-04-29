@@ -7,7 +7,7 @@ import '@elexis.js/idb';
 import './style';
 import './lib/registerTagName';
 import './lib/booru';
-import { $Router, $RouterNavigationDirection, type $RouterEventMap } from '@elexis.js/router';
+import { $Router } from '@elexis.js/router';
 import { $Searchbar } from './component/Searchbar/$Searchbar';
 import { $Drawer } from './component/Drawer/$Drawer';
 import { $NavigationBar } from './component/$NavigationBar';

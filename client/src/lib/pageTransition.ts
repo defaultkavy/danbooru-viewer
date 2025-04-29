@@ -29,7 +29,9 @@ export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
       })
     }
     function outro() {
-      $(document.documentElement).style({scrollBehavior: 'auto'});
+      $(document.documentElement).class('animated').style({
+        scrollBehavior: 'auto'
+      });
       const transform = $.call(() => {
         switch ($Router.navigationDirection) {
           case $RouterNavigationDirection.Forward: return [`translateX(0%)`, `translateX(-${TX}%)`];
@@ -37,14 +39,17 @@ export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
           case $RouterNavigationDirection.Replace: return '';
         }
       })
-  
-      e.previousContent?.element?.class('animated').animate({
+      
+      e.previousContent?.htmlElement?.class('animated').animate({
         opacity: [1, 0],
         transform
       }, {
         duration: DURATION,
         easing: 'ease',
         onfinish: () => {
+          $(document.documentElement).removeClass('animated').style({
+            overflow: ''
+          });
           e.previousContent?.element?.removeClass('animated');
           intro();
         }

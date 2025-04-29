@@ -98,7 +98,7 @@ export class $PostGrid extends $Layout {
             if ($post) $layer.prevBlur = $post;
             if ($layer.currentFocus) $layer.focus($post);
             else {
-                if ($post?.inDOM() && $post.inViewport()) return;
+                if ($post?.inDOM() && $post.visible()) return;
                 $layer.focus($post);
                 setTimeout(() => $layer.blur(), 300);
             }
