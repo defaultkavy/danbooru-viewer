@@ -33,13 +33,13 @@ html {
     font-size: 14px;
     scroll-behavior: smooth;
     &.animated {
-        overflow: hidden; 
-        padding-right: 8px;
+        // overflow: hidden;  
+        // padding-right: 8px;
         nav {
-            padding-right: calc(1rem + 8px);
+            // padding-right: calc(1rem + 8px);
         }
         detail-panel {
-            right: calc(var(--padding) + 8px);
+            // right: calc(var(--padding) + 8px);
         }
     }
 

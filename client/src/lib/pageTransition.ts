@@ -24,7 +24,7 @@ export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
         onfinish: () => {
           e.switched();
           $(document.documentElement).style({scrollBehavior: ''});
-          e.nextContent.element?.removeClass('animated')
+          e.nextContent.element?.removeClass('animated');
         }
       })
     }
