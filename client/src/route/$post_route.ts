@@ -8,6 +8,7 @@ import { $Slide, $SlideViewer } from "../component/$SlideViewer";
 import { LocalSettings } from "../structure/LocalSettings";
 import { $getSlideViewer } from "../lib/slideViewerManager";
 import { $Input } from "elexis";
+import { $Router, $RouterNavigation } from "@elexis.js/router";
 
 export const $post_route = $('route').path('/posts/:id?q').static(false).builder(({$page, params}) => {
     if (!Number(params.id)) return $page.content($('h1').content('404: POST NOT FOUND'));
@@ -73,7 +74,7 @@ export const $post_route = $('route').path('/posts/:id?q').static(false).builder
         }
         addSlide(posts);
         const $slideViewer = $getSlideViewer(posts.tags);
-        $slideViewer.switch(currentPost.id);
+        $slideViewer.switch(currentPost.id, $Router.navigation === $RouterNavigation.Replace);
         events.fire('post_switch', currentPost);
 
         function addSlide(posts: PostManager) {

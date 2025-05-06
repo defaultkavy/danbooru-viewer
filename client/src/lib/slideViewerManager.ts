@@ -29,15 +29,17 @@ export function $getSlideViewer(q: string | undefined) {
                 return true;
             })
             // change path after slide switch
-            .on('switch', ({$nextSlide: nextSlide}) => {
-                $.replace(`/posts/${nextSlide.slideId()}${q ? `?q=${q}` : ''}`);
+            .on('switch', ({$nextSlide, $prevSlide}) => {
+                $.replace(`/posts/${$nextSlide.slideId()}${q ? `?q=${q}` : ''}`);
             })
             // pause prev slide video and play next one
             .on('beforeSwitch', ({$prevSlide: prevSlide, $nextSlide: nextSlide}) => {
                 prevSlide?.$<$Video>(':video')?.pause();
             })
-            .on('afterSwitch', ({$nextSlide: nextSlide}) => {
-                nextSlide.$<$Video>(':video')?.play();
+            .on('afterSwitch', ({$nextSlide, $prevSlide}) => {
+                $nextSlide.$<$Video>(':video')?.play();
+                $nextSlide.$(':img')?.htmlElement?.style({viewTransitionName: 'post-img'});
+                $prevSlide?.$(':img')?.htmlElement?.style({viewTransitionName: ''});
             })
             // pause video when slide moving
             .on('slideMove', ($slide) => {
@@ -48,7 +50,6 @@ export function $getSlideViewer(q: string | undefined) {
                 if (!$slide) return;
                 const $v = $slide.$<$Video>(':video')
                 $v?.play();
-                console.debug($v)
             })
     $slideViewerMap.set(q, $slideViewer);
     return $slideViewer;

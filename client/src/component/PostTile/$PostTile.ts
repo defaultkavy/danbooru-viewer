@@ -24,7 +24,8 @@ export class $PostTile extends $Container {
         this.$video?.on('timeupdate', (e, $video) => {
             this.durationUpdate();
         })
-        this.class('loading').content([
+        this.class('loading')
+        .content([
             // Video Detail
             this.post.isVideo 
                 ? $('div').class('video-detail').content([
@@ -38,9 +39,10 @@ export class $PostTile extends $Container {
                     $('span').content('GIF')
                 ]) : null,
             // Tile
-            $('ra').href(this.url).preventDefault(LocalSettings.previewPanelEnable$).content(() => [
+            $('ra').href(this.url).preventDefault(true).content(() => [
                 this.$video,
-                this.$img.on('mousedown', (e) => e.preventDefault())
+                this.$img
+                    .on('mousedown', (e) => e.preventDefault())
                     .once('load', (e, $img) => { 
                         $img.animate({opacity: [0, 1]}, {duration: 300, onfinish: () => $img.style({opacity: ''})});
                         this.removeClass('loading'); 
@@ -58,10 +60,13 @@ export class $PostTile extends $Container {
                 if (this.post.isGif) { this.$img.src(this.post.previewURL) }
             }, {passive: true} )
             .on('click', () => {
-                if (!LocalSettings.previewPanelEnable$.value()) return;
-                if (innerWidth <= 800) return $.open(this.url);
-                if (this.attribute('focus') === '') $.open(this.url);
-                else this.trigger('$focus');
+                if (LocalSettings.previewPanelEnable$.value()) {
+                    if (innerWidth <= 800) return this.open();
+                    if (this.attribute('focus') === '') this.open();
+                    else this.trigger('$focus');
+                } else {
+                    this.open();
+                }
             })
     }
 
@@ -72,4 +77,10 @@ export class $PostTile extends $Container {
     }
 
     get url() { return `${this.post.pathname}${this.$grid.tags ? `?q=${this.$grid.tags}` : ''}` }
+
+    open() {
+        this.$grid.children.array.forEach($ele => $ele.htmlElement?.style({viewTransitionName: ''}) )
+        this.style({viewTransitionName: 'post-img'});
+        $.open(this.url);
+    }
 }

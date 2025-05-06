@@ -1,4 +1,4 @@
-import { $Container, $Input } from "elexis";
+import { $Container, $Input, $Option } from "elexis";
 import type { Post } from "../structure/Post";
 import { $Notify } from "./$Notify";
 import { $PostViewerPanel } from "./$PostViewerPanel";
@@ -7,7 +7,7 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
     $video = $('video');
     post: Post;
     constructor(post: Post) {
-        super('div');
+        super('post-viewer');
         this.post = post;
         this.build();
     }
@@ -22,31 +22,49 @@ export class $PostViewer extends $Container<HTMLElement, $PostViewerEventMap> {
         .content([
             // viewer panel
             $($PostViewerPanel, this),
-            // viewer content
-            this.post.isVideo
-                // is video
-                ? this.$video.height(this.post.image_height).width(this.post.image_width)
-                .css({ maxWidth: '100%', maxHeight: '100%', '-webkit-user-drag': 'none', transition: 'all 0.3s ease' })
-                .src(this.post.file_ext === 'zip' ? this.post.large_file_url : this.post.file_url)
-                .controls(false).loop(true).disablePictureInPicture(true)
-                // is image
-                : $('img').height(this.post.image_height).width(this.post.image_width)
-                .css({maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', transition: 'all 0.3s ease' })
-                .use($img => {
-                    $img
-                    .css({ opacity: 0 })
-                    .on('load', () => {
+
+            $('div').class('container')
+            .css({height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'})
+            .content([
+                // viewer content
+                this.post.isVideo
+                    // is video
+                    ? this.$video.height(this.post.image_height).width(this.post.image_width)
+                    .css({ maxWidth: '100%', maxHeight: '100%', '-webkit-user-drag': 'none', transition: 'all 0.3s ease' })
+                    .src(this.post.file_ext === 'zip' ? this.post.large_file_url : this.post.file_url)
+                    .controls(false).loop(true).disablePictureInPicture(true)
+                    // is image
+                    : $('img').height(this.post.image_height).width(this.post.image_width)
+                    .css({maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto', transition: 'all 0.3s ease' })
+                    .use($img => {
                         const fileURL = this.post.isLargeFile ? this.post.large_file_url : this.post.file_url;
-                        if ($img.src() !== fileURL) return $img.src(fileURL);
-                        $img.removeClass('loading');
-                    }).animate({ opacity: [0, 1] }, { duration: 300, fill: 'both' })
-                    .src(this.post.previewURL)
-                    if (!$img.complete) $img.css({ '$&.loading': {filter: 'blur(5px)'} }).class('loading');
-                    this.events.on('original_size', () => {
-                        $Notify.push('Original size image is loading...')
-                        $img.src(this.post.file_url).once('load', () => $Notify.push('Original size image loaded.'));
+                        $img
+                        .css({ opacity: 0 })
+                        .animate({ opacity: [0, 1] }, { duration: 300, fill: 'both' })
+                        .src(this.post.previewURL)
+                        
+                        if ($img.src() !== fileURL) {
+                            const cacheImg = $('img').src(fileURL);
+                            setTimeout(() => {
+                                const height = this.post.image_height > this.clientHeight ? this.clientHeight : this.post.image_height;
+                                const width = this.post.image_width > this.clientWidth ? this.clientWidth : this.post.image_width;
+                                const IS_EXCEED_WIDTH = this.clientHeight * this.post.ratio >= this.clientWidth
+                                const scale = IS_EXCEED_WIDTH ? $img.clientWidth / width : $img.clientHeight / height;
+                                if (isNaN(scale)) return;
+                                const animate = () => 
+                                    $img.src(fileURL).animate({
+                                        transform: [`scale(${scale})`, `scale(1)`]
+                                    }, {duration: 300, easing: 'ease'});
+                                cacheImg.complete ? animate() : cacheImg.once('load', animate);
+                            }, 400);
+                        }
+
+                        this.events.on('original_size', () => {
+                            $Notify.push('Original size image is loading...')
+                            $img.src(this.post.file_url).once('load', () => $Notify.push('Original size image loaded.'));
+                        })
                     })
-                })
+            ])
         ])
         // viewer panel hide/show
         .on('pointerleave', (e) => {

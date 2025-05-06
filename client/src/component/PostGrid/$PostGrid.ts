@@ -64,7 +64,7 @@ export class $PostGrid extends $Layout {
             .keydown([' ', 'Enter'], e => {
                 e.preventDefault();
                 const focused = this.$focus.currentLayer?.currentFocus;
-                if (focused instanceof $PostTile) $.open(focused.url);
+                if (focused instanceof $PostTile) focused.open();
             })
             .keydown(['Escape'], e => { e.preventDefault(); this.$focus.blur(); })
             .keydown(['='], e => { e.preventDefault(); LocalSettings.columnSize$.value(state$ => state$.value() + 1); this.resize(); this.render(); $Notify.push(`The delta of post grid column number set to ${LocalSettings.columnSize$.value()}`) })
@@ -93,14 +93,18 @@ export class $PostGrid extends $Layout {
         if (!this.inDOM()) return;
         const $layer = this.$focus.layer(100);
         if (this.posts.opened) {
-            const $post = this.$postMap.get(this.posts.opened)
+            this.children.array.forEach($ele => $ele.htmlElement?.style({viewTransitionName: ''}) )
+            const $post = this.$postMap.get(this.posts.opened);
+            $post?.style({viewTransitionName: 'post-img'})
             this.posts.opened = null;
             if ($post) $layer.prevBlur = $post;
             if ($layer.currentFocus) $layer.focus($post);
             else {
-                if ($post?.inDOM() && $post.visible()) return;
-                $layer.focus($post);
-                setTimeout(() => $layer.blur(), 300);
+                setTimeout(() => {
+                    if ($post?.inDOM() && $post.visible()) return;
+                    $layer.focus($post);
+                    setTimeout(() => $layer.blur(), 500);
+                }, 300);
             }
         } else {
             $.scrollTo($layer.currentFocus, {threshold: $layer.scrollThreshold(), behavior: 'smooth'})

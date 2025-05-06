@@ -145,6 +145,9 @@ export class Post extends $EventManager<{update: []}> {
     get url() { return `https://danbooru.defaultkavy.com/posts/${this.id}` }
     get isFileSource() { return this.source.startsWith('file://') }
     get isLargeFile() { return this.file_size > 5_000_000 } // || this.image_height > innerHeight || this.image_width > innerWidth
+    get ratio() { return this.image_width / this.image_height }
+    get isLandscape() { return this.ratio >= 1 }
+    get isPortrait() { return this.ratio <= 1 }
 }
 
 export interface PostData extends PostOptions {

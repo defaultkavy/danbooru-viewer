@@ -1,21 +1,21 @@
-import { type $RouterEventMap, $Router, $RouterNavigationDirection } from "@elexis.js/router";
+import { type $RouterEventMap, $Router, $RouterNavigation } from "@elexis.js/router";
 
 export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
-    const DURATION = 300;
+    const DURATION = 3000;
     const TX = 2;
     e.preventDefault();
     function intro() {
       $(document.documentElement).style({scrollBehavior: 'auto'});
       const transform = $.call(() => {
-        switch ($Router.navigationDirection) {
-          case $RouterNavigationDirection.Forward: return [`translateX(${TX}%)`, `translateX(0%)`];
-          case $RouterNavigationDirection.Back: return [`translateX(-${TX}%)`, `translateX(0%)`];
-          case $RouterNavigationDirection.Replace: return '';
+        switch ($Router.navigation) {
+          case $RouterNavigation.Forward: return [`translateX(${TX}%)`, `translateX(0%)`];
+          case $RouterNavigation.Back: return [`translateX(-${TX}%)`, `translateX(0%)`];
+          default: return '';
         }
       })
-      e.$view.content(e.nextContent);
+      e.$view.insert(e.nextContent);
       e.rendered();
-      e.nextContent.element?.class('animated').animate({
+      e.nextContent.element?.animate({
         opacity: [0, 1],
         transform
       }, {
@@ -24,34 +24,39 @@ export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
         onfinish: () => {
           e.switched();
           $(document.documentElement).style({scrollBehavior: ''});
-          e.nextContent.element?.removeClass('animated');
         }
       })
     }
     function outro() {
       $(document.documentElement).class('animated').style({
-        scrollBehavior: 'auto'
+        scrollBehavior: 'auto',
       });
+      intro();
       const transform = $.call(() => {
-        switch ($Router.navigationDirection) {
-          case $RouterNavigationDirection.Forward: return [`translateX(0%)`, `translateX(-${TX}%)`];
-          case $RouterNavigationDirection.Back: return [`translateX(0%)`, `translateX(${TX}%)`];
-          case $RouterNavigationDirection.Replace: return '';
+        switch ($Router.navigation) {
+          case $RouterNavigation.Forward: return [`translateX(0%)`, `translateX(-${TX}%)`];
+          case $RouterNavigation.Back: return [`translateX(0%)`, `translateX(${TX}%)`];
+          default: return '';
         }
       })
       
-      e.previousContent?.htmlElement?.class('animated').animate({
+      e.previousContent?.htmlElement?.style({
+        position: 'absolute',
+        zIndex: '0'
+      }).animate({
         opacity: [1, 0],
         transform
       }, {
         duration: DURATION,
         easing: 'ease',
         onfinish: () => {
-          $(document.documentElement).removeClass('animated').style({
+          $(document.documentElement).style({
             overflow: ''
           });
-          e.previousContent?.element?.removeClass('animated');
-          intro();
+          e.previousContent?.htmlElement?.style({
+            position: '',
+            zIndex: ''
+          }).remove();
         }
       })
     }

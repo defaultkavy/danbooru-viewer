@@ -7,7 +7,7 @@ import '@elexis.js/idb';
 import './style';
 import './lib/registerTagName';
 import './lib/booru';
-import { $Router } from '@elexis.js/router';
+import { $Router, $RouterNavigation } from '@elexis.js/router';
 import { $Searchbar } from './component/Searchbar/$Searchbar';
 import { $Drawer } from './component/Drawer/$Drawer';
 import { $NavigationBar } from './component/$NavigationBar';
@@ -27,7 +27,20 @@ $(document.body).content([
   $Notify.$ele,
   // Base Router
   $('router').base('/')
-  .on('beforeSwitch', pageTransitionHandler)
+  .on('beforeSwitch', (e) => {
+    if (document.startViewTransition) {
+      e.preventDefault()
+      document.startViewTransition({
+        update: () => {
+          e.$view.content(e.nextContent);
+          e.rendered();
+          e.switched();
+        },
+        types: [$RouterNavigation[$Router.navigation].toLowerCase()]
+      } as any)
+    }
+    else pageTransitionHandler(e);
+  })
   .map([
     $root_posts_route,
     $posts_route,

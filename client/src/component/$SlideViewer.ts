@@ -78,7 +78,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
         return this;
     }
 
-    switch(id: string | number | undefined) {
+    switch(id: string | number | undefined, animation = true) {
         if (id === undefined) return this;
         const $prevSlide = this.currentSlide;
         const $nextSlide = this.slideMap.get(id);
@@ -87,13 +87,13 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
         this.events.fire('beforeSwitch', {$prevSlide: this.currentSlide, $nextSlide})
         this.slideId = id;
         this.events.fire('switch', {$prevSlide, $nextSlide})
-        this.__slideAnimate__().then(() => {
+        this.__slideAnimate__(animation ? 300 : 0).then(() => {
             this.events.fire('afterSwitch', {$prevSlide, $nextSlide})
         });
         return this;
     }
 
-    protected async __slideAnimate__() {
+    protected async __slideAnimate__(duration = 300) {
         return new Promise<void>(resolve => {
             const currentIndex = this.currentSlide ? this.slideList.indexOf(this.currentSlide) : undefined;
             if (currentIndex === undefined) return;
@@ -101,7 +101,7 @@ export class $SlideViewer extends $Container<HTMLElement, $SlideViewerEventMap> 
             this.$container.animate({
                 left: `-${this.getPositionLeft(currentIndex)}px`,
             }, {
-                duration: 300,
+                duration: duration,
                 easing: ease ? 'ease' : 'ease-out',
                 onfinish: () => {
                 this.$container.style({left: `-${this.getPositionLeft(currentIndex)}px`})

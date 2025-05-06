@@ -32,16 +32,6 @@ html {
     overflow-x: hidden;
     font-size: 14px;
     scroll-behavior: smooth;
-    &.animated {
-        // overflow: hidden;  
-        // padding-right: 8px;
-        nav {
-            // padding-right: calc(1rem + 8px);
-        }
-        detail-panel {
-            // right: calc(var(--padding) + 8px);
-        }
-    }
 
     ::-webkit-scrollbar {
         background-color: var(--secondary-color-1);
@@ -74,6 +64,7 @@ nav {
     padding-inline: 1rem;
     box-sizing: border-box;
     backdrop-filter: blur(3px);
+    view-transition-name: nav;
 
     a.title {
         display: flex;
