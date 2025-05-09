@@ -7,7 +7,7 @@
         "@elysiajs/cors": "^1.3.0",
         "@elysiajs/html": "^1.3.0",
         "cheerio": "^1.0.0",
-        "elysia": "^1.3.0",
+        "elysia": "^1.3.1",
       },
       "devDependencies": {
         "@elexis.js/css": "^3.1.0",
@@ -16,7 +16,7 @@
         "@elexis.js/layout": "^2.0.1",
         "@elexis.js/router": "^2.0.1",
         "@types/bun": "latest",
-        "elexis": "^2.0.4",
+        "elexis": "^2.1.0",
         "sass": "^1.87.0",
         "vite": "^6.3.5",
       },
@@ -222,7 +222,7 @@
 
     "elexis": ["elexis@2.1.0", "", {}, "sha512-zCp4DQUzdwwC0tAwXklt/rhF9MoohO1Jvy1ATt5CxgV6WUoHWwTKJtqGm7cmSbFL7349H/iKlcSee9WGEY08bw=="],
 
-    "elysia": ["elysia@1.3.0", "", { "dependencies": { "cookie": "^1.0.2", "exact-mirror": "0.1.1", "fast-decode-uri-component": "^1.0.1" }, "optionalDependencies": { "@sinclair/typebox": "^0.34.33", "openapi-types": "^12.1.3" }, "peerDependencies": { "file-type": ">= 20.0.0", "typescript": ">= 5.0.0" } }, "sha512-ZhDB3i6eDYAYGgS19L/ATiEau5XUsbRVflPSsLkEUlIohgCimw24MgD+pgXXEy5mRsFJFeAdHOSL2yKsVVsJSw=="],
+    "elysia": ["elysia@1.3.1", "", { "dependencies": { "cookie": "^1.0.2", "exact-mirror": "0.1.2", "fast-decode-uri-component": "^1.0.1" }, "optionalDependencies": { "@sinclair/typebox": "^0.34.33", "openapi-types": "^12.1.3" }, "peerDependencies": { "file-type": ">= 20.0.0", "typescript": ">= 5.0.0" } }, "sha512-En41P6cDHcHtQ0nvfsn9ayB+8ahQJqG1nzvPX8FVZjOriFK/RtZPQBtXMfZDq/AsVIk7JFZGFEtAVEmztNJVhQ=="],
 
     "emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
 
@@ -234,7 +234,7 @@
 
     "escalade": ["escalade@3.2.0", "", {}, "sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA=="],
 
-    "exact-mirror": ["exact-mirror@0.1.1", "", { "peerDependencies": { "@sinclair/typebox": "^0.34.15" }, "optionalPeers": ["@sinclair/typebox"] }, "sha512-jygrs/z9JT3UBDVPsu4vLy8gqtTLTxVzoxLmDzkVXHizRGixDMdkdLF98ChZxsqHL0F7IcpTf8GUFRqa2qt3uw=="],
+    "exact-mirror": ["exact-mirror@0.1.2", "", { "peerDependencies": { "@sinclair/typebox": "^0.34.15" }, "optionalPeers": ["@sinclair/typebox"] }, "sha512-wFCPCDLmHbKGUb8TOi/IS7jLsgR8WVDGtDK3CzcB4Guf/weq7G+I+DkXiRSZfbemBFOxOINKpraM6ml78vo8Zw=="],
 
     "fast-decode-uri-component": ["fast-decode-uri-component@1.0.1", "", {}, "sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg=="],
 
