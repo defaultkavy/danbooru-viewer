@@ -173,7 +173,7 @@ export class $Searchbar extends $Container {
         this.$selectionList
             .clearSelections()
             .addSelections([
-                ...Array.from(history.values()).filter(v => v.tag.includes(input) && !tags.includes(v.tag)).reverse().slice(0, 3).map(data => new $Selection().value([data.tag])
+                ...Array.from(history.values()).filter(v => v.tag.includes(input) && !tags.includes(v.tag)).reverse().slice(0, 10).map(data => new $Selection().value([data.tag])
                     .content([
                         $('div').class('selection-label').content([
                             data.tag.split(',').map(tag => $('span').content(tag))
@@ -220,8 +220,8 @@ export class $Searchbar extends $Container {
     }
 
     search() {
-        $.replace(`/posts?tags=${this.$tagInput.query.replace(':', '%3A').replaceAll(' ', '_')}`);
-        this.$tagInput.tags.array.forEach(tag => $Searchbar.store.put({tag: tag.name, timestamp: Date.now()}))
+        $.replace(`/posts?tags=${this.$tagInput.query.trim().replace(':', '%3A').replaceAll(' ', '_')}`);
+        this.$tagInput.tags.array.forEach(tag => $Searchbar.store.put({tag: tag.name, timestamp: Date.now()}, true))
         this.$tagInput.clearAll();
         this.inactivate();
         return this;
