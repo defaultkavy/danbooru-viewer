@@ -1,7 +1,22 @@
 import { type $RouterEventMap, $Router, $RouterNavigation } from "@elexis.js/router";
 
+export function viewTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
+    if (document.startViewTransition) {
+      e.preventDefault()
+      document.startViewTransition({
+        update: () => {
+          e.$view.content(e.nextContent);
+          e.rendered();
+          e.switched();
+        },
+        types: [$RouterNavigation[$Router.navigation].toLowerCase()]
+      } as any)
+    }
+    else pageTransitionHandler(e);
+}
+
 export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
-    const DURATION = 3000;
+    const DURATION = 300;
     const TX = 2;
     e.preventDefault();
     function intro() {
@@ -31,7 +46,6 @@ export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
       $(document.documentElement).class('animated').style({
         scrollBehavior: 'auto',
       });
-      intro();
       const transform = $.call(() => {
         switch ($Router.navigation) {
           case $RouterNavigation.Forward: return [`translateX(0%)`, `translateX(-${TX}%)`];
@@ -41,7 +55,6 @@ export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
       })
       
       e.previousContent?.htmlElement?.style({
-        position: 'absolute',
         zIndex: '0'
       }).animate({
         opacity: [1, 0],
@@ -57,6 +70,7 @@ export function pageTransitionHandler(e: $RouterEventMap['beforeSwitch'][0]) {
             position: '',
             zIndex: ''
           }).remove();
+          intro();
         }
       })
     }

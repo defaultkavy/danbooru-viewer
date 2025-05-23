@@ -1,5 +1,5 @@
 import { $Router } from "@elexis.js/router"
-import { pageTransitionHandler } from "../lib/pageTransition"
+import { pageTransitionHandler, viewTransitionHandler } from "../lib/pageTransition"
 import { Booru } from "../structure/Booru"
 import { User } from "../structure/User"
 import { $postsPageComponents } from "./$posts_route"
@@ -91,7 +91,7 @@ export const $user_route = $('route')
                 $('div').content($('span').content('Favorite Posts')).on('click', () => $.replace('#favorite')).use($a => tabActiveCheck($a, `#favorite`))
             ]),
             $('router').base(`${location.pathname}`)
-            .on('beforeSwitch', pageTransitionHandler)
+            .on('beforeSwitch', viewTransitionHandler)
             .map([
                 $('route').path(['/', '#upload']).builder($subpage => 
                     $subpage.class('custom').content([

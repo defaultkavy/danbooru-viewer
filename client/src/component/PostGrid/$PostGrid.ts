@@ -91,6 +91,7 @@ export class $PostGrid extends $Layout {
 
     scrollToPost() {
         if (!this.inDOM()) return;
+        if (!document.startViewTransition) return;
         const $layer = this.$focus.layer(100);
         if (this.posts.opened) {
             this.children.array.forEach($ele => $ele.htmlElement?.style({viewTransitionName: ''}) )

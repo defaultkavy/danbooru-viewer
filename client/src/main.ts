@@ -7,7 +7,6 @@ import '@elexis.js/idb';
 import './style';
 import './lib/registerTagName';
 import './lib/booru';
-import { $Router, $RouterNavigation } from '@elexis.js/router';
 import { $Searchbar } from './component/Searchbar/$Searchbar';
 import { $Drawer } from './component/Drawer/$Drawer';
 import { $NavigationBar } from './component/$NavigationBar';
@@ -16,9 +15,10 @@ import { $Notify } from './component/$Notify';
 import $post_route from './route/$post_route';
 import $login_route from './route/$login_route';
 import { $user_route } from './route/$user_route';
-import { pageTransitionHandler } from './lib/pageTransition';
+import { viewTransitionHandler } from './lib/pageTransition';
 import { $DetailPanel } from './component/DetailPanel/$DetailPanel';
 import { $Input } from 'elexis';
+import { $Router } from '@elexis.js/router';
 // render
 $(document.body).content([
   $NavigationBar.$ele,
@@ -27,20 +27,7 @@ $(document.body).content([
   $Notify.$ele,
   // Base Router
   $('router').base('/')
-  .on('beforeSwitch', (e) => {
-    if (document.startViewTransition) {
-      e.preventDefault()
-      document.startViewTransition({
-        update: () => {
-          e.$view.content(e.nextContent);
-          e.rendered();
-          e.switched();
-        },
-        types: [$RouterNavigation[$Router.navigation].toLowerCase()]
-      } as any)
-    }
-    else pageTransitionHandler(e);
-  })
+  .on('beforeSwitch', (e) => viewTransitionHandler(e))
   .map([
     $root_posts_route,
     $posts_route,
